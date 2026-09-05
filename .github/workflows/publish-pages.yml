@@ -1,0 +1,55 @@
+name: Publish Wrong Floor
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Chrome WebGL startup and interaction smoke
+        run: npm run test:browser
+        env:
+          WRONG_FLOOR_REVIEW_DIR: _review/smoke
+      - name: Preserve smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wrong-floor-smoke
+          path: _review/smoke
+          if-no-files-found: warn
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

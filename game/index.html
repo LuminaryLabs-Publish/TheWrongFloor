@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111311">
+  <meta name="description" content="Thirty floors. Five minutes. Close the doors before something gets inside.">
+  <title>Wrong Floor</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23101310'/%3E%3Cpath d='M14 12h15v40H14zM35 12h15v40H35z' fill='%23ea754f'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main id="game" aria-label="Wrong Floor horror game">
+    <canvas id="scene" tabindex="-1" aria-label="View from inside the elevator"></canvas>
+    <div class="film" aria-hidden="true"></div>
+    <div id="hud" hidden>
+      <div class="hud-top"><div class="floor-readout"><span class="eyebrow">Descending</span><strong id="floor-number">30</strong><span id="round-count">STOP 01 / 30</span></div><button class="icon-button" id="pause-button" aria-label="Pause game">Ⅱ</button></div>
+      <div class="allowance" aria-label="Three false alarms remaining"><span class="eyebrow">False alarms</span><div id="alarm-dots" aria-hidden="true"><i></i><i></i><i></i></div><span id="alarm-text" class="sr-only">0 of 3 false alarms</span></div>
+      <div id="caption" role="status" aria-live="polite"></div>
+      <div class="hud-bottom"><span id="controls-hint">WASD / ARROWS <b>LOOK</b><br>HOLD SPACE <b>CLOSE</b></span><button id="hold-close" aria-label="Hold to close elevator doors"><span>▶◀</span> HOLD TO CLOSE</button><span class="survival-note">If it is wrong,<br><em>close the doors.</em></span></div>
+    </div>
+    <section id="title-screen" class="screen title-screen" aria-labelledby="game-title">
+      <div class="masthead"><span>THE NIGHT SHIFT COLLECTION</span><span>NO. 001 · WRONG FLOOR</span></div>
+      <div class="title-content"><p class="eyebrow copper">An observation horror game</p><h1 id="game-title">WRONG<br><em>FLOOR</em><span class="title-dot">.</span></h1><p class="pitch">Thirty floors. Five minutes.<br>Do not let them inside.</p>
+        <div class="title-actions"><button id="play-button" class="primary" data-action="play">Begin descent <span>↓</span></button><button data-action="practice">Learn the rules</button><button data-action="settings">Settings</button></div>
+        <details class="seed-details"><summary>Choose a descent</summary><label for="seed-input">Seed <span>(optional)</span></label><input id="seed-input" maxlength="64" autocomplete="off" placeholder="A different journey each time"></details>
+      </div>
+      <footer class="title-footer"><span>HEADPHONES RECOMMENDED</span><p>Contains unsettling figures, sudden sounds and scares.<br>Reduced effects and assisted timing available in Settings.</p><span id="load-status" role="status">PREPARING ELEVATOR</span></footer>
+    </section>
+    <section id="settings-screen" class="screen panel-screen" hidden aria-labelledby="settings-title">
+      <div class="panel settings-panel"><p class="eyebrow copper">Make yourself comfortable</p><h2 id="settings-title">Settings<span>.</span></h2><form id="settings-form">
+        <fieldset><legend>Sound</legend><label>Master volume <output data-output="masterVolume">75%</output><input name="masterVolume" type="range" min="0" max="1" step="0.05" value="0.75"></label><label>Ambience <output data-output="ambienceVolume">65%</output><input name="ambienceVolume" type="range" min="0" max="1" step="0.05" value="0.65"></label><label>Effects <output data-output="effectsVolume">75%</output><input name="effectsVolume" type="range" min="0" max="1" step="0.05" value="0.75"></label></fieldset>
+        <fieldset><legend>Controls</legend><label>Look sensitivity <output data-output="sensitivity">1.00</output><input name="sensitivity" type="range" min="0.25" max="2" step="0.05" value="1"></label><label>Stick dead zone <output data-output="deadZone">0.18</output><input name="deadZone" type="range" min="0.05" max="0.4" step="0.01" value="0.18"></label><div class="binding-row"><span>Close doors</span><button id="bind-close" type="button">SPACE</button></div><p class="setting-note">Select the key, then press a replacement. Escape cancels.</p></fieldset>
+        <fieldset class="check-settings"><legend>Comfort</legend><label><input name="captions" type="checkbox" checked> Sound captions</label><label><input name="reducedMotion" type="checkbox"> Reduced camera motion</label><label><input name="reducedFlashes" type="checkbox"> Reduced light changes</label><label><input name="softScares" type="checkbox"> Softer scares</label><label><input name="assisted" type="checkbox"> Assisted reaction timing</label><label class="quality-setting">Graphics quality<select name="quality" aria-label="Graphics quality"><option value="low">Low — lower power</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label><p class="setting-note">Assisted runs have a separate personal best. Graphics detail changes on the next floor.</p></fieldset>
+      </form><button class="primary" data-action="back">Done <span>↵</span></button></div>
+    </section>
+    <section id="pause-screen" class="screen panel-screen" hidden aria-labelledby="pause-title"><div class="panel"><p class="eyebrow copper">Take a breath</p><h2 id="pause-title">On hold<span>.</span></h2><p class="body-copy">The elevator will wait.</p><div class="stack-actions"><button class="primary" data-action="resume">Resume descent <span>↓</span></button><button data-action="settings">Settings</button><button data-action="title">Return to title</button></div></div></section>
+    <section id="results-screen" class="screen panel-screen" hidden aria-labelledby="result-title"><div class="panel result-panel"><p id="result-kicker" class="eyebrow copper">The descent is over</p><h2 id="result-title">Wrong<br><em>floor.</em></h2><p id="result-reason" class="body-copy"></p><div id="result-clue" class="clue-note"></div><dl class="result-stats"><div><dt>Floors survived</dt><dd id="result-floors">0 / 30</dd></div><div><dt>Score</dt><dd id="result-score">0</dd></div><div><dt>Personal best</dt><dd id="result-best">0</dd></div></dl><p id="result-seed" class="setting-note"></p><div class="stack-actions"><button class="primary" data-action="retry">Another descent <span>↻</span></button><button data-action="title">Return to title</button><button data-action="exit">Exit game</button></div></div></section>
+    <div id="fatal-error" class="fatal-error" role="alert" hidden></div>
+  </main>
+  <script type="module" src="./src/main.mjs"></script>
+</body>
+</html>

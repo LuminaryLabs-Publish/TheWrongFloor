@@ -1,0 +1,33 @@
+name: Full five-minute browser review
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12.0
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - name: Run real-time 300-second Chrome acceptance
+        run: node tests/browser-smoke.mjs
+        env:
+          WRONG_FLOOR_FULL_RUN: '1'
+          WRONG_FLOOR_REVIEW_DIR: _review/wrong-floor
+      - name: Preserve full-session evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: wrong-floor-full-browser-review
+          path: _review/wrong-floor
+          if-no-files-found: warn

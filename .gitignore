@@ -1,0 +1,7 @@
+node_modules/
+dist/
+_review/
+desktop/node_modules/
+desktop/.generated/
+desktop/dist/
+*.log

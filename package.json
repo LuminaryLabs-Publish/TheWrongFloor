@@ -1,0 +1,18 @@
+{
+  "name": "the-wrong-floor",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "description": "Five-minute first-person observation-horror vertical slice",
+  "scripts": {
+    "build": "node scripts/build-site.mjs",
+    "serve": "node scripts/serve.mjs",
+    "validate": "node scripts/validate-project.mjs && node scripts/migration-manifest.mjs --check",
+    "test": "node --test tests/game.test.mjs desktop/tests/*.test.mjs && npm run validate && node desktop/stage.mjs && node desktop/validate-stage.mjs",
+    "test:browser": "WRONG_FLOOR_SMOKE_ONLY=1 node tests/browser-smoke.mjs",
+    "review:full": "WRONG_FLOOR_FULL_RUN=1 WRONG_FLOOR_REVIEW_DIR=_review/wrong-floor node tests/browser-smoke.mjs"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
