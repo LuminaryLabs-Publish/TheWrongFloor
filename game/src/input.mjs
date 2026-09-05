@@ -2,13 +2,13 @@ export function createInput(canvas, callbacks = {}) {
   const abort = new AbortController();
   const listen = (target, name, fn, options = {}) => target?.addEventListener(name, fn, { ...options, signal: abort.signal });
   const keys = new Set();
-  let menu = true, pointerClose = false, drag = null, dx = 0, dy = 0;
+  let menu = true, pointerClose = false, drag = null, dx = 0, dy = 0, closeArmed=false;
   let settings = {}, oldButtons = [], lastMenu = 0;
   const holdButton = document.getElementById('hold-close');
   const typing = target => target?.matches?.('input:not([type=range]):not([type=checkbox]),textarea');
   const binding = name => settings.bindings?.[name] ?? { close: 'Space', pause: 'Escape', recenter: 'Enter' }[name];
 
-  function reset() { keys.clear(); pointerClose = false; drag = null; dx = 0; dy = 0; holdButton?.classList.remove('held'); }
+  function reset() { keys.clear(); pointerClose = false; closeArmed=false; drag = null; dx = 0; dy = 0; holdButton?.classList.remove('held'); }
   listen(window, 'keydown', event => {
     if (typing(event.target)) return;
     if (menu) {
@@ -65,7 +65,8 @@ export function createInput(canvas, callbacks = {}) {
     const lookX = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0) + axis(pad?.axes[0]) + dx * .07;
     const lookY = (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) - (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) + axis(pad?.axes[1]) + dy * .07;
     dx = 0; dy = 0;
-    return { close: !menu && (keys.has(binding('close')) || pointerClose || Boolean(buttons[0])), lookX: menu ? 0 : Math.max(-3, Math.min(3, lookX)), lookY: menu ? 0 : Math.max(-3, Math.min(3, lookY)) };
+    const requestedClose=keys.has(binding('close'))||pointerClose||Boolean(buttons[0]);if(!requestedClose)closeArmed=true;
+    return { close: !menu && closeArmed && requestedClose, lookX: menu ? 0 : Math.max(-3, Math.min(3, lookX)), lookY: menu ? 0 : Math.max(-3, Math.min(3, lookY)) };
   }
   return { poll, reset, setMenu(value) { if (menu !== value) reset(); menu = Boolean(value); }, dispose() { reset(); abort.abort(); } };
 }

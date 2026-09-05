@@ -1,5 +1,5 @@
 // Recorded samples own every scare cue. This module only supplies subtle elevator machinery.
-export function createProceduralAudio({ context: ctx, ambienceBus }) {
+export function createProceduralAudio({ context: ctx, ambienceBus, getSettings=()=>({}) }) {
   const nodes = new Set();
   let disposed = false;
   const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
@@ -21,8 +21,9 @@ export function createProceduralAudio({ context: ctx, ambienceBus }) {
   function update(snapshot = {}) {
     const travel = snapshot.phase === 'travel';
     const movingDoor = snapshot.phase === 'opening' || snapshot.phase === 'closing';
-    smooth(motorGain.gain, travel ? 0.012 : movingDoor ? 0.009 : 0.003, 0.25);
-    motorFilter.frequency.setTargetAtTime(travel ? 210 : movingDoor ? 280 : 130, ctx.currentTime, 0.25);
+    const prying=snapshot.mode==='lobby'&&snapshot.phase==='pry'&&!getSettings().softScares;
+    smooth(motorGain.gain, travel ? 0.012 : movingDoor ? 0.009 : prying ? .014 : 0.003, 0.25);
+    motorFilter.frequency.setTargetAtTime(travel ? 210 : movingDoor ? 280 : prying ? 390 : 130, ctx.currentTime, 0.25);
   }
   function event() {}
   function dispose() {

@@ -2,6 +2,7 @@ import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import {moduleReferences} from '../scripts/module-references.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const app = path.join(here, '.generated/app');
 const root = path.join(app, '_game');
@@ -14,9 +15,7 @@ for (const file of manifest.files) {
   if (bytes.length !== file.bytes || createHash('sha256').update(bytes).digest('hex') !== file.sha256) failures.push('Hash mismatch: ' + file.path);
   if (!/\.(m?js|html|css)$/.test(file.path)) continue;
   const source = bytes.toString('utf8');
-  const expression = /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+|\bnew\s+URL\s*\(\s*)['"]([^'"]+)['"]/g;
-  for (const match of source.matchAll(expression)) {
-    const specifier = match[1];
+  for (const specifier of /\.m?js$/.test(file.path)?moduleReferences(source):[]) {
     if (!specifier.startsWith('.')) {
       failures.push('Non-local runtime module: ' + file.path + ' -> ' + specifier);
       continue;

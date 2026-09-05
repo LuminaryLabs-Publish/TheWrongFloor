@@ -8,6 +8,7 @@
   <title>Wrong Floor</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%23101310'/%3E%3Cpath d='M14 12h15v40H14zM35 12h15v40H35z' fill='%23ea754f'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./floor-30/menu.css">
 </head>
 <body>
   <main id="game" aria-label="Wrong Floor horror game">
@@ -22,7 +23,7 @@
     <section id="title-screen" class="screen title-screen" aria-labelledby="game-title">
       <div class="masthead"><span>THE NIGHT SHIFT COLLECTION</span><span>NO. 001 · WRONG FLOOR</span></div>
       <div class="title-content"><p class="eyebrow copper">An observation horror game</p><h1 id="game-title">WRONG<br><em>FLOOR</em><span class="title-dot">.</span></h1><p class="pitch">Thirty floors. Five minutes.<br>Do not let them inside.</p>
-        <div class="title-actions"><button id="play-button" class="primary" data-action="play">Begin descent <span>↓</span></button><button data-action="practice">Learn the rules</button><button data-action="settings">Settings</button></div>
+        <div class="title-actions"><button id="play-button" class="primary" data-action="play" aria-label="Hold Space or this button for 1.5 seconds to descend">Hold Space to descend</button><button data-action="practice">Learn the rules</button><button data-action="settings">Settings</button></div>
         <details class="seed-details"><summary>Choose a descent</summary><label for="seed-input">Seed <span>(optional)</span></label><input id="seed-input" maxlength="64" autocomplete="off" placeholder="A different journey each time"></details>
       </div>
       <footer class="title-footer"><span>HEADPHONES RECOMMENDED</span><p>Contains unsettling figures, sudden sounds and scares.<br>Reduced effects and assisted timing available in Settings.</p><span id="load-status" role="status">PREPARING ELEVATOR</span></footer>

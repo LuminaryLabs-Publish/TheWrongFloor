@@ -7,8 +7,11 @@
   <meta name="description" content="Wrong Floor — a five-minute first-person observation-horror vertical slice by Luminary Labs.">
   <title>Wrong Floor — Development Vertical Slice</title>
   <link rel="stylesheet" href="./site.css">
+  <style>html,body{margin:0;width:100%;height:100dvh;overflow:hidden}body>main{display:none}</style>
 </head>
 <body>
+  <iframe id="lobby-frame" title="Wrong Floor" src="./game/" allow="autoplay; fullscreen; gamepad" style="position:fixed;inset:0;width:100%;height:100dvh;border:0;z-index:2"></iframe>
+  <script>document.getElementById('lobby-frame').addEventListener('load',function(){this.contentWindow.focus();});</script>
   <main>
     <section class="hero" aria-labelledby="title">
       <img src="./game/cover.webp" alt="Wrong Floor concept artwork: a long hand reaching through tarnished elevator doors">

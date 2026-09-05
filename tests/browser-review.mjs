@@ -124,7 +124,14 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await screenshot('00-title.png');
 
     // This uses trusted browser input, not the deterministic review controls.
-    await click('#play-button');
+    await key('Space',true);
+    await delay(250);
+    await key('Space',false);
+    await wait('__wrongFloor.lobby().holdProgress === 0');
+    assert.equal(await run('__wrongFloor.snapshot().mode'),'title','short hold does not start');
+    await key('Space',true);
+    await wait('__wrongFloor.lobby().accepted',30000);
+    await key('Space',false);
     await wait('__wrongFloor.snapshot().mode === "running" && __wrongFloor.snapshot().roundTime > 1.0', 60000);
     const beforeClose = await run('__wrongFloor.snapshot()');
     assert.equal(beforeClose.round.danger, false, 'first floor establishes a safe baseline');
@@ -135,7 +142,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     const afterClose = await run('__wrongFloor.snapshot()');
     assert.equal(afterClose.outcome, 'false-alarm');
     assert.equal(afterClose.door.openness, 0);
-    interactions.push({ action: 'Mouse Start, real Space hold and release', before: beforeClose, after: afterClose });
+    interactions.push({ action: 'Hold Space entry, real Space closure and release', before: beforeClose, after: afterClose });
     await tap('Escape');
     await wait('__wrongFloor.snapshot().mode === "paused"');
     const paused = await run('__wrongFloor.snapshot()');

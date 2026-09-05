@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { access, readFile, readdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import {moduleReferences} from './module-references.mjs';
 
 const root = process.cwd();
 const game = path.join(root, 'game');
@@ -33,9 +34,7 @@ async function scan(directory) {
     if (entry.isDirectory()) { await scan(absolute); continue; }
     if (!/\.(?:m?js|html|css)$/.test(entry.name)) continue;
     const source = await readFile(absolute, 'utf8');
-    const imports = /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+|\bnew\s+URL\s*\(\s*)['"]([^'"]+)['"]/g;
-    for (const match of source.matchAll(imports)) {
-      const specifier = match[1];
+    for (const specifier of /\.m?js$/.test(entry.name)?moduleReferences(source):[]) {
       if (!specifier.startsWith('.')) throw new Error(`Non-local runtime import: ${path.relative(root, absolute)} -> ${specifier}`);
       const resolved = path.resolve(path.dirname(absolute), specifier);
       if (resolved !== game && !resolved.startsWith(`${game}${path.sep}`)) throw new Error(`Runtime import escapes game: ${specifier}`);

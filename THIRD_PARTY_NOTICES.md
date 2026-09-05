@@ -8,6 +8,7 @@ Wrong Floor bundles the following third-party or separately licensed code for of
 - License: MIT
 - License file: `game/vendor/three/LICENSE`
 - Source: https://github.com/mrdoob/three.js
+- Floor 30 bundles GLTFLoader and BufferGeometryUtils from `three@0.165.0`, with imports redirected to the local r165 module. The existing MIT notice applies. Its game-local procedural kit uses the bundled NexusFactory-Kits foundations; it is not a new shared kit release.
 
 ## NexusFactory-Kits modules
 

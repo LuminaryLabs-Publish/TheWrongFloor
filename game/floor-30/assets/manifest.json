@@ -1,0 +1,56 @@
+{
+  "seed": "floor30-001",
+  "synthetic": true,
+  "factorySHA256": "10d27ca6c7322f3078eefb27f7effaea7bfccf42afac75a6dcf1053b4198f5bc",
+  "files": [
+    {
+      "path": "architecture.glb",
+      "bytes": 3025260,
+      "sha256": "b192a472a25ac262d7784d3513737c900cefd441f026dde86e0bda1738c84bee",
+      "artifact": "sha256:0e740ee87e1ea4e4761af5e8e22579ed0c49770261dfe88903d84d938111e745",
+      "triangles": 25756
+    },
+    {
+      "path": "door-left.glb",
+      "bytes": 280820,
+      "sha256": "de91d2d872fb98a22874457da1fb6132613e55ed1357cb625af8cf0dda18fd1b",
+      "artifact": "sha256:3ac20752ea476d4f76ae27c5f2ee5a7c8b14725acd4347225827238d3e90aa99",
+      "triangles": 752
+    },
+    {
+      "path": "door-right.glb",
+      "bytes": 280824,
+      "sha256": "64217f99ea0b3f24eca4bd14475212ba0251b4254ebeda28b2f5ee9746eca765",
+      "artifact": "sha256:a0e732b98257e44e0589d1ba88ffb2f2cd30cef1bb15f678feb0384516729180",
+      "triangles": 752
+    },
+    {
+      "path": "seating.glb",
+      "bytes": 389380,
+      "sha256": "dcbb74ab96e48dfa4398b6977b6c7603671bac03b97e7452243ea354a414e542",
+      "artifact": "sha256:c96101552cdc5c32d02c6406c7760ab102096a5ebebff41257c18557c1bf9202",
+      "triangles": 3772
+    },
+    {
+      "path": "reception.glb",
+      "bytes": 842108,
+      "sha256": "4ff5c1c4bd32591d6e19356f2dda9e57e2e9f11074758ec4e77669a9ca645a5f",
+      "artifact": "sha256:c801f32da79c5890c8250446f8a521592e8073de5da92a84e8265bb2d7154494",
+      "triangles": 5704
+    },
+    {
+      "path": "fixtures.glb",
+      "bytes": 318428,
+      "sha256": "3ff014cd33a52ff0883d553c69b84a312295c2de219c346a6031a2181b2598e3",
+      "artifact": "sha256:6237465d6091e2f560527091c71980acc2b9c42f10fd8e769367927a6be6a262",
+      "triangles": 3012
+    },
+    {
+      "path": "claw.glb",
+      "bytes": 258316,
+      "sha256": "51a2f724fcd24bb2ebd2e2cf78036b2c27d08411ab612bd06ae852f3bb97feab",
+      "artifact": "sha256:78a0ac819e9c35dcb53acb1db9e1bede20fd2ab7c575065992f3dc591a51ae73",
+      "triangles": 1872
+    }
+  ]
+}
