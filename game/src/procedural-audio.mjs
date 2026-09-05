@@ -71,20 +71,10 @@ export function createProceduralAudio({ context: ctx, ambienceBus, effectsBus, g
     source.start(start); source.stop(start + duration + 0.04);
   }
 
-  function metallicImpact(strength = 1, pan = 0) {
-    tone({ frequency: 88, endFrequency: 33, duration: 0.48, volume: 0.25 * strength, pan });
-    for (const [frequency, volume, duration] of [[211,0.08,0.62],[487,0.035,0.31],[933,0.018,0.19]]) {
-      tone({ frequency, endFrequency: frequency * 0.94, duration, volume: volume * strength, type: 'triangle', pan });
-    }
-    tone({ noise: true, filter: 1100, duration: 0.17, volume: 0.09 * strength, pan });
-  }
-
-  function voice(entity = 'guest', intensity = 1) {
-    const low = { guest:83, tall:49, ceiling:166, porter:65, shadow:39, mannequin:113 }[entity] ?? 79;
-    const strength = intensity * (getSettings().softScares ? 0.55 : 1);
-    tone({ frequency: low, endFrequency: low * 0.55, duration: 1.25, volume: 0.12 * strength, type: 'sawtooth', filter: 480, attack: 0.18 });
-    tone({ frequency: low * 1.031, endFrequency: low * 0.67, duration: 1.06, volume: 0.065 * strength, type: 'triangle', filter: 780, delay: 0.09, pan: 0.22, attack: 0.22 });
-    tone({ noise: true, filter: 960, filterType: 'bandpass', duration: 1.3, volume: 0.14 * strength, pan: -0.18, attack: 0.17 });
+  function mechanicalThud(strength = 1) {
+    const scale = getSettings().softScares ? 0.62 : 1;
+    tone({ frequency: 72, endFrequency: 48, duration: 0.32, volume: 0.055 * strength * scale, type: 'sine', filter: 260, attack: 0.015 });
+    tone({ noise: true, filter: 220, filterType: 'lowpass', duration: 0.11, volume: 0.018 * strength * scale });
   }
 
   function update(snapshot = {}) {
@@ -131,22 +121,19 @@ export function createProceduralAudio({ context: ctx, ambienceBus, effectsBus, g
         tone({ noise:true,filter:520,filterType:'bandpass',duration:1.4,volume:settings.softScares?0.035:0.075,attack:0.18 });
         break;
       case 'sealed':
-        metallicImpact(0.35);
-        if ((entry.roundIndex ?? 0) % 3 !== 1) {
-          tone({ frequency:64,endFrequency:30,duration:0.5,volume:0.18,delay:0.35 });
-          tone({ noise:true,filter:1700,duration:0.12,volume:0.12,delay:0.35 });
-        }
+        mechanicalThud(1);
         break;
       case 'accepted': tone({ frequency:382,duration:0.24,volume:0.025 }); break;
       case 'false-alarm':
         tone({ frequency:130,endFrequency:120,duration:0.38,volume:0.07,type:'triangle' });
         tone({ frequency:130,endFrequency:120,duration:0.38,volume:0.07,type:'triangle',delay:0.47 });
         break;
-      case 'clue': voice(data.entity, 0.45); break;
+      case 'clue':
+        break;
       case 'failure':
-        metallicImpact(settings.softScares ? 0.5 : 1);
-        if (!String(data.reason).includes('alarm') && data.reason !== 'shutdown') voice(data.entity, 1.5);
-        else tone({ frequency:180,endFrequency:30,duration:1.5,volume:0.11,type:'triangle' });
+        if (String(data.reason).includes('alarm') || data.reason === 'shutdown') {
+          tone({ frequency: 120, endFrequency: 46, duration: 0.9, volume: settings.softScares ? 0.035 : 0.055, type: 'sine', filter: 260 });
+        }
         break;
       case 'escape':
         [261.63,329.63,392].forEach((frequency, i) => tone({ frequency,duration:2,volume:0.025,delay:i*0.35,attack:0.18 }));

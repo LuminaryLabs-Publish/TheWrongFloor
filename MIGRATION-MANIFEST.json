@@ -189,8 +189,8 @@
     },
     {
       "path": "game/src/procedural-audio.mjs",
-      "bytes": 10082,
-      "sha256": "b6e67058a223cbdf45de6ba9eb95f097b0fb46cf21aa8177295c9a3c25022ba3"
+      "bytes": 9023,
+      "sha256": "ddf12f3c5310fb9ec40b61750c64b30c31b5d5b4082fb9d5abcc3aa84e134da9"
     },
     {
       "path": "game/src/sample-audio.mjs",
