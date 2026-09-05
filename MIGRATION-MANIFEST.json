@@ -98,19 +98,154 @@
       "sha256": "293aa226f6bd8a51ddfc2f553f63f5702bca8b9fab6c4e9233b4efaba6a0f88c"
     },
     {
-      "path": "game/assets/audio/jumpscare.ogg",
-      "bytes": 1300,
-      "sha256": "681f0af7a911806e3c19d20dab4b40be8ab08b2291e44736f5cb2bde71686f2b"
-    },
-    {
       "path": "game/assets/audio/README.md",
-      "bytes": 624,
-      "sha256": "012f51ceedf7f2dd089be18b4057be2ec21fcfb619064308e46ff25386607887"
+      "bytes": 1419,
+      "sha256": "713ecca646972464028058b92bfb67e1eb35ee093f91b801aff24da1dc37ab19"
     },
     {
-      "path": "game/assets/audio/scared-breathing.ogg",
-      "bytes": 1150,
-      "sha256": "beb57a4e009d6e0bb6e044c025a4a37fd015c2886d9039797db355f9bdf9984e"
+      "path": "game/assets/audio/runtime/bones/000.b64",
+      "bytes": 1500,
+      "sha256": "7ecf760e8f02e496eedcb3114dee067795acfdd385e367fd5fdd152fdf947b65"
+    },
+    {
+      "path": "game/assets/audio/runtime/bones/001.b64",
+      "bytes": 1500,
+      "sha256": "96f2e75dc20c43f566c823bda0b265e62ad9f5e396a58429b8edfd4f7ac3bf06"
+    },
+    {
+      "path": "game/assets/audio/runtime/bones/002.b64",
+      "bytes": 1204,
+      "sha256": "25e13114d28d101e29c8c52f8f3c1aefda694d1092dc18118253f59e7d1a5a92"
+    },
+    {
+      "path": "game/assets/audio/runtime/heartbeat/000.b64",
+      "bytes": 1500,
+      "sha256": "a498e938bd4bf1585562d95049671514de525d35e9edb9506ebe5964694b12e9"
+    },
+    {
+      "path": "game/assets/audio/runtime/heartbeat/001.b64",
+      "bytes": 1500,
+      "sha256": "4ddd26b7b34683547320367f03de8d34efc485108590605db8b69c42cee124ff"
+    },
+    {
+      "path": "game/assets/audio/runtime/heartbeat/002.b64",
+      "bytes": 1500,
+      "sha256": "676685706feab8abec43de1c88f1f844382ea14354437a93f1b3f441480f6754"
+    },
+    {
+      "path": "game/assets/audio/runtime/heartbeat/003.b64",
+      "bytes": 348,
+      "sha256": "6160e70d496e1415d32c7ca42922ed0303cc23f502fc3bbaedd2e028e8952552"
+    },
+    {
+      "path": "game/assets/audio/runtime/jumpscare/000.b64",
+      "bytes": 1500,
+      "sha256": "d0f2e9733deb45445474301ee7e01e306578093c3232857b6d63f3ca74405900"
+    },
+    {
+      "path": "game/assets/audio/runtime/jumpscare/001.b64",
+      "bytes": 1500,
+      "sha256": "868c274df8ebc8d3bbf588b6663b677e840012c287359057f9bc652f7efaeb69"
+    },
+    {
+      "path": "game/assets/audio/runtime/jumpscare/002.b64",
+      "bytes": 1500,
+      "sha256": "9c34f8db73326909e540ecca8815a8f228c8713681eebb396330b8a174cb8b5c"
+    },
+    {
+      "path": "game/assets/audio/runtime/jumpscare/003.b64",
+      "bytes": 1244,
+      "sha256": "da2611ada6c15bc216cced0bab4c7d95501d0b7e3351b5561de891489009c20f"
+    },
+    {
+      "path": "game/assets/audio/runtime/music-box/000.b64",
+      "bytes": 1500,
+      "sha256": "b8822fc82d7bb8db1f8cb78c4c024329e2e9b1f20360de3cdd7743adc4b48fd6"
+    },
+    {
+      "path": "game/assets/audio/runtime/music-box/001.b64",
+      "bytes": 1500,
+      "sha256": "bed706909296ef27bea3fc164db1f85f566d90191445026ceac55346eb3d457b"
+    },
+    {
+      "path": "game/assets/audio/runtime/music-box/002.b64",
+      "bytes": 1500,
+      "sha256": "42e18d3c33a042869c491bdf9029c51b282dfa529a9f5260396ce4b23d9e5fe4"
+    },
+    {
+      "path": "game/assets/audio/runtime/music-box/003.b64",
+      "bytes": 1456,
+      "sha256": "3ffacfbfe9cdb994ff5bfbeeefbf3fa0d17c15affcf47d575da22ce853ebab51"
+    },
+    {
+      "path": "game/assets/audio/runtime/scared-breathing/000.b64",
+      "bytes": 1500,
+      "sha256": "5dc30190002ceb2cebca69e689695dbeb59cd3ad656b6f5a3236ac8779e0f8ff"
+    },
+    {
+      "path": "game/assets/audio/runtime/scared-breathing/001.b64",
+      "bytes": 1500,
+      "sha256": "00b47ca1e4713a91d278b7dabf828b48936b97723b3c9f0ef3872972400745fe"
+    },
+    {
+      "path": "game/assets/audio/runtime/scared-breathing/002.b64",
+      "bytes": 1148,
+      "sha256": "63c9dfb8c26a1465154af3e58ab0bc03559e2924158d1e380c355fb550911d9e"
+    },
+    {
+      "path": "game/assets/audio/runtime/scream/000.b64",
+      "bytes": 1500,
+      "sha256": "302f600723ab6b85455f8d371035f0350d9fb881eb700434e98fdeca59f86bad"
+    },
+    {
+      "path": "game/assets/audio/runtime/scream/001.b64",
+      "bytes": 1500,
+      "sha256": "6fac77280da064eb83632e12fdb30ecc78371f83673ed0515b8506120922d017"
+    },
+    {
+      "path": "game/assets/audio/runtime/scream/002.b64",
+      "bytes": 576,
+      "sha256": "342b00de339dd07813f961221427d0cef208e156e6960d139455de7ee159953c"
+    },
+    {
+      "path": "game/assets/audio/runtime/shaky-breaths/000.b64",
+      "bytes": 1500,
+      "sha256": "b67b2d560e09e60c94413826e946b961a27e55372aa54e545402427b9bcc96a6"
+    },
+    {
+      "path": "game/assets/audio/runtime/shaky-breaths/001.b64",
+      "bytes": 1500,
+      "sha256": "e94a8570146922dae509f2add456e41811ef95fd2854cda30457d5ea48896546"
+    },
+    {
+      "path": "game/assets/audio/runtime/shaky-breaths/002.b64",
+      "bytes": 1500,
+      "sha256": "8964518bbc20a82e62490e2ca5b3f9aaa5e37d3ef94ea46c1b90953c29fc1194"
+    },
+    {
+      "path": "game/assets/audio/runtime/shaky-breaths/003.b64",
+      "bytes": 348,
+      "sha256": "8ef4fbc16d445dff85445ab5f307b14e1cba38b3f36c2c328d371cdd46a4c019"
+    },
+    {
+      "path": "game/assets/audio/runtime/somebody-please/000.b64",
+      "bytes": 1500,
+      "sha256": "bb8c8ca9b3f44ccc8b03ec43b7a0325ce7ea06da70261bb5255af4fae87281f9"
+    },
+    {
+      "path": "game/assets/audio/runtime/somebody-please/001.b64",
+      "bytes": 1500,
+      "sha256": "fc517292379a593d54d4422260e2558b033f396df72d3f9dafbd73059a92c504"
+    },
+    {
+      "path": "game/assets/audio/runtime/somebody-please/002.b64",
+      "bytes": 1500,
+      "sha256": "96eba54b489875fc3b400f8be542d8a83597d4053571fd83f879ebb01be4daef"
+    },
+    {
+      "path": "game/assets/audio/runtime/somebody-please/003.b64",
+      "bytes": 348,
+      "sha256": "2096b63b0752fe6de0144a171d85f43705bc187677a9fb7ff9f05d7e32b69069"
     },
     {
       "path": "game/content/difficulty.json",
@@ -139,8 +274,8 @@
     },
     {
       "path": "game/src/audio-config.mjs",
-      "bytes": 1853,
-      "sha256": "09085a6e9238ae7a2d64ad9d733b49602fabddb2e08fce7d03c904a77f084101"
+      "bytes": 2384,
+      "sha256": "d8eb2dbf3720547f759b483f6faac852a5aaf741b36f5bb7dc6bf8bb12817cf1"
     },
     {
       "path": "game/src/audio.mjs",
@@ -179,13 +314,13 @@
     },
     {
       "path": "game/src/procedural-audio.mjs",
-      "bytes": 9023,
-      "sha256": "ddf12f3c5310fb9ec40b61750c64b30c31b5d5b4082fb9d5abcc3aa84e134da9"
+      "bytes": 1936,
+      "sha256": "31770ed86ed7ad2c195718fad5a1cc1cdcb3342a8077a4ca59d8911a44664fac"
     },
     {
       "path": "game/src/sample-audio.mjs",
-      "bytes": 4111,
-      "sha256": "ba27a82d21a4f3785500b729dc40b1d48e7eb116e2a8052d6962547483b786b0"
+      "bytes": 6236,
+      "sha256": "dded19dad6c6a798105092361fa41c0ce0fb34dc9aaf132a6f51c4a41dc43802"
     },
     {
       "path": "game/src/scene.mjs",
