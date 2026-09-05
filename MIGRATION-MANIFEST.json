@@ -158,6 +158,16 @@
       "sha256": "da2611ada6c15bc216cced0bab4c7d95501d0b7e3351b5561de891489009c20f"
     },
     {
+      "path": "game/assets/audio/runtime/music-box-clean.ogg",
+      "bytes": 4160,
+      "sha256": "71efb7b0b58c37ef7bb00ff5494493574bca1a3ee8c52b8039b88d080b27fa1b"
+    },
+    {
+      "path": "game/assets/audio/runtime/music-box-new/000.b64",
+      "bytes": 19999,
+      "sha256": "8e614d8115848095ac5c396c9e9177133c581ae97c89955ce9ca045f830b2e07"
+    },
+    {
       "path": "game/assets/audio/runtime/music-box/000.b64",
       "bytes": 2000,
       "sha256": "89823da3b44e0c05210f169f1c483674cd9c148cd9f7cd7c02bda2f58545c15d"
@@ -294,8 +304,8 @@
     },
     {
       "path": "game/src/audio-config.mjs",
-      "bytes": 2387,
-      "sha256": "1badbe1011bcbb13d42081ff63a4a4c554186ba0565d3bb889df7d6ff4ac2487"
+      "bytes": 2447,
+      "sha256": "135a8fc600c4363da121d1fc47763513663bbc9eb61b90bc1dc811fad4673d5a"
     },
     {
       "path": "game/src/audio.mjs",
@@ -339,8 +349,8 @@
     },
     {
       "path": "game/src/sample-audio.mjs",
-      "bytes": 5706,
-      "sha256": "8bcf300592c74be450209849ad5127fa1d35855b66ba2217a53bf68b1d50c5f0"
+      "bytes": 6001,
+      "sha256": "bc2feddf6b20a34cc208164d30c28a3ab0f695c60f7c0cff99e31cf0d977d1ee"
     },
     {
       "path": "game/src/scene.mjs",
