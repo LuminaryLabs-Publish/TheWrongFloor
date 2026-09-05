@@ -6,7 +6,7 @@ function encodedAsset(name, count) {
 }
 
 export const AUDIO_ASSETS = Object.freeze({
-  musicBox: encodedAsset('music-box', 4),
+  musicBox: encodedAsset('music-box', 8),
   scaredBreathing: encodedAsset('scared-breathing', 3),
   shakyBreaths: encodedAsset('shaky-breaths', 4),
   heartbeat: encodedAsset('heartbeat', 4),
@@ -17,10 +17,10 @@ export const AUDIO_ASSETS = Object.freeze({
 });
 
 export const SAMPLE_LEVELS = Object.freeze({
-  musicBox: 2.1,
-  scaredBreathing: 0.58,
-  shakyBreaths: 0.62,
-  heartbeat: 0.72,
+  musicBox: 1.65,
+  scaredBreathing: 0.46,
+  shakyBreaths: 0.5,
+  heartbeat: 0.5,
   bones: 0.42,
   somebodyPlease: 0.34,
   jumpscare: 1.0,
@@ -29,7 +29,10 @@ export const SAMPLE_LEVELS = Object.freeze({
 
 export function clamp01(value) { return Math.max(0, Math.min(1, Number(value) || 0)); }
 export function smoothstep(value) { const t = clamp01(value); return t * t * (3 - 2 * t); }
-export function musicBoxGain(openness) { const open = smoothstep(openness); return SAMPLE_LEVELS.musicBox * (0.16 + open * 0.84); }
+export function musicBoxGain(openness) {
+  const open = smoothstep(openness);
+  return SAMPLE_LEVELS.musicBox * (0.08 + open * 0.92);
+}
 export function doorSampleMix(openness) {
   const open = smoothstep(openness), gain = musicBoxGain(openness);
   return { closedHorror: 1 - open, openDoorMusicBox: gain, musicBox: gain };
