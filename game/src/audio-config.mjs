@@ -9,7 +9,7 @@ export const AUDIO_ASSETS = Object.freeze({
 
 export const SAMPLE_LEVELS = Object.freeze({
   closedHorror: 1.55,
-  openDoorMusicBox: 1.85,
+  openDoorMusicBox: 2.25,
   scaredBreathing: 0.72,
   jumpscare: 1.16,
 });

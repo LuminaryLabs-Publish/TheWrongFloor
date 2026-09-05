@@ -1,3 +1,5 @@
+import { monsterVisibleForAudio } from './audio-config.mjs';
+
 export function createProceduralAudio({ context: ctx, ambienceBus, effectsBus, getSettings }) {
   const nodes = new Set();
   const voices = new Set();
@@ -43,7 +45,7 @@ export function createProceduralAudio({ context: ctx, ambienceBus, effectsBus, g
     oscillator.connect(gain); gain.connect(tensionGain); oscillator.start(); nodes.add(oscillator); nodes.add(gain);
   }
 
-  const heartbeatGain = ctx.createGain(); heartbeatGain.gain.value = 1; heartbeatGain.connect(effectsBus); nodes.add(heartbeatGain);
+  const heartbeatGain = ctx.createGain(); heartbeatGain.gain.value = 1.18; heartbeatGain.connect(effectsBus); nodes.add(heartbeatGain);
 
   function tone({ frequency = 100, endFrequency = frequency, duration = 0.3, volume = 0.1, delay = 0, type = 'sine', pan = 0, noise = false, filter = 1000, filterType = 'lowpass', destination = effectsBus, attack = 0.01 } = {}) {
     if (ctx.state !== 'running' || disposed) return;
@@ -95,13 +97,20 @@ export function createProceduralAudio({ context: ctx, ambienceBus, effectsBus, g
     doorFilter.frequency.setTargetAtTime(snapshot.phase === 'closing' ? 420 : 760, ctx.currentTime, 0.12);
 
     const pressure = Math.max(0, Math.min(1, snapshot.threatProgress ?? 0));
-    const monsterVisible = snapshot.mode === 'running' && snapshot.round?.danger && snapshot.clueVisible && !snapshot.resolved;
-    smooth(tensionGain.gain, monsterVisible ? 0.07 + pressure * 0.23 : 0, 0.18);
-    const period = 1.2 - pressure * 0.55;
+    const monsterVisible = monsterVisibleForAudio(snapshot);
+    const panicScale = getSettings().softScares ? 0.58 : 1;
+    smooth(tensionGain.gain, monsterVisible ? (0.09 + pressure * 0.28) * panicScale : 0, 0.18);
+    const period = 1.05 - pressure * 0.58;
     if (monsterVisible && ctx.currentTime - lastHeartbeat > period) {
       lastHeartbeat = ctx.currentTime;
-      tone({ frequency: 59, endFrequency: 33, duration: 0.16, volume: 0.065 + pressure * 0.06, destination: heartbeatGain });
-      tone({ frequency: 52, endFrequency: 29, duration: 0.13, volume: 0.04 + pressure * 0.04, delay: 0.18, destination: heartbeatGain });
+      const first = 0.11 + pressure * 0.11;
+      const second = 0.08 + pressure * 0.08;
+      // A low sub-thump plus a stronger 80-110 Hz body keeps the panic beat audible on small speakers.
+      tone({ frequency: 54, endFrequency: 34, duration: 0.16, volume: first * 0.75 * panicScale, destination: heartbeatGain });
+      tone({ frequency: 108, endFrequency: 76, duration: 0.13, volume: first * panicScale, type: 'triangle', filter: 460, destination: heartbeatGain });
+      tone({ noise: true, filter: 1250, filterType: 'bandpass', duration: 0.055, volume: (0.025 + pressure * 0.02) * panicScale, destination: heartbeatGain });
+      tone({ frequency: 48, endFrequency: 31, duration: 0.14, volume: second * 0.62 * panicScale, delay: 0.16, destination: heartbeatGain });
+      tone({ frequency: 92, endFrequency: 62, duration: 0.12, volume: second * panicScale, type: 'triangle', filter: 420, delay: 0.16, destination: heartbeatGain });
     }
   }
 
