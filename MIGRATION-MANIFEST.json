@@ -259,8 +259,8 @@
     },
     {
       "path": "game/vendor/three/three.module.js",
-      "bytes": 1284652,
-      "sha256": "5916c8dfb5f4e3eede312de305345868d4a0a8105383b080c6985565d6e79b46"
+      "bytes": 677814,
+      "sha256": "2a8e342c52d1ea901a7230e8eaaf44d7bb17b182764bf916edf6f5ffdf0801fe"
     },
     {
       "path": "index.html",
