@@ -98,24 +98,14 @@
       "sha256": "293aa226f6bd8a51ddfc2f553f63f5702bca8b9fab6c4e9233b4efaba6a0f88c"
     },
     {
-      "path": "game/assets/audio/closed-horror.ogg",
-      "bytes": 10690,
-      "sha256": "35aaf43691a8396f3ec95442af21e35d2e14c47b2919943098a1cd585d3d79a4"
-    },
-    {
       "path": "game/assets/audio/jumpscare.ogg",
       "bytes": 1300,
       "sha256": "681f0af7a911806e3c19d20dab4b40be8ab08b2291e44736f5cb2bde71686f2b"
     },
     {
-      "path": "game/assets/audio/open-door-music-box.ogg",
-      "bytes": 10466,
-      "sha256": "a8f27688b2349707a6d0fe1e1f0b64b0154ec2851a8550afbd922e7712d4a604"
-    },
-    {
       "path": "game/assets/audio/README.md",
-      "bytes": 818,
-      "sha256": "a4b96fe02bda684f369620498019cfe8ee9964260cda8a366b3b70745a1062ee"
+      "bytes": 624,
+      "sha256": "012f51ceedf7f2dd089be18b4057be2ec21fcfb619064308e46ff25386607887"
     },
     {
       "path": "game/assets/audio/scared-breathing.ogg",
@@ -149,8 +139,8 @@
     },
     {
       "path": "game/src/audio-config.mjs",
-      "bytes": 2021,
-      "sha256": "ca1063bfa61d947a3851268800a7e1ac1381bc41d314099339160887913201b6"
+      "bytes": 1853,
+      "sha256": "09085a6e9238ae7a2d64ad9d733b49602fabddb2e08fce7d03c904a77f084101"
     },
     {
       "path": "game/src/audio.mjs",
@@ -194,8 +184,8 @@
     },
     {
       "path": "game/src/sample-audio.mjs",
-      "bytes": 5189,
-      "sha256": "790a532965cd31bffbc02fc7eda14025b3d84cb37e388c70ab9a49a7156fb8b6"
+      "bytes": 4111,
+      "sha256": "ba27a82d21a4f3785500b729dc40b1d48e7eb116e2a8052d6962547483b786b0"
     },
     {
       "path": "game/src/scene.mjs",

@@ -1,8 +1,9 @@
 # Wrong Floor runtime audio
 
-These are compact web-runtime derivatives from the supplied WAV masters.
+The continuous music/soundscape sample layers have been removed. Ambient elevator sound is now procedural only.
 
-- `closed-horror.ogg` and `open-door-music-box.ogg` use the same active eight-second window from their synchronized masters and have identical 8.0065-second encoded duration. They start on the same `AudioContext` timestamp and loop together while door openness crossfades the mix.
-- `scared-breathing.ogg` is a 3-second breathing excerpt that loops whenever the dangerous entity is actually visible.
-- `jumpscare.ogg` is a 3.5-second impact excerpt from the supplied jumpscare master. It starts at the same threat-progress threshold where the monster's final approach begins; after an intrusion death, the results screen waits until the cue finishes.
-- The unrelated asylum-entrance clip is intentionally excluded.
+The remaining supplied-audio derivatives are event-driven:
+
+- `scared-breathing.ogg` is a 3-second breathing excerpt that loops only while the dangerous entity is actually visible.
+- `jumpscare.ogg` is a 3.5-second impact excerpt from the supplied jumpscare master. It starts at the threat-progress threshold where the monster's final approach begins; after an intrusion death, the results screen waits until the cue finishes.
+- The unrelated asylum-entrance clip remains excluded.

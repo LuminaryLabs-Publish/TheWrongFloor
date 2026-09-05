@@ -1,8 +1,6 @@
 export const APPROACH_PROGRESS = 0.14;
 
 export const AUDIO_ASSETS = Object.freeze({
-  closedHorror: new URL('../assets/audio/closed-horror.ogg', import.meta.url),
-  openDoorMusicBox: new URL('../assets/audio/open-door-music-box.ogg', import.meta.url),
   scaredBreathing: new URL('../assets/audio/scared-breathing.ogg', import.meta.url),
   jumpscare: new URL('../assets/audio/jumpscare.ogg', import.meta.url),
 });

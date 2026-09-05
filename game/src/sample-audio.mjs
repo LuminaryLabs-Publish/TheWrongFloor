@@ -1,11 +1,10 @@
-import { AUDIO_ASSETS, SAMPLE_LEVELS, doorSampleMix, monsterVisibleForAudio } from './audio-config.mjs';
+import { AUDIO_ASSETS, SAMPLE_LEVELS, monsterVisibleForAudio } from './audio-config.mjs';
 
-export function createSampleAudio({ context, ambienceBus, effectsBus, getSettings }) {
+export function createSampleAudio({ context, effectsBus, getSettings }) {
   const buffers = new Map();
   const active = new Map();
   const nodes = new Set();
   let preloadPromise = null;
-  let doorPair = null;
   let breathing = null;
   let disposed = false;
 
@@ -64,14 +63,6 @@ export function createSampleAudio({ context, ambienceBus, effectsBus, getSetting
     return handle;
   }
 
-  function ensureDoorPair() {
-    if (doorPair || !buffers.has('closedHorror') || !buffers.has('openDoorMusicBox') || disposed) return;
-    const when = context.currentTime + 0.035;
-    const closed = createSource('closedHorror', ambienceBus, { loop: true, gain: 0, when });
-    const music = createSource('openDoorMusicBox', ambienceBus, { loop: true, gain: 0, when });
-    if (closed && music) doorPair = { closed, music };
-  }
-
   function setBreathing(enabled) {
     if (enabled && !breathing && buffers.has('scaredBreathing')) {
       breathing = createSource('scaredBreathing', effectsBus, { loop: true, gain: 0 });
@@ -94,16 +85,6 @@ export function createSampleAudio({ context, ambienceBus, effectsBus, getSetting
 
   function update(snapshot = {}) {
     if (disposed) return;
-    ensureDoorPair();
-    const running = snapshot.mode === 'running';
-    const lostIntrusion = snapshot.mode === 'lost' && snapshot.failureReason === 'intrusion';
-    const openness = snapshot.door?.openness ?? 0;
-    const mix = doorSampleMix(openness);
-    const doorEnabled = running || lostIntrusion;
-    if (doorPair) {
-      smooth(doorPair.closed.gain.gain, doorEnabled ? mix.closedHorror : 0, 0.22);
-      smooth(doorPair.music.gain.gain, doorEnabled ? mix.openDoorMusicBox : 0, 0.32);
-    }
     setBreathing(monsterVisibleForAudio(snapshot));
   }
 
@@ -123,7 +104,6 @@ export function createSampleAudio({ context, ambienceBus, effectsBus, getSetting
     breathing?.stop(0.01);
     for (const handle of active.values()) handle.stop(0.01);
     active.clear();
-    if (doorPair) { doorPair.closed.stop(0.01); doorPair.music.stop(0.01); doorPair = null; }
     for (const node of nodes) { try { node.stop?.(); } catch {} try { node.disconnect(); } catch {} }
     nodes.clear(); buffers.clear(); breathing = null;
   }
