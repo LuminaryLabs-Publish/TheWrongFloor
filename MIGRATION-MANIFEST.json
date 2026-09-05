@@ -364,8 +364,8 @@
     },
     {
       "path": "tests/browser-smoke.mjs",
-      "bytes": 6447,
-      "sha256": "30c9bc8c45d52a92b9da3bd5ab3c11a4ee6ecf9d1014fdf3e7cad0408a752377"
+      "bytes": 6689,
+      "sha256": "c2a86e1bfff5d79bb97464c54cb2047feab159698250da4ef38f68987a83b953"
     },
     {
       "path": "tests/game.test.mjs",

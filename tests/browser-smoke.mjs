@@ -93,7 +93,16 @@ try{
   await runWrongFloorBrowserChecks({call,event,evaluate,waitFor,listeners,baseUrl,delay});
 }finally{
   socket.close();
-  if(child.exitCode===null){child.kill('SIGTERM');await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(3000)]);}
-  await rm(profile,{recursive:true,force:true});
+  if(child.exitCode===null){
+    const gracefulExit=new Promise(resolve=>child.once('exit',resolve));
+    child.kill('SIGTERM');
+    await Promise.race([gracefulExit,delay(3000)]);
+    if(child.exitCode===null){
+      const forcedExit=new Promise(resolve=>child.once('exit',resolve));
+      child.kill('SIGKILL');
+      await forcedExit;
+    }
+  }
+  await rm(profile,{recursive:true,force:true,maxRetries:10,retryDelay:100});
   await new Promise(resolve=>server.close(resolve));
 }
