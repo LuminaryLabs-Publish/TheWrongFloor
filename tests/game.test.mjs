@@ -4,6 +4,7 @@ import { createGame } from '../game/src/game.mjs';
 import { createSchedule, validateSchedule, ENCOUNTERS } from '../game/src/director.mjs';
 import { ElevatorDoors } from '../game/src/elevator.mjs';
 import { loadSave, writeSave, recordResult, sanitizeSave, SAVE_KEY } from '../game/src/storage.mjs';
+import { APPROACH_PROGRESS, approachTimeForRound, doorSampleMix } from '../game/src/audio-config.mjs';
 
 function play(game, dt = 1 / 60, strategy = snapshot => snapshot.round.danger && snapshot.clueVisible && snapshot.roundTime >= snapshot.round.clueAt + 0.1) {
   let iterations = 0;
@@ -104,6 +105,32 @@ test('assisted mode grants additional threat response time without lengthening a
   const standard = createSchedule('assist'), assisted = createSchedule('assist', { assisted: true });
   standard.forEach((r, i) => { if (r.danger) assert.ok(Math.abs(assisted[i].arrivalAt - r.arrivalAt - 0.8) < 1e-9); });
   const result = play(createGame({ assisted: true })); assert.equal(result.elapsed, 300); assert.equal(result.mode, 'won');
+});
+
+test('door audio crossfade preserves a quiet synchronized music layer and raises it as doors open', () => {
+  const closed = doorSampleMix(0), half = doorSampleMix(0.5), open = doorSampleMix(1);
+  assert.ok(closed.closedHorror > half.closedHorror && half.closedHorror > open.closedHorror);
+  assert.ok(closed.openDoorMusicBox > 0);
+  assert.ok(open.openDoorMusicBox > half.openDoorMusicBox && half.openDoorMusicBox > closed.openDoorMusicBox);
+});
+
+test('monster approach emits once at the same progress threshold used by the visual advance', () => {
+  const seed = 'approach-event';
+  const firstDanger = createSchedule(seed).findIndex(round => round.danger);
+  const game = createGame({ seed });
+  game.drainEvents();
+  for (let index = 0; index < firstDanger; index++) game.update(10, { close: false });
+  game.drainEvents();
+  const round = game.snapshot().round;
+  const expected = approachTimeForRound(round);
+  assert.equal(expected, round.clueAt + (round.arrivalAt - round.clueAt) * APPROACH_PROGRESS);
+  game.update(expected - 0.001, { close: false });
+  assert.equal(game.drainEvents().some(event => event.type === 'approach'), false);
+  game.update(0.001, { close: false });
+  const approaches = game.drainEvents().filter(event => event.type === 'approach');
+  assert.equal(approaches.length, 1);
+  game.update(0.2, { close: false });
+  assert.equal(game.drainEvents().filter(event => event.type === 'approach').length, 0);
 });
 
 test('corrupt, blocked, future, and malformed saves recover; scores stay separated', () => {

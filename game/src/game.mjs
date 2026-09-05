@@ -1,5 +1,6 @@
 import { createSchedule, validateSchedule, DIFFICULTY } from './director.mjs';
 import { ElevatorDoors, DOOR_TIMING } from './elevator.mjs';
+import { approachTimeForRound } from './audio-config.mjs';
 
 const EPS = 1e-9;
 export function createGame({ seed = 'wrong-floor', assisted = false, practice = false } = {}) {
@@ -9,7 +10,7 @@ export function createGame({ seed = 'wrong-floor', assisted = false, practice = 
   const door = new ElevatorDoors();
   let mode = 'running', elapsed = 0, roundIndex = 0, roundTime = 0;
   let mistakes = 0, score = 0, correct = 0, resolved = false, outcome = null, failureReason = null;
-  let heldPreviously = false, closeActive = false, closeStartedAt = null, opened = false, clueEmitted = false;
+  let heldPreviously = false, closeActive = false, closeStartedAt = null, opened = false, clueEmitted = false, approachEmitted = false;
   const events = [];
   const emit = (type, data = {}) => events.push({ type, elapsed, roundIndex, data });
   const round = () => schedule[roundIndex];
@@ -38,7 +39,7 @@ export function createGame({ seed = 'wrong-floor', assisted = false, practice = 
       emit('escape', { score }); return;
     }
     roundIndex++; roundTime = 0; door.reset(); resolved = false; outcome = null;
-    closeActive = false; closeStartedAt = null; opened = false; clueEmitted = false;
+    closeActive = false; closeStartedAt = null; opened = false; clueEmitted = false; approachEmitted = false;
     emit('arrival', { floor: round().floor, environment: round().environment });
   };
   const update = (dt, input = {}) => {
@@ -60,12 +61,14 @@ export function createGame({ seed = 'wrong-floor', assisted = false, practice = 
       const automaticClose = resolved;
       const closing = automaticClose || closeActive;
       const sealed = resolved && door.openness <= EPS;
+      const approachAt = current.danger ? approachTimeForRound(current) : Infinity;
       let step = Math.min(remaining, 1 / 120, 10 - roundTime);
       const boundaries = [
         opening ? 0.8 - roundTime : Infinity,
         !resolved && current.danger ? current.arrivalAt - roundTime : Infinity,
         !resolved && !current.danger ? current.normalResolveAt - roundTime : Infinity,
         current.danger && !clueEmitted ? current.clueAt - roundTime : Infinity,
+        current.danger && !approachEmitted ? approachAt - roundTime : Infinity,
         door.timeToBoundary({ opening, close: closing, sealed }),
       ];
       for (const boundary of boundaries) if (boundary > EPS) step = Math.min(step, boundary);
@@ -73,6 +76,10 @@ export function createGame({ seed = 'wrong-floor', assisted = false, practice = 
       roundTime += step; elapsed += step; remaining -= step;
       if (!opened && roundTime >= 0.8 - EPS) { opened = true; door.openness = 1; emit('opened'); }
       if (current.danger && !clueEmitted && roundTime >= current.clueAt - EPS) { clueEmitted = true; emit('clue', { entity: current.entity, variant: current.variant }); }
+      if (current.danger && !approachEmitted && roundTime >= approachAt - EPS) {
+        approachEmitted = true;
+        emit('approach', { entity: current.entity, variant: current.variant, secondsToImpact: Math.max(0, current.arrivalAt - roundTime) });
+      }
       // Process sealing before arrival so exact deadline ties favor the player.
       if (opened && !resolved && closeActive && door.openness <= EPS) {
         door.openness = 0;

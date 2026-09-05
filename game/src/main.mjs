@@ -19,7 +19,7 @@ function resume(){if(!game)return;game.resume();input.reset();audio.resume();pre
 function title(){startToken++;loading=false;game=null;preview=null;terminalAt=null;manual=false;input.reset();audio.pause();ui.show('title');ui.setReady(true);}
 async function start({seed,practice=false,manual:manualClock=false}={}){
   const token=++startToken;loading=true;terminalAt=null;preview=null;manual=manualClock;
-  input.reset();audio.unlock();audio.setSettings(ui.getSettings());
+  input.reset();await audio.unlock();audio.setSettings(ui.getSettings());
   ui.show('title');ui.setReady(false,'BUILDING YOUR DESCENT');scene.clearPrepared();
   const settings=ui.getSettings(),chosen=String(seed||randomSeed()).slice(0,64);
   try{
@@ -39,7 +39,8 @@ function tick(now){if(disposed)return;frame=requestAnimationFrame(tick);const dt
   if(game&&!manual&&!preview&&!loading&&game.snapshot().mode==='running'){game.update(dt,controls);processEvents();}
   const state=preview??(loading?titleState:game?.snapshot()??titleState);
   scene.render(state,state.mode==='paused'?0:dt,ui.getScreen()==='playing'?controls:{},settings);ui.update(state);audio.update(state);
-  if(terminalAt&&!manual&&performance.now()-terminalAt>(settings.softScares?700:1600)){terminalAt=null;finish();}
+  const terminalAudioActive=state.mode==='lost'&&state.failureReason==='intrusion'&&audio.isTerminalCuePlaying();
+  if(terminalAt&&!manual&&!terminalAudioActive&&performance.now()-terminalAt>(settings.softScares?700:1600)){terminalAt=null;finish();}
 }
 function dispose(){if(disposed)return;disposed=true;startToken++;cancelAnimationFrame(frame);input?.dispose();ui?.dispose();audio?.dispose();scene?.dispose();window.removeEventListener('pagehide',dispose);}
 try{

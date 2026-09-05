@@ -38,9 +38,24 @@
       "sha256": "ad64b22e7f766436031accc4f1288ea3351ac33b8292100f368205b245c279c0"
     },
     {
+      "path": "README.md",
+      "bytes": 2211,
+      "sha256": "2942a043c2eb1a3a6bfea3d241e14f5ea06f6b36ae79853bf5bcc15b0c7b4664"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 1075,
+      "sha256": "71452cf5446923108c846c307c530a1c29a096823abeffe6bdf0860240d8a5d1"
+    },
+    {
       "path": "desktop/.gitignore",
       "bytes": 32,
       "sha256": "4e1f46942e27923b1cfabd900355a040e1a509c4d4018916c5fc61d0c7d3ee20"
+    },
+    {
+      "path": "desktop/README.md",
+      "bytes": 4672,
+      "sha256": "3c3ad8c5fd954f1d90c728d6807576894f0a2bada386470c924ca59914c729ab"
     },
     {
       "path": "desktop/asset-path.cjs",
@@ -68,11 +83,6 @@
       "sha256": "5194bc5154338b441726bf2abf5b3574d73e5817a0b53c2bfc97a87a856fc611"
     },
     {
-      "path": "desktop/README.md",
-      "bytes": 4672,
-      "sha256": "3c3ad8c5fd954f1d90c728d6807576894f0a2bada386470c924ca59914c729ab"
-    },
-    {
       "path": "desktop/stage.mjs",
       "bytes": 3103,
       "sha256": "5614368081e177820324ceb244e2d2033431616753fb57cbd4fce07f60d6325e"
@@ -96,6 +106,31 @@
       "path": "docs/rules.md",
       "bytes": 5602,
       "sha256": "293aa226f6bd8a51ddfc2f553f63f5702bca8b9fab6c4e9233b4efaba6a0f88c"
+    },
+    {
+      "path": "game/assets/audio/README.md",
+      "bytes": 785,
+      "sha256": "f400d96099cd502b4e25d53bdfaa49806120090f671c9ca5ac5d944a4085a6fd"
+    },
+    {
+      "path": "game/assets/audio/closed-horror.ogg",
+      "bytes": 3731,
+      "sha256": "647066c8eef21cc1bc5ad48f464bf8fadab3a4cdff4fb43450631efb3df5f458"
+    },
+    {
+      "path": "game/assets/audio/jumpscare.ogg",
+      "bytes": 1300,
+      "sha256": "681f0af7a911806e3c19d20dab4b40be8ab08b2291e44736f5cb2bde71686f2b"
+    },
+    {
+      "path": "game/assets/audio/open-door-music-box.ogg",
+      "bytes": 3731,
+      "sha256": "83efb83774dbea056f035cee87643d76be51788c11490750a5f720a7acc084a1"
+    },
+    {
+      "path": "game/assets/audio/scared-breathing.ogg",
+      "bytes": 1150,
+      "sha256": "beb57a4e009d6e0bb6e044c025a4a37fd015c2886d9039797db355f9bdf9984e"
     },
     {
       "path": "game/content/difficulty.json",
@@ -123,9 +158,14 @@
       "sha256": "19dc23382ad997f01bc24ebc62b348cff37fda3a7660702771ecf642c8473e53"
     },
     {
+      "path": "game/src/audio-config.mjs",
+      "bytes": 2021,
+      "sha256": "1b36b219e531291cdcef65c429a7c4b68b7de2236df53b13a702782b74ac9881"
+    },
+    {
       "path": "game/src/audio.mjs",
-      "bytes": 9434,
-      "sha256": "034ead32355e65ef19df50eadf9676ea2b45d163ab425e2105e132135eccf5ee"
+      "bytes": 3090,
+      "sha256": "4b57dd030416affccb9b4012045f0600a471d51d67aa755c2246e1933815481d"
     },
     {
       "path": "game/src/director.mjs",
@@ -144,8 +184,8 @@
     },
     {
       "path": "game/src/game.mjs",
-      "bytes": 5790,
-      "sha256": "0f8bda4886c7da33d41170516a13edd47640501e5001f1a6fc5056dbdadb56d7"
+      "bytes": 6325,
+      "sha256": "e22f34338071922d108a1e56168bc49ef834745668ee57f8ec6e507955f0b42a"
     },
     {
       "path": "game/src/input.mjs",
@@ -154,8 +194,18 @@
     },
     {
       "path": "game/src/main.mjs",
-      "bytes": 6844,
-      "sha256": "6d5291692692446ab77760b791be668c580fdf57e586a58a120bfe7dac91362a"
+      "bytes": 6986,
+      "sha256": "d8d6d0d979784c62a68906980d1799a0f81bf865079ef5b66380b2d4bd5652c2"
+    },
+    {
+      "path": "game/src/procedural-audio.mjs",
+      "bytes": 9330,
+      "sha256": "08fdbec526d996b8e68221ea3370c16f035c2f022e9945d46536daaed46090a4"
+    },
+    {
+      "path": "game/src/sample-audio.mjs",
+      "bytes": 5189,
+      "sha256": "790a532965cd31bffbc02fc7eda14025b3d84cb37e388c70ab9a49a7156fb8b6"
     },
     {
       "path": "game/src/scene.mjs",
@@ -288,11 +338,6 @@
       "sha256": "a70ab808d48113dfb0fea2799be236a2dfa05df59b5bea1a7c7e6aa40bacd13c"
     },
     {
-      "path": "README.md",
-      "bytes": 2211,
-      "sha256": "2942a043c2eb1a3a6bfea3d241e14f5ea06f6b36ae79853bf5bcc15b0c7b4664"
-    },
-    {
       "path": "scripts/build-site.mjs",
       "bytes": 568,
       "sha256": "c0b5aff8ce848c7342417d0344ce7f43f3f5383969a513058f027f2f79c7f428"
@@ -329,13 +374,8 @@
     },
     {
       "path": "tests/game.test.mjs",
-      "bytes": 7358,
-      "sha256": "65cb37d3440e61d497c66f3e1bb5d11a0c4bb39d083b3b211ffa9eb39b96a1c1"
-    },
-    {
-      "path": "THIRD_PARTY_NOTICES.md",
-      "bytes": 1075,
-      "sha256": "71452cf5446923108c846c307c530a1c29a096823abeffe6bdf0860240d8a5d1"
+      "bytes": 8900,
+      "sha256": "1572a5590b2fa92e48d45681c4aad54ef02c1ec1da838fd4bfdaa0d834706330"
     }
   ]
 }
