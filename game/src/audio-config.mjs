@@ -6,7 +6,7 @@ function encodedAsset(name, count) {
 }
 
 export const AUDIO_ASSETS = Object.freeze({
-  musicBox: encodedAsset('music-box', 8),
+  musicBox: Object.freeze([new URL('../assets/audio/runtime/music-box-clean.ogg', import.meta.url)]),
   scaredBreathing: encodedAsset('scared-breathing', 3),
   shakyBreaths: encodedAsset('shaky-breaths', 4),
   heartbeat: encodedAsset('heartbeat', 4),

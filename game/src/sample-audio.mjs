@@ -15,6 +15,12 @@ export function createSampleAudio({ context, ambienceBus, effectsBus, getSetting
     parameter.setTargetAtTime(Math.max(0, value), context.currentTime, time);
   };
   async function decode(name, urls) {
+    if (urls.length === 1 && !urls[0].pathname.endsWith('.b64')) {
+      const response = await fetch(urls[0]);
+      if (!response.ok) throw new Error(`Audio asset unavailable: ${name}`);
+      buffers.set(name, await context.decodeAudioData(await response.arrayBuffer()));
+      return;
+    }
     const chunks = await Promise.all(urls.map(async url => {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`Audio asset unavailable: ${name}`);
