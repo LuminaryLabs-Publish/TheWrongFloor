@@ -18,3 +18,15 @@ test('entry holds start once, block repeated Space until release and clear held 
  const entry=createLobbyEntry({button,isActive:()=>active,onAccept(){starts++;active=false;},onGesture(){}});const key=(type,repeat=false)=>{const e=new Event(type,{cancelable:true});Object.defineProperties(e,{code:{value:'Space'},repeat:{value:repeat}});win.dispatchEvent(e);return e;};
  try{key('keydown');entry.update(.4);key('keyup');assert.equal(entry.snapshot().holdProgress,0);key('keydown');entry.update(1.5);entry.update(.9);assert.equal(starts,1);assert.equal(key('keydown',true).defaultPrevented,true);key('keyup');assert.equal(key('keydown',true).defaultPrevented,false);entry.update(1);assert.equal(starts,1);active=true;entry.reset();pressed=true;entry.update(.5);win.dispatchEvent(new Event('blur'));entry.update(2);assert.equal(entry.snapshot().accepted,false);pressed=false;entry.update(0);pressed=true;entry.update(1.5);entry.update(.9);assert.equal(starts,2);}finally{entry.dispose();for(const [k,d] of saved){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}
 });
+test('inside camera faces lobby and outside claws remain confined to doorway',async()=>{
+ const {kit}=await import('../game/floor-30/factory.mjs');
+ const visual=await createLobbyScene(THREE,async name=>{
+  const root=new THREE.Group();if(name!=='claw')return root;
+  for(const part of kit.services.generate({seed:'floor30-001',params:{asset:'claw'}}).meshes){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(part.positions,3));const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial());m.name=part.id;root.add(m);}return root;
+ });
+ try{
+  for(const [w,h] of [[1920,1080],[1280,720],[3440,1440],[390,844]]){visual.resize(w,h);assert.equal(visual.camera.position.z,-4.9);assert.equal(visual.camera.position.y,1.64);assert.ok(visual.camera.getWorldDirection(new THREE.Vector3()).z>.99);}
+  const c=createLobbyCycle();for(let i=0;i<400;i++){const s=c.update(.05);visual.update(s);visual.scene.updateMatrixWorld(true);for(const side of [-1,1]){const root=visual.scene.getObjectByName('outside-claw-'+side);if(root.visible){const b=new THREE.Box3().setFromObject(root);assert.ok(b.min.z>-3.35&&b.max.z<-2.5,'claws stay at threshold');assert.ok(Math.max(Math.abs(b.min.x),Math.abs(b.max.x))<.45);}}}
+  visual.update({openness:.02,claws:1,strain:1,shudder:.004,stageTime:1},{softScares:true});for(const side of [-1,1])assert.equal(visual.scene.getObjectByName('outside-claw-'+side).visible,false);
+ }finally{visual.dispose();}
+});

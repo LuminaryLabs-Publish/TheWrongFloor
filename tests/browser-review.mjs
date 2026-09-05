@@ -122,6 +122,15 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.ok(webgl.inspection.renderer?.triangles > 0, 'actual triangles were rendered');
     assert.ok(webgl.layout.scrollWidth <= webgl.layout.width && webgl.layout.scrollHeight <= webgl.layout.height, 'game fits desktop viewport');
     await screenshot('00-title.png');
+    for(const [width,height] of [[1280,540],[3440,1440],[390,844]]){
+      await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false},sessionId);
+      await delay(150);
+      const fit=await run(`(()=>{const r=document.querySelector('#play-button').getBoundingClientRect();return{scroll:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,visible:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight}})()`);
+      assert.equal(fit.scroll,false);assert.equal(fit.visible,true,'hold button fits '+width+'x'+height);
+      await screenshot('00-title-'+width+'x'+height+'.png');
+    }
+    await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false},sessionId);
+
 
     // This uses trusted browser input, not the deterministic review controls.
     await key('Space',true);

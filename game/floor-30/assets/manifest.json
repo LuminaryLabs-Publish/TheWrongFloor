@@ -1,14 +1,14 @@
 {
   "seed": "floor30-001",
   "synthetic": true,
-  "factorySHA256": "10d27ca6c7322f3078eefb27f7effaea7bfccf42afac75a6dcf1053b4198f5bc",
+  "factorySHA256": "ae394a6c60587f0d43f4292cb8a99c31af6f274a8a72ec5c078ce30f34978c46",
   "files": [
     {
       "path": "architecture.glb",
-      "bytes": 3025260,
-      "sha256": "b192a472a25ac262d7784d3513737c900cefd441f026dde86e0bda1738c84bee",
-      "artifact": "sha256:0e740ee87e1ea4e4761af5e8e22579ed0c49770261dfe88903d84d938111e745",
-      "triangles": 25756
+      "bytes": 3468492,
+      "sha256": "47b262c2c7eeba7a1592ad84c9bdd4f8b5b82e591a8ba4fae0e1f3ef43869e3e",
+      "artifact": "sha256:5254d2f98f0863cbeeb376f0e5c2e8bd4b790f73a66bd9e9273a6013e2961e53",
+      "triangles": 29892
     },
     {
       "path": "door-left.glb",
@@ -34,16 +34,16 @@
     {
       "path": "reception.glb",
       "bytes": 842108,
-      "sha256": "4ff5c1c4bd32591d6e19356f2dda9e57e2e9f11074758ec4e77669a9ca645a5f",
-      "artifact": "sha256:c801f32da79c5890c8250446f8a521592e8073de5da92a84e8265bb2d7154494",
+      "sha256": "1fecb2cc01f5cf1810fef577c21636ba996a5162358b470b0c4800abf32f9191",
+      "artifact": "sha256:e931e6bf166463ff8d7fddfc4713bf998cd2621d714e050c18e0cf173603badf",
       "triangles": 5704
     },
     {
       "path": "fixtures.glb",
-      "bytes": 318428,
-      "sha256": "3ff014cd33a52ff0883d553c69b84a312295c2de219c346a6031a2181b2598e3",
-      "artifact": "sha256:6237465d6091e2f560527091c71980acc2b9c42f10fd8e769367927a6be6a262",
-      "triangles": 3012
+      "bytes": 539972,
+      "sha256": "1288142becc54b44d6f7fd13f3f04cab46fd49048a552d7d30c077bf13ce9245",
+      "artifact": "sha256:5c5eb2a4cc64e7cdd2b78c86490a367fd56dfb8f7e7474b18523d0d592a75654",
+      "triangles": 5080
     },
     {
       "path": "claw.glb",
