@@ -93,7 +93,7 @@ export function createScene(canvas) {
     const mouthMesh=g.getObjectByName('mouth-void');if(mouthMesh){mouthMesh.geometry.computeBoundingBox();const center=mouthMesh.geometry.boundingBox.getCenter(new THREE.Vector3());mouthMesh.geometry.translate(-center.x,-center.y,-center.z);mouthMesh.position.add(center);}
     const faceAssembly=g.getObjectByName('head-assembly');if(faceAssembly)batchRigid(faceAssembly);batchRigid(g);return g;
   }
-  function buildHall(environment,seed,artifact){disposeGroup(hall);lastEnvironment=environment;
+  function buildHall(environment,seed,artifact,themed=false){disposeGroup(hall);lastEnvironment=environment;
     const env=environment==='hotel'?'hotel':environment==='basement'?'basement':'office';
     const wall=new THREE.MeshStandardMaterial({map:texture(env==='basement'?'concrete':'wall',seed),color:env==='hotel'?'#877562':env==='basement'?'#7d8e80':'#adbaa5',roughness:.95});
     const floor=new THREE.MeshStandardMaterial({map:texture(env==='hotel'?'carpet':'concrete',seed+1),roughness:.85,color:env==='hotel'?'#856659':'#737d72'});
@@ -101,8 +101,8 @@ export function createScene(canvas) {
     box(hall,5,.03,16,0,-.005,-8,floor);box(hall,5,3.4,.2,0,1.65,-16,wall);
     for(let i=0;i<4;i++){const z=-2-i*3.8;box(hall,.55,.04,1.2,0,3.28,z,glow);for(const side of [-1,1]){box(hall,.07,2.45,1.25,side*2.36,1.2,z,env==='hotel'?brass:dark);box(hall,.06,.04,.18,side*2.31,1.15,z+.35,brass);box(hall,.035,.1,3.8,side*2.38,.1,z,floor);}}
     box(hall,1.15,2.3,.14,0,1.15,-15.78,dark);label(hall,'STAIRS',.7,.18,0,2.6,-15.65,{color:'#c4dac3',font:55});
-    if(env==='office'){box(hall,.8,1.85,.6,-1.75,.925,-5,dark);label(hall,'DRINKS',.66,.22,-1.75,1.65,-4.69,{color:'#ca7754'});for(let i=0;i<4;i++)box(hall,.48,.12,.025,-1.75,1.3-i*.23,-4.68,brass);for(let i=0;i<3;i++){box(hall,.5,.1,.5,1.9,.5,-3-i*.8,dark);box(hall,.06,.5,.5,2.12,.8,-3-i*.8,dark);}}
-    if(env==='hotel'){for(let i=0;i<3;i++){const frame=box(hall,.05,.85,1.1,-2.32,1.9,-3-i*4,brass);frame.userData.frame=true;}ensureCart();}
+    if(env==='office'&&!themed){box(hall,.8,1.85,.6,-1.75,.925,-5,dark);label(hall,'DRINKS',.66,.22,-1.75,1.65,-4.69,{color:'#ca7754'});for(let i=0;i<4;i++)box(hall,.48,.12,.025,-1.75,1.3-i*.23,-4.68,brass);for(let i=0;i<3;i++){box(hall,.5,.1,.5,1.9,.5,-3-i*.8,dark);box(hall,.06,.5,.5,2.12,.8,-3-i*.8,dark);}}
+    if(env==='hotel'&&!themed){for(let i=0;i<3;i++){const frame=box(hall,.05,.85,1.1,-2.32,1.9,-3-i*4,brass);frame.userData.frame=true;}ensureCart();}
     if(env==='basement'){for(let i=0;i<5;i++){const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-2.1+i*.22,2.95,0),new THREE.Vector3(-2.1+i*.22,3.03,-5),new THREE.Vector3(-2.1+i*.22,2.8,-10),new THREE.Vector3(-1.7+i*.22,2.8,-16)]);const m=new THREE.Mesh(new THREE.TubeGeometry(curve,24,.065,8,false),metal);hall.add(m);}ceiling=box(hall,1.0,.06,1.0,.35,3.17,-4,dark);}
     label(hall,env.toUpperCase(),1,.24,0,2.95,-5.8,{color:'#cad4bf',bg:'#26372f',font:50});
   }
@@ -112,7 +112,7 @@ export function createScene(canvas) {
   function makeMaintenanceDoor(){const frame=new THREE.Group();frame.position.set(-.65,0,-8.45);hall.add(frame);box(frame,.12,2.5,.13,-.77,1.25,0,brass);box(frame,.12,2.5,.13,.77,1.25,0,brass);box(frame,1.65,.12,.13,0,2.5,0,brass);maintenanceDoor=new THREE.Group();maintenanceDoor.position.set(-.70,0,.02);frame.add(maintenanceDoor);box(maintenanceDoor,1.4,2.4,.08,.7,1.2,0,dark);label(frame,'MAINTENANCE',1.3,.17,0,2.68,.09,{font:42});}
   function buildLobby(){floorDetail=null;disposeGroup(actors);disposeGroup(hall);entity=secondary=mouth=head=cart=ceiling=mirror=shadowGlyph=clueLamp=maintenanceDoor=null;const warm=new THREE.MeshStandardMaterial({color:'#dad1b8',roughness:.7}),stone=new THREE.MeshStandardMaterial({color:'#77796b',roughness:.35});box(hall,9,.15,15,0,-.08,-6.5,stone);box(hall,9,4,.2,0,2,-13,warm);for(const side of [-1,1])box(hall,.2,4,15,side*4.5,2,-6.5,warm);box(hall,4,2.8,.12,0,1.4,-12.8,new THREE.MeshBasicMaterial({color:'#c7e2d2'}));for(const side of [-1,1])box(hall,.09,2.8,.18,side*1.95,1.4,-12.6,brass);box(hall,.09,2.8,.18,0,1.4,-12.6,brass);label(hall,'LOBBY  /  EXIT',3,.42,0,3.22,-12.5,{color:'#e3fff1',bg:'#244737',font:56});label(hall,'YOU MADE IT.',2.3,.28,0,2.3,-6,{color:'#e6e5cc',bg:'#26372f',font:55});fill.color.set('#ffe7bc');lastEnvironment='lobby';escapeTime=0;batchRigid(hall);}
   function loadRound(round,keyValue){roundKey=keyValue;disposeGroup(actors);entity=secondary=mouth=head=cart=ceiling=mirror=shadowGlyph=clueLamp=maintenanceDoor=null;fill.color.set('#adcecd');
-    const seed=hash(String(round.seed??keyValue)),cache=prepared.get(String(round.seed));buildHall(round.environment,seed,cache?.interior);floorDetail=createFloorDetail(THREE,round,{label});hall.add(floorDetail);fill.color.set(floorDetail.userData.tint);
+    const seed=hash(String(round.seed??keyValue)),cache=prepared.get(String(round.seed));buildHall(round.environment,seed,cache?.interior,true);floorDetail=createFloorDetail(THREE,round,{label});hall.add(floorDetail);fill.color.set(floorDetail.userData.tint);
     if(!round.danger){lastArtifact=null;if(cache?.creature){const still=artifactGroup(cache.creature);still.position.set(1.1,0,-7);still.scale.setScalar(.82);actors.add(still);}batchRigid(hall,new Set([ceiling]));return;}
     const aliases={tall:'tall-one',ceiling:'ceiling-walker'};const archetype=aliases[round.entity]??round.entity;
     lastArtifact=RIGGED_ENTITIES.includes(round.entity)?null:cache?.creature??horrorKit.services.generate({seed:String(round.seed??keyValue),params:{archetype,detail:quality==='low'?12:18,distortion:.45+(seed%50)/100,stature:archetype==='tall-one'?2.6:2.25,age:.7}});

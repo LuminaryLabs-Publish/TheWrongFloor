@@ -89,8 +89,8 @@
     },
     {
       "path": "docs/expansion-0.3.0.md",
-      "bytes": 7105,
-      "sha256": "b01f43df24674a2fba1433f56d3cb11bb020f50a86ee49f019d014f022f514cc"
+      "bytes": 7256,
+      "sha256": "a8aecfa7bf11e27a7f77d72ff3e7512ff4f1c122044b275ef38f0f87fbac480d"
     },
     {
       "path": "docs/floor-30.md",
@@ -464,8 +464,8 @@
     },
     {
       "path": "game/src/floors/scene-kit.mjs",
-      "bytes": 7490,
-      "sha256": "28614976756345105f66e3785b61bbaa923232b101f442b54f24138e78ee9454"
+      "bytes": 7543,
+      "sha256": "7586b492853e67f761de00de4d2c567b60e13a5259328b63c6fbbfea2482ed1b"
     },
     {
       "path": "game/src/game.mjs",
@@ -494,8 +494,8 @@
     },
     {
       "path": "game/src/scene.mjs",
-      "bytes": 28222,
-      "sha256": "ab127630bb2aa8376f2b4c693fcde55177978fe9872d37944ad7237a0b6703fb"
+      "bytes": 28258,
+      "sha256": "6663f26aedd28c805bcb7d9ad3395a1e2ba5975b4cb60810177f75ca43e7b9b5"
     },
     {
       "path": "game/src/storage.mjs",

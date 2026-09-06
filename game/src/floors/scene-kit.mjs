@@ -44,6 +44,7 @@ export function createFloorDetail(T,round,{label}={}) {
    case 'tools':
     feet(x,z,.8,.6,.85);box(1.1,.14,.8,x,.9,z,wood);box(1.1,.85,.06,x,1.45,z-.32,wood);for(let k=0;k<4;k++){box(.03,.45,.04,x-.35+k*.23,1.5,z-.27,metal);box(.16,.09,.055,x-.35+k*.23,1.7,z-.27,dark);}break;
    case 'frames':{
+    feet(x,z,.7,.3,.7);box(.85,.07,.3,x,.68,z,wood);
     box(1.0,1.7,.09,x,1.5,z,wood);box(.86,1.56,.04,x,1.5,z+.08,cloth);const oval=mesh(new T.SphereGeometry(.24,20,12),dark,x,1.7,z+.11);oval.scale.set(.7,1,.06);const shoulders=mesh(new T.SphereGeometry(.4,20,12),dark,x,1.25,z+.11);shoulders.scale.set(1,.65,.03);break;}
    case 'cots':
     feet(x,z,.8,1.6,.4);box(.85,.12,1.7,x,.48,z,cloth);for(const a of [-1,1]){box(.04,.06,1.7,x+a*.43,1,z,wood);for(let k=0;k<8;k++)box(.025,.5,.025,x+a*.43,.73,z-.72+k*.2,wood);}break;

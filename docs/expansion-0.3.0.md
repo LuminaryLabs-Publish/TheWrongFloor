@@ -28,7 +28,7 @@ The reference branch is selectively ported: conditioning, music synthesis, cue l
 | Staff dining | Tables, plates and cups | Matching arrow direction |
 | Document vault | Individual lockers and handles | Verify the code |
 
-The close inspection plaque states its own rule. On a normal floor, the display obeys it. On a dangerous floor, it changes at the declared clue time. Entity clues remain present. Players can use either clue and the existing wait-or-hold-Close action. These are short observation puzzles; they do not add exploration, inventory or multi-step interaction.
+The close inspection plaque states its own rule. On a normal floor, the display obeys it. On a dangerous floor, it changes at the declared clue time. Entity clues remain present. Themed furniture replaces generic office seating and vending props; encounter-owned mirrors, carts and maintenance doors remain independently spawned. Players can use either clue and the existing wait-or-hold-Close action. These are short observation puzzles; they do not add exploration, inventory or multi-step interaction.
 
 Early, middle and late floors retain 3 / 2.6 / 2.2 seconds from clue to arrival. Assisted timing adds 0.8 seconds. The order puzzle adds larger numbers in later tiers. Difficulty must remain learnable; no knowledge of a previous room is required.
 
