@@ -2,13 +2,13 @@
 
 Wrong Floor is a first-person, seeded observation-horror game. Survive thirty elevator stops in 300 seconds of active simulation. Each stop occupies ten seconds; tutorial, loading, pause, and results are outside that clock.
 
-This repository contains the independent `0.1.1` vertical slice migrated from `LuminaryLabs-Dev/NexusArcade-Prototypes@ba5071b7219375980f2085bfb106bc3fedd53193`. It is the baseline for future full-game development, not the planned 8–10-hour campaign.
+This repository contains the `0.3.0` expansion of the independent vertical slice originally migrated from `LuminaryLabs-Dev/NexusArcade-Prototypes@ba5071b7219375980f2085bfb106bc3fedd53193`. It is the baseline for future full-game development, not the planned 8–10-hour campaign.
 
 ## Controls and rules
 
 WASD/arrows or gamepad stick inspect; hold Space/gamepad A to seal; Enter/B recenters; Escape/Start pauses. Pointer drag and an on-screen hold button support touch. Close can be remapped. A fresh press is required after each opening. Fully sealing takes 1.2 seconds.
 
-Wait through normal floors. Seal on danger. Three false alarms shut down the lift; intrusion ends immediately. Twelve normal floors and eighteen dangerous floors include all twelve entity variations. See [rules.md](rules.md) and `game/content/` for the complete contracts.
+Wait through normal floors. Seal on danger. Three false alarms shut down the lift; intrusion ends immediately. Twelve normal floors and eighteen dangerous floors include all eighteen entity variations. See [rules.md](rules.md) and `game/content/` for the complete contracts.
 
 ## Procedural construction
 
@@ -42,7 +42,7 @@ The complete review is manual:
 npm run review:full
 ```
 
-It adds a ten-second render preflight, a deterministic 30-stop browser trace, both failure modes, all twelve encounter screenshots, and an actual real-time 300-second keyboard-controlled session. This is automated evidence, not human playtesting or native-device proof.
+It adds a ten-second render preflight, a deterministic 30-stop browser trace, both failure modes, all eighteen encounter screenshots and fifteen room screenshots, and an actual real-time 300-second keyboard-controlled session. This is automated evidence, not human playtesting or native-device proof.
 
 ## Known validation boundary
 

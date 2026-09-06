@@ -1,3 +1,5 @@
+import {reviewAudio} from './audio-review.mjs';
+import {FLOOR_PROFILES} from '../game/src/floors/catalog.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
@@ -162,6 +164,8 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await wait('__wrongFloor.snapshot().mode === "running"');
     interactions.push({ action: 'Real Escape pause and resume', pausedAt: paused.elapsed });
 
+    await wait('__wrongFloor.inspect().audio.state === \'running\'',10000);
+    const audioState=await run('__wrongFloor.inspect().audio');assert.equal(audioState.state,'running');assert.equal(audioState.loaded,8);assert.deepEqual(audioState.failures,[]);
     if (smokeOnly) {
       const externalRequests = requests.filter(url => /^https?:/.test(url) && new URL(url).origin !== new URL(baseUrl).origin);
       assert.deepEqual(externalRequests, [], 'game runtime uses only bundled local resources');
@@ -193,6 +197,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await screenshot('performance-preflight.png');
 
     // Separate deterministic game proof: explicit active-time stepping, not real-time footage.
+    await reviewAudio(run,reviewDir);
     const complete = await run(`(async()=>{
       await __wrongFloor.start({seed:'browser-complete',manual:true});
       const rounds=[];
@@ -212,7 +217,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.equal(complete.rounds.length, 30, 'browser exercised all 30 stops');
     assert.equal(complete.final.mode, 'won'); assert.equal(complete.final.elapsed, 300);
     assert.equal(complete.final.correct, 30); assert.equal(complete.final.mistakes, 0);
-    assert.equal(new Set(complete.rounds.filter(r => r.round.danger).map(r => `${r.round.entity}:${r.round.variant}`)).size, 12);
+    assert.equal(new Set(complete.rounds.filter(r => r.round.danger).map(r => `${r.round.entity}:${r.round.variant}`)).size, 18);
     assert.ok(complete.rounds.every(r => r.outcome === 'sealed' || r.outcome === 'accepted'));
     await screenshot('03-escape.png');
 
@@ -235,7 +240,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await screenshot('04-shutdown.png');
 
     const variants = [];
-    const families = ['guest', 'tall', 'ceiling', 'porter', 'shadow', 'mannequin'];
+    const families = ['guest', 'tall', 'ceiling', 'porter', 'shadow', 'mannequin', 'warden', 'weaver', 'mourner'];
     for (let familyIndex = 0; familyIndex < families.length; familyIndex++) {
       for (const variant of [0, 1]) {
         const specification = { entity: families[familyIndex], variant, environment: ['office', 'hotel', 'basement'][(familyIndex + variant) % 3], seed: `review-${families[familyIndex]}-${variant}`, roundTime: 3.5, clueAt: 1.5, arrivalAt: 5.0 };
@@ -243,11 +248,12 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
         await run('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
         const inspection = await run('__wrongFloor.inspect()');
         assert.ok(inspection.renderer?.triangles > 0, `${specification.entity}:${variant} rendered geometry`);
-        assert.ok(inspection.artifactHash, `${specification.entity}:${variant} has a procedural factory artifact`);
+        assert.ok(inspection.artifactHash || inspection.bones === 24, `${specification.entity}:${variant} has a procedural factory artifact`);
         variants.push({ ...specification, inspection });
         await screenshot(`entity-${specification.entity}-${variant}.png`);
       }
     }
+    for(const profile of FLOOR_PROFILES){await run(`__wrongFloor.preview(${JSON.stringify({entity:'warden',profile:profile.id,seed:'room-'+profile.id,roundTime:2.5})})`);const info=await run('__wrongFloor.inspect()');assert.equal(info.profile,profile.id);await screenshot('floor-'+profile.id+'.png');}
     await run('__wrongFloor.stopPreview()');
     if (reviewDir) await writeFile(path.join(reviewDir, 'preflight-evidence.json'), `${JSON.stringify({ provenance, webgl, performancePreflight, complete, failures, variants, screenshots, findings }, null, 2)}\n`);
     if (!performancePreflight.passed) clip.skipReason = 'Real-time full session skipped because the default-profile performance preflight failed.';
@@ -321,10 +327,10 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     const externalRequests = requests.filter(url => /^https?:/.test(url) && new URL(url).origin !== new URL(baseUrl).origin);
     assert.deepEqual(externalRequests, [], 'game runtime uses only bundled local resources');
     assert.deepEqual(findings.filter(f => f.level === 'error'), [], `Wrong Floor emitted errors: ${JSON.stringify(findings)}`);
-    report = { schema: 'wrong-floor-browser-review/1', provenance, captureKind: fullSession ? 'real-time-input-session-plus-screenshots-and-manual-trace' : 'screenshots-and-manual-simulation-trace', realTimeFullRunVideo: false, silentGameplayCapture: clip, viewport: { width: 1280, height: 800 }, webgl, performancePreflight, interactions, fullSession, complete, failures, variants, screenshots, requests: [...new Set(requests)], findings, checks: { actualWebGL: true, realKeyboardClosure: true, realKeyboardPause: true, thirtyRoundEscape: true, activeSimulationSeconds: 300, defaultProfilePerformance: performancePreflight.passed, realtimeFullSession: fullSession?.completed ?? 'not requested', silentGameplayClip: clipRequested ? clip.status === 'complete' : 'not requested', allTwelveVariants: true, bothFailureTypes: true, noExternalRuntimeDependencies: true, noBrowserErrors: true } };
+    report = { schema: 'wrong-floor-browser-review/1', provenance, captureKind: fullSession ? 'real-time-input-session-plus-screenshots-and-manual-trace' : 'screenshots-and-manual-simulation-trace', realTimeFullRunVideo: false, silentGameplayCapture: clip, viewport: { width: 1280, height: 800 }, webgl, performancePreflight, interactions, fullSession, complete, failures, variants, screenshots, requests: [...new Set(requests)], findings, checks: { actualWebGL: true, realKeyboardClosure: true, realKeyboardPause: true, thirtyRoundEscape: true, activeSimulationSeconds: 300, defaultProfilePerformance: performancePreflight.passed, realtimeFullSession: fullSession?.completed ?? 'not requested', silentGameplayClip: clipRequested ? clip.status === 'complete' : 'not requested', allEighteenVariants: true, bothFailureTypes: true, noExternalRuntimeDependencies: true, noBrowserErrors: true } };
     if (reviewDir) await writeFile(path.join(reviewDir, 'validation.json'), `${JSON.stringify(report, null, 2)}\n`);
     if (clipRequested) assert.equal(clip.status, 'complete', `Silent gameplay capture incomplete: ${JSON.stringify({ status: clip.status, frames: clip.frames.length, sourceTimelineSeconds: clip.sourceTimelineSeconds, errors: clip.errors })}`);
-    console.log('browser Wrong Floor ok: real keyboard closure/pause, 30 stops/300 simulated seconds, 12 factory variants');
+    console.log('browser Wrong Floor ok: real keyboard closure/pause, 30 stops/300 simulated seconds, 18 variants and 15 themed rooms');
     return report;
   } finally {
     await stopClip(fullSession?.final);

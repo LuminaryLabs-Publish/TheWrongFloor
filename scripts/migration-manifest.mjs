@@ -31,7 +31,7 @@ files.sort((a,b)=>a.path.localeCompare(b.path));
 const cover = files.find(file=>file.path==='game/cover.webp');
 const expected = {
   schemaVersion:1,
-  product:{ title:'Wrong Floor', version:'0.1.1', historicalArcadeId:'NXA-000010', status:'development-vertical-slice' },
+  product:{ title:'Wrong Floor', version:'0.3.0', historicalArcadeId:'NXA-000010', status:'development-vertical-slice' },
   migration:{ sourceRepository:'LuminaryLabs-Dev/NexusArcade-Prototypes', sourceCommit:'ba5071b7219375980f2085bfb106bc3fedd53193', destinationRepository:'LuminaryLabs-Publish/TheWrongFloor', destinationBaseCommit:'04591fc4021f27ebb7fa1dcaa3eb3adfcf321a14' },
   cover:{ path:'game/cover.webp', provenanceCopy:'marketing/prototype-cover/wrong-floor-prototype-cover.webp', width:1536, height:1024, sha256:cover.sha256, generatedPromotionalArt:true, gameplayEvidence:false },
   files

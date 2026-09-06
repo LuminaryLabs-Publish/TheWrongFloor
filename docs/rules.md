@@ -1,6 +1,6 @@
 # Wrong Floor: deterministic rules and integration contract
 
-Status: implementation contract for vertical slice 0.1.1. Horror quality and device performance require separately recorded visual/audio review.
+Status: implementation contract for vertical slice 0.3.0. Horror quality and device performance require separately recorded visual/audio review.
 
 ## Experience
 
@@ -8,7 +8,7 @@ A successful standard or assisted run lasts exactly 300 active simulation second
 
 Normal floors resolve at six seconds and close automatically. Dangerous clues appear between 1.3 and 2.4 seconds after arrival. Arrival follows the clue by three seconds in rounds 1–10, 2.6 seconds in rounds 11–20, and 2.2 seconds in rounds 21–30. Assisted mode adds 0.8 seconds to threat response time without extending a round. Correct early closure leaves the remaining time for travel.
 
-The first six dangerous encounters introduce each family’s easy variant. The next six introduce each hard variant. The remaining six repeat seeded family/variant combinations. An entity never occurs on adjacent rounds; no more than three dangers occur consecutively; the final encounter is dangerous and already taught. All 12 authored variations occur in every complete run. Decorative seeds are independent of simulation randomness.
+The first nine dangerous encounters introduce each family’s easy variant. The next nine introduce each hard variant. An entity never occurs on adjacent rounds; no more than three dangers occur consecutively; the final encounter is dangerous and already taught. All 18 authored variations occur in every complete run. Decorative seeds are independent of simulation randomness.
 
 ## Doors and outcomes
 
@@ -56,3 +56,5 @@ Shape: `{version:1, settings, tutorialComplete, best:{standard,assisted}}`. Sett
 Run `node --test tests/game.test.mjs`. Tests cover 1,000 seeded schedules, all encounter variants, 30/60/144 FPS and irregular-frame successful runs, precise tie deadlines, false alarms, preheld inputs, tapping, pause, practice separation, assisted timing, snapshot isolation, and save recovery. A separate 10,000-seed inspection passed during initial prototype development. These checks establish rules; browser rendering and human play/listening remain distinct evidence.
 
 `content/encounters.json` and `content/difficulty.json` are descriptive contracts mirrored by the standalone ESM exports in `director.mjs`. Update both when changing content so no runtime fetch is required to start a game. The executable game and validation use the ESM exports as authority.
+
+Every full run uses all fifteen room profiles twice. Their printed inspection rules are safe initially and change at clueAt only on dangerous floors. See [expansion-0.3.0.md](expansion-0.3.0.md).

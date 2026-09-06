@@ -1,5 +1,6 @@
+import {FLOOR_PROFILES,createInspection} from './floors/catalog.mjs';
 export const ENVIRONMENTS = Object.freeze(['office', 'hotel', 'basement']);
-export const ENTITIES = Object.freeze(['guest', 'tall', 'ceiling', 'porter', 'shadow', 'mannequin']);
+export const ENTITIES = Object.freeze(['guest', 'tall', 'ceiling', 'porter', 'shadow', 'mannequin', 'warden', 'weaver', 'mourner']);
 export const DIFFICULTY = Object.freeze({ rounds: 30, roundSeconds: 10, normalFloors: 12, dangerousFloors: 18, normalResolveAt: 6, assistedExtraSeconds: 0.8 });
 export const ENCOUNTERS = Object.freeze([
   { entity: 'guest', variant: 0, name: 'The Reflection', clueText: 'The reflection moved while the guest stood still.' },
@@ -14,6 +15,7 @@ export const ENCOUNTERS = Object.freeze([
   { entity: 'shadow', variant: 1, name: 'Against the Light', clueText: 'The shadow moved against the direction of the light.' },
   { entity: 'mannequin', variant: 0, name: 'The Mannequins', clueText: 'A mannequin changed position when the light dipped.' },
   { entity: 'mannequin', variant: 1, name: 'The Turn', clueText: 'One mannequin turned its head while the others stayed still.' },
+{"entity": "warden", "variant": 0, "name": "The Warden", "clueText": "The figure walked with its head locked sideways."},{"entity": "warden", "variant": 1, "name": "The Crooked Patrol", "clueText": "The patrol dragged its arms with an impossible gait."},{"entity": "weaver", "variant": 0, "name": "The Weaver", "clueText": "Long fingers moved before the figure stepped forward."},{"entity": "weaver", "variant": 1, "name": "The Knot", "clueText": "The figure twisted its spine while walking toward the lift."},{"entity": "mourner", "variant": 0, "name": "The Mourner", "clueText": "A shrouded figure approached with a silently opening mouth."},{"entity": "mourner", "variant": 1, "name": "The Lament", "clueText": "The shroud bent sideways as the figure began its approach."},
 ]);
 
 export function seedNumber(seed) {
@@ -67,12 +69,13 @@ export function createSchedule(seed, { assisted = false, practice = false } = {}
   const easy = shuffle(ENTITIES, random);
   let previous = null, dangerIndex = 0;
   const harder = shuffle(ENTITIES, random);
-  if (harder[0] === easy[5]) [harder[0], harder[1]] = [harder[1], harder[0]];
+  if (harder[0] === easy.at(-1)) [harder[0], harder[1]] = [harder[1], harder[0]];
+  const profileOrder=shuffle(FLOOR_PROFILES,random);
   const rounds = mask.map((danger, index) => {
     let entity = null, variant = 0;
     if (danger) {
-      if (dangerIndex < 6) entity = easy[dangerIndex];
-      else if (dangerIndex < 12) {
+      if (dangerIndex < ENTITIES.length) entity = easy[dangerIndex];
+      else if (dangerIndex < ENTITIES.length * 2) {
         entity = harder.shift(); variant = 1;
       } else {
         const choices = ENTITIES.filter(candidate => candidate !== previous);
@@ -85,13 +88,14 @@ export function createSchedule(seed, { assisted = false, practice = false } = {}
     const allowance = index < 10 ? 3 : index < 20 ? 2.6 : 2.2;
     const encounter = danger ? ENCOUNTERS.find(item => item.entity === entity && item.variant === variant) : null;
     previous = danger ? entity : null;
+    const profile=profileOrder[index%profileOrder.length].id, decorSeed=seedNumber(`${seed}:decor:${index}`), puzzle=createInspection(profile,decorSeed,index);
     return {
-      index, floor: practice ? 2 - index : 30 - index, danger, entity, variant,
+      index, profile, puzzle, floor: practice ? 2 - index : 30 - index, danger, entity, variant,
       environment: index < 3 ? ENVIRONMENTS[index] : ENVIRONMENTS[Math.floor(random() * 3)],
       seed: seedNumber(`${seed}:decor:${index}`), clueAt,
       arrivalAt: danger ? clueAt + allowance + (assisted ? 0.8 : 0) : null,
       normalResolveAt: 6, name: encounter?.name ?? 'A normal floor',
-      clueText: encounter?.clueText ?? 'There was no dangerous anomaly on this floor.',
+      clueText: encounter ? `${encounter.clueText} Inspection rule: ${puzzle.rule}; the display changed to ${puzzle.anomaly}.` : 'The inspection display matched its rule and no dangerous anomaly appeared.',
     };
   });
   return rounds;
