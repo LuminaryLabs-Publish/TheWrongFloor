@@ -2,10 +2,14 @@ import * as THREE from '../vendor/three/three.module.js';
 import { kit as horrorKit } from '../vendor/factory-kits/src/domains/factory/object/creature/kits/horror-kit/index.js';
 import { kit as liminalKit } from '../vendor/factory-kits/src/domains/factory/object/structure/kits/liminal-kit/index.js';
 import { createDistressSampler } from '../vendor/factory-kits/src/domains/factory/material/procedural/kits/distressed-kit/index.js';
+import { createRetroPass } from './retro-pass.mjs';
+import { addAtmosphere } from './atmosphere.mjs';
 
 // The renderer consumes deterministic factory artifacts. Gameplay never reads visual RNG.
 export function createScene(canvas) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, powerPreference:'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias:false, powerPreference:'high-performance' });
+  const retro = createRetroPass(renderer);
+  let atmosphere = null, renderedFrames = 0;
   let appliedPixelRatio=Math.min(devicePixelRatio,1);
   const gl=renderer.getContext(),debugRenderer=gl.getExtension('WEBGL_debug_renderer_info');
   const driver=String(gl.getParameter(debugRenderer?debugRenderer.UNMASKED_RENDERER_WEBGL:gl.RENDERER));
@@ -17,7 +21,7 @@ export function createScene(canvas) {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.shadowMap.autoUpdate=false;
   const scene = new THREE.Scene(); scene.background = new THREE.Color('#08090b');
-  scene.fog = new THREE.FogExp2('#111418',.034);
+  scene.fog = new THREE.FogExp2('#0c1414',.045);
   const camera = new THREE.PerspectiveCamera(65,1,.05,60);
   camera.position.set(0,1.64,3.15);
   const cabin = new THREE.Group(), hall = new THREE.Group(), actors = new THREE.Group();
@@ -36,7 +40,8 @@ export function createScene(canvas) {
     const pixels=x.getImageData(0,0,512,512);for(let j=0;j<512;j+=4)for(let i=0;i<512;i+=4){const rgb=sampler(i/180,j/180);for(let a=0;a<4;a++)for(let b=0;b<4;b++){const p=((j+a)*512+i+b)*4;for(let k=0;k<3;k++)pixels.data[p+k]=pixels.data[p+k]*.65+rgb[k]*255*.35;}}x.putImageData(pixels,0,0);
     const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(2,2);return t;
   }
-  const metal=new THREE.MeshStandardMaterial({map:texture('metal'),color:'#8b9187',roughness:.48,metalness:.7});
+  const metalMap=texture('metal');
+  const metal=new THREE.MeshStandardMaterial({map:metalMap,bumpMap:metalMap,bumpScale:.012,color:'#8b9187',roughness:.62,metalness:.48});
   const dark=new THREE.MeshStandardMaterial({color:'#171d1d',roughness:.75,metalness:.2});
   const brass=new THREE.MeshStandardMaterial({color:'#9a8050',roughness:.45,metalness:.8});
   const glow=new THREE.MeshBasicMaterial({color:'#ffe7a0'});
@@ -61,10 +66,14 @@ export function createScene(canvas) {
   label(cabin,'FALSE ALARMS',.69,.14,1.74,2.15,.18,{font:34});
   const indicators=[];for(let i=0;i<3;i++){const m=new THREE.MeshStandardMaterial({color:'#8dd1b1',emissive:'#356e48',emissiveIntensity:1});permanentMaterials.push(m);indicators.push(box(cabin,.1,.06,.025,1.52+i*.2,1.98,.19,m));}
   box(cabin,.25,.25,.04,1.74,1.5,.17,brass);
+  label(cabin,'NO VISITORS AFTER 00:00',.78,.14,-1.74,1.32,.18,{color:'#bf9b73',bg:'#222922',font:27});
+  label(cabin,'KEEP HANDS CLEAR',.78,.11,-1.74,1.15,.18,{color:'#9caa94',bg:'#17201b',font:29});
+  for(let i=0;i<9;i++)box(cabin,.19,.008,.16,-1.08+i*.27,.012,.31,i%2?dark:brass);
+  for(let i=0;i<5;i++)box(cabin,.47,.015,.028,1.74,.72+i*.06,.185,dark);
   box(cabin,1.6,.035,.5,0,3.23,2,glow);
   const cabinLight=new THREE.PointLight('#ffe4bc',11,7,2);cabinLight.position.set(0,3,1.6);scene.add(cabinLight);
-  scene.add(new THREE.HemisphereLight('#a0b9c6','#302a22',1.05));
-  const key=new THREE.SpotLight('#dceeff',65,25,.6,.55,1.3);key.position.set(.8,2.9,-2);key.target.position.set(0,1,-7);key.castShadow=true;key.shadow.mapSize.set(1024,1024);scene.add(key,key.target);
+  scene.add(new THREE.HemisphereLight('#809e9d','#231e18',.58));
+  const key=new THREE.SpotLight('#dceeff',65,25,.6,.55,1.3);key.position.set(.8,2.9,-2);key.target.position.set(0,1,-7);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.normalBias=.035;key.shadow.bias=-.00015;scene.add(key,key.target);
   const fill=new THREE.PointLight('#adcecd',18,18,1.7);fill.position.set(0,2.3,-6);scene.add(fill);
   let roundKey='',entity=null,secondary=null,mouth=null,head=null,cart=null,ceiling=null,mirror=null,shadowGlyph=null,clueLamp=null,maintenanceDoor=null,escapeTime=0;
   let lastArtifact=null, yaw=0,pitch=0,lastEnvironment='office',visualTime=0,quality='high',shadowResolution=1024,lastShadowSignature='';
@@ -101,7 +110,8 @@ export function createScene(canvas) {
     if(env==='office'){box(hall,.8,1.85,.6,-1.75,.925,-5,dark);label(hall,'DRINKS',.66,.22,-1.75,1.65,-4.69,{color:'#ca7754'});for(let i=0;i<4;i++)box(hall,.48,.12,.025,-1.75,1.3-i*.23,-4.68,brass);for(let i=0;i<3;i++){box(hall,.5,.1,.5,1.9,.5,-3-i*.8,dark);box(hall,.06,.5,.5,2.12,.8,-3-i*.8,dark);}}
     if(env==='hotel'){for(let i=0;i<3;i++){const frame=box(hall,.05,.85,1.1,-2.32,1.9,-3-i*4,brass);frame.userData.frame=true;}ensureCart();}
     if(env==='basement'){for(let i=0;i<5;i++){const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-2.1+i*.22,2.95,0),new THREE.Vector3(-2.1+i*.22,3.03,-5),new THREE.Vector3(-2.1+i*.22,2.8,-10),new THREE.Vector3(-1.7+i*.22,2.8,-16)]);const m=new THREE.Mesh(new THREE.TubeGeometry(curve,24,.065,8,false),metal);hall.add(m);}ceiling=box(hall,1.0,.06,1.0,.35,3.17,-4,dark);}
-    label(hall,env.toUpperCase(),1,.24,0,2.95,-5.8,{color:'#cad4bf',bg:'#26372f',font:50});
+    label(hall,env==='hotel'?'ROOMS  601—608':env==='basement'?'SERVICE  /  B2':'ACCOUNTS  /  06',1.25,.19,0,2.95,-5.8,{color:'#cad4bf',bg:'#202b24',font:35});
+    atmosphere=addAtmosphere(hall,env,seed);
   }
   function ensureCart(){if(cart)return cart;cart=new THREE.Group();cart.name='luggage-cart';hall.add(cart);box(cart,1.1,.13,.65,0,.22,0,brass);for(const side of [-1,1]){box(cart,.055,1.7,.05,side*.5,1.05,0,brass);box(cart,.13,.15,.18,side*.45,.1,.2,dark);box(cart,.13,.15,.18,side*.45,.1,-.2,dark);}box(cart,1.05,.06,.05,0,1.9,0,brass);box(cart,.9,.55,.45,0,.52,0,dark);cart.position.set(1.3,0,-5);return cart;}
   function makeShadow(){const shape=new THREE.Shape();shape.moveTo(-.12,0);shape.bezierCurveTo(-.65,.18,-.2,.45,-.20,.8);shape.bezierCurveTo(-.8,.55,-1,.85,-.43,.95);shape.lineTo(-.25,1.05);shape.bezierCurveTo(-.38,1.5,.38,1.5,.25,1.05);shape.lineTo(.43,.95);shape.bezierCurveTo(1,.85,.8,.55,.20,.8);shape.bezierCurveTo(.2,.45,.65,.18,.12,0);shape.lineTo(.04,.45);shape.closePath();const m=new THREE.Mesh(new THREE.ShapeGeometry(shape,24),new THREE.MeshBasicMaterial({color:'#030406',transparent:true,opacity:.94,side:THREE.DoubleSide,depthWrite:false}));m.name='impossible-shadow';m.rotation.x=-Math.PI/2;m.scale.set(1.3,2.1,1);m.position.set(0,.028,-3);hall.add(m);return m;}
@@ -153,14 +163,17 @@ export function createScene(canvas) {
     const subtle=settings.reducedFlashes?1:1+Math.sin(animationTime*13)*.015;
     // A single deliberate dip masks the mannequin's step; reduced-flash mode uses a slow dim.
     const dip=entityName==='mannequin'&&variant===0&&clue?(settings.reducedFlashes?1-.25*Math.exp(-clueAge*2):clueAge<.22?.25:1):1;
-    fill.intensity=(snapshot.mode==='won'?38:clue?23:18)*subtle*dip;key.intensity=(snapshot.mode==='won'?95:65)*dip;key.color.set(['hotel','lobby'].includes(lastEnvironment)?'#ffdfb7':'#dceeff');
+    fill.intensity=(snapshot.mode==='won'?38:clue?16:12)*subtle*dip;key.intensity=(snapshot.mode==='won'?95:58)*dip;key.color.set(['hotel','lobby'].includes(lastEnvironment)?'#ffe0b3':'#c4e5dd');
+    cabinLight.intensity=snapshot.mode==='lost'?6:11;
+    atmosphere?.update(visualTime,settings.reducedMotion);
     // The sealed cabin completely occludes the hallway. Skip its draw and shadow work.
     hall.visible=actors.visible=openness>.0001||snapshot.mode==='won';
     const desiredShadowType=quality==='low'?THREE.BasicShadowMap:THREE.PCFSoftShadowMap;if(renderer.shadowMap.type!==desiredShadowType){renderer.shadowMap.type=desiredShadowType;scene.traverse(o=>{if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])m.needsUpdate=true;});lastShadowSignature='';}const desiredShadowResolution=quality==='low'?256:quality==='high'?1024:512;if(desiredShadowResolution!==shadowResolution){shadowResolution=desiredShadowResolution;key.shadow.mapSize.set(shadowResolution,shadowResolution);key.shadow.map?.dispose();key.shadow.map=null;lastShadowSignature='';}
     const shadowSignature=[roundKey,openness.toFixed(5),hall.visible,clue&&hall.visible?animationTime.toFixed(5):'static',snapshot.mode==='lost'].join('|');
     if(shadowSignature!==lastShadowSignature){renderer.shadowMap.needsUpdate=true;lastShadowSignature=shadowSignature;}
-    renderer.render(scene,camera);
+    retro.render(scene,camera,{width:canvas.clientWidth||innerWidth,height:canvas.clientHeight||innerHeight,quality,time:visualTime,settings,pressure:clue&&!snapshot.resolved?progress:0});
+    renderedFrames++;
   }
-  function dispose(){resizeObserver.disconnect();worker?.terminate();for(const item of pending.values())item.reject(new Error('Scene disposed'));pending.clear();prepared.clear();disposeGroup(actors);disposeGroup(hall);disposeGroup(cabin);for(const t of textures)t.dispose();for(const m of permanentMaterials){m.map?.dispose();m.dispose();}renderer.dispose();}
-  return {render,prepare,clearPrepared(){prepared.clear();},recenter(){yaw=pitch=0;},dispose,inspect(){return {renderer:{...renderer.info.render,quality,driver,pixelRatio:appliedPixelRatio,shadowResolution,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},environment:lastEnvironment,artifactHash:lastArtifact?.deterministicHash,meshes:lastArtifact?.meshes.length,triangles:lastArtifact?.statistics?.triangleCount,roundKey,prepared:prepared.size};},capture(){return canvas.toDataURL('image/png');}};
+  function dispose(){resizeObserver.disconnect();worker?.terminate();for(const item of pending.values())item.reject(new Error('Scene disposed'));pending.clear();prepared.clear();disposeGroup(actors);disposeGroup(hall);disposeGroup(cabin);for(const t of textures)t.dispose();for(const m of permanentMaterials){m.map?.dispose();m.dispose();}retro.dispose();renderer.dispose();}
+  return {render,prepare,clearPrepared(){prepared.clear();},recenter(){yaw=pitch=0;},dispose,inspect(){return {renderer:{...renderer.info.render,frame:renderedFrames,quality,driver,pixelRatio:appliedPixelRatio,shadowResolution,retro:retro.inspect(),geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},environment:lastEnvironment,artifactHash:lastArtifact?.deterministicHash,meshes:lastArtifact?.meshes.length,triangles:lastArtifact?.statistics?.triangleCount,roundKey,prepared:prepared.size};},capture(){return canvas.toDataURL('image/png');}};
 }

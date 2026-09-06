@@ -17,7 +17,13 @@ Wrong Floor bundles the following third-party or separately licensed code for of
 - License: MIT
 - License file: `game/vendor/factory-kits/LICENSE`
 
-## Electron desktop development dependencies
+## Supplied audio recordings
+
+The source names and current cue mapping are recorded in `game/assets/audio/README.md`. Commercial permission and attribution requirements for the seven supplied voice/impact recordings have not been established from repository evidence. Their presence does not imply a license grant. Retain the original licenses or replace these recordings before a paid release.
+
+The new music-box phrase, mechanical audio synthesis, and native elevator-door icon were authored in this repository. Their reproducible source is in `scripts/render-music-box.mjs`, `game/src/procedural-audio.mjs`, and `scripts/render-icon.mjs`.
+
+## Desktop dependencies
 
 The optional desktop candidate uses the dependencies pinned in `desktop/package-lock.json`. Their licenses remain with their respective authors. They are development/packaging dependencies and are not downloaded by the browser game at runtime.
 

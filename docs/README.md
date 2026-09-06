@@ -2,7 +2,7 @@
 
 Wrong Floor is a first-person, seeded observation-horror game. Survive thirty elevator stops in 300 seconds of active simulation. Each stop occupies ten seconds; tutorial, loading, pause, and results are outside that clock.
 
-This repository contains the independent `0.1.1` vertical slice migrated from `LuminaryLabs-Dev/NexusArcade-Prototypes@ba5071b7219375980f2085bfb106bc3fedd53193`. It is the baseline for future full-game development, not the planned 8–10-hour campaign.
+This repository contains the independent `0.2.0` vertical slice migrated from `LuminaryLabs-Dev/NexusArcade-Prototypes@ba5071b7219375980f2085bfb106bc3fedd53193`. It is the baseline for future full-game development, not the planned 8–10-hour campaign.
 
 ## Controls and rules
 
@@ -46,7 +46,7 @@ It adds a ten-second render preflight, a deterministic 30-stop browser trace, bo
 
 ## Known validation boundary
 
-The earliest Arcade publication failed its long Chrome performance run. Version `0.1.1` reduced repeated render-buffer resets, canvas uploads, and drawing work. The standalone migration does not claim Steam readiness, native quality, audio quality, cabinet performance, or human horror quality.
+The earliest Arcade publication failed its long Chrome performance run. Version `0.2.0` reduced repeated render-buffer resets, canvas uploads, and drawing work. The standalone migration does not claim Steam readiness, native quality, audio quality, cabinet performance, or human horror quality.
 
 ## Future architecture
 

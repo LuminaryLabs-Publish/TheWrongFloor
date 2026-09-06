@@ -5,3 +5,6 @@ desktop/node_modules/
 desktop/.generated/
 desktop/dist/
 *.log
+.npm-cache/
+.electron-cache/
+releases/

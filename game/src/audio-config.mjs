@@ -6,7 +6,7 @@ function encodedAsset(name, count) {
 }
 
 export const AUDIO_ASSETS = Object.freeze({
-  musicBox: Object.freeze([new URL('../assets/audio/runtime/music-box-clean.ogg', import.meta.url)]),
+  musicBox: Object.freeze([new URL('../assets/audio/runtime/lift-music-box.wav', import.meta.url)]),
   scaredBreathing: encodedAsset('scared-breathing', 3),
   shakyBreaths: encodedAsset('shaky-breaths', 4),
   heartbeat: encodedAsset('heartbeat', 4),
@@ -17,14 +17,14 @@ export const AUDIO_ASSETS = Object.freeze({
 });
 
 export const SAMPLE_LEVELS = Object.freeze({
-  musicBox: 1.65,
-  scaredBreathing: 0.46,
-  shakyBreaths: 0.5,
-  heartbeat: 0.5,
-  bones: 0.42,
-  somebodyPlease: 0.34,
-  jumpscare: 1.0,
-  scream: 0.72,
+  musicBox: 0.42,
+  scaredBreathing: 0.22,
+  shakyBreaths: 0.24,
+  heartbeat: 0.32,
+  bones: 0.36,
+  somebodyPlease: 0.23,
+  jumpscare: 0.68,
+  scream: 0.30,
 });
 
 export function clamp01(value) { return Math.max(0, Math.min(1, Number(value) || 0)); }
@@ -40,6 +40,11 @@ export function doorSampleMix(openness) {
 export function approachTimeForRound(round = {}) {
   const clueAt = Number(round.clueAt) || 0, arrivalAt = Number(round.arrivalAt) || clueAt;
   return clueAt + Math.max(0, arrivalAt - clueAt) * APPROACH_PROGRESS;
+}
+export function hallwayMix(snapshot = {}) {
+  const open = smoothstep(snapshot.door?.openness ?? 0);
+  const pressure = snapshot.clueVisible && !snapshot.resolved ? smoothstep(snapshot.threatProgress) : 0;
+  return { gain: 0.12 + open * 0.88, cutoff: 480 + open * 4700, music: musicBoxGain(open) * (1 - pressure * 0.8) };
 }
 export function monsterVisibleForAudio(snapshot = {}) {
   if (snapshot.mode !== 'running' || !snapshot.round?.danger || snapshot.resolved) return false;

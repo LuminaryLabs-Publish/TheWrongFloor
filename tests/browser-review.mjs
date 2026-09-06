@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { reviewAudio } from './audio-review.mjs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
@@ -122,6 +123,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.ok(webgl.inspection.renderer?.triangles > 0, 'actual triangles were rendered');
     assert.ok(webgl.layout.scrollWidth <= webgl.layout.width && webgl.layout.scrollHeight <= webgl.layout.height, 'game fits desktop viewport');
     await screenshot('00-title.png');
+    await reviewAudio(run, reviewDir);
 
     // This uses trusted browser input, not the deterministic review controls.
     await click('#play-button');

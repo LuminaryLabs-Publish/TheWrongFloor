@@ -3,7 +3,10 @@ const path = require('node:path');
 const fs = require('node:fs/promises');
 const { resolveGameAsset } = require('./asset-path.cjs');
 
-const GAME_URL = 'wrong-floor://game/index.html?standalone=1';
+const smoke = process.argv.includes('--smoke-test');
+const smokeOutput = process.env.WRONG_FLOOR_SMOKE_OUTPUT;
+if (smoke && !smokeOutput) throw new Error('WRONG_FLOOR_SMOKE_OUTPUT must name the test output directory');
+const GAME_URL = 'wrong-floor://game/index.html?standalone=1' + (smoke ? '&review=1' : '');
 const GAME_ROOT = path.join(__dirname, '_game');
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -17,7 +20,7 @@ const MIME = {
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; media-src 'self' blob:; font-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'";
 
 app.setName('Wrong Floor');
-app.setPath('userData', path.join(app.getPath('appData'), 'Wrong Floor'));
+app.setPath('userData', smoke ? path.join(smokeOutput, 'profile') : path.join(app.getPath('appData'), 'Wrong Floor'));
 app.enableSandbox();
 protocol.registerSchemesAsPrivileged([{ scheme: 'wrong-floor', privileges: {
   standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true
@@ -33,7 +36,7 @@ function openWindow() {
       contextIsolation: true, sandbox: true, nodeIntegration: false,
       webSecurity: true, allowRunningInsecureContent: false,
       webviewTag: false, devTools: !app.isPackaged,
-      spellcheck: false
+      spellcheck: false, backgroundThrottling: !smoke
     }
   });
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
@@ -44,9 +47,19 @@ function openWindow() {
     } catch { event.preventDefault(); }
   });
   window.webContents.on('will-attach-webview', event => event.preventDefault());
-  window.once('ready-to-show', () => window.show());
+  window.once('ready-to-show', () => { if (!smoke) window.show(); });
   window.on('closed', () => { window = null; });
-  window.loadURL(GAME_URL).catch(error => {
+  window.loadURL(GAME_URL).then(async () => {
+    if (!smoke) return;
+    try {
+      await require('./runtime-check.cjs')(window, smokeOutput);
+      app.exit(0);
+    } catch(error) {
+      await fs.mkdir(smokeOutput, {recursive:true});
+      await fs.writeFile(path.join(smokeOutput,'native-error.txt'), String(error.stack || error));
+      app.exit(1);
+    }
+  }).catch(error => {
     dialog.showErrorBox('Wrong Floor could not start', String(error.message));
     app.quit();
   });
@@ -82,6 +95,7 @@ if (!app.requestSingleInstanceLock()) {
       }
     });
     Menu.setApplicationMenu(Menu.buildFromTemplate([
+      ...(process.platform === 'darwin' ? [{ role: 'appMenu' }] : []),
       { label: 'Game', submenu: [{ role: 'quit' }] },
       { label: 'View', submenu: [{ role: 'togglefullscreen' }] }
     ]));

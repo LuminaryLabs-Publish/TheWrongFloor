@@ -14,7 +14,7 @@ for (const file of required) await access(path.join(game, file));
 const metadata = JSON.parse(await readFile(path.join(game, 'game.json'), 'utf8'));
 assert.equal(metadata.id, 'NXA-000010');
 assert.equal(metadata.slug, 'wrong-floor');
-assert.equal(metadata.version, '0.1.1');
+assert.equal(metadata.version, '0.2.0');
 const difficulty = JSON.parse(await readFile(path.join(game, 'content/difficulty.json'), 'utf8'));
 assert.equal(difficulty.rounds * difficulty.roundSeconds, 300);
 const encounters = JSON.parse(await readFile(path.join(game, 'content/encounters.json'), 'utf8'));

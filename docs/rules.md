@@ -1,6 +1,6 @@
 # Wrong Floor: deterministic rules and integration contract
 
-Status: implementation contract for vertical slice 0.1.1. Horror quality and device performance require separately recorded visual/audio review.
+Status: implementation contract for vertical slice 0.2.0. Horror quality and device performance require separately recorded visual/audio review.
 
 ## Experience
 
@@ -49,7 +49,7 @@ Events contain `{type, elapsed, roundIndex, data}`. Types are arrival, opened, c
 
 `storage.mjs` exports `loadSave`, `writeSave`, `sanitizeSave`, `recordResult`, `DEFAULT_SETTINGS`, and `SAVE_KEY`. Optional storage arguments support tests and alternative host adapters. Save key is `wrong-floor.save.v1`; no run state is persisted.
 
-Shape: `{version:1, settings, tutorialComplete, best:{standard,assisted}}`. Settings include sensitivity, deadZone, masterVolume, effectsVolume, ambienceVolume, captions, reducedMotion, reducedFlashes, softScares, assisted, quality, and bindings for close/recenter/pause. Unknown versions, malformed JSON, blocked access, and quota failure recover without blocking play. Bindings must use distinct supported keyboard codes. Values are clamped to valid ranges.
+Shape: `{version:1, settings, tutorialComplete, best:{standard,assisted}}`. Settings include sensitivity, deadZone, masterVolume, effectsVolume, ambienceVolume, filmGrain (0–1), brightness (0.7–1.5), captions, reducedMotion, reducedFlashes, softScares, assisted, quality, and bindings for close/recenter/pause. Old saves receive grain 0.35 and brightness 1. Unknown versions, malformed JSON, blocked access, and quota failure recover without blocking play. Bindings must use distinct supported keyboard codes. Values are clamped to valid ranges.
 
 ## Validation
 

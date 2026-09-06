@@ -23,11 +23,13 @@ export function createUI(actions = {}) {
       if (input.type === 'checkbox') input.checked = Boolean(value);
       else input.value = String(value);
       const output = form.querySelector(`[data-output="${input.name}"]`);
-      if (output) output.value = /Volume$/.test(input.name) ? `${Math.round(value * 100)}%` : Number(value).toFixed(2);
+      if (output) output.value = /Volume$/.test(input.name) || input.name === 'filmGrain' ? `${Math.round(value * 100)}%` : Number(value).toFixed(2);
     }
     byId('bind-close').textContent = binding ? 'PRESS A KEY…' : keyLabel(settings.bindings.close);
     byId('controls-hint').innerHTML = `WASD / ARROWS <b>LOOK</b><br>HOLD ${keyLabel(settings.bindings.close)} <b>CLOSE</b>`;
     document.body.classList.toggle('reduced-motion', settings.reducedMotion);
+    document.body.style.setProperty('--film-grain', settings.filmGrain);
+    document.body.style.setProperty('--display-brightness', settings.brightness);
   }
 
   function caption(text = '') {
@@ -117,6 +119,10 @@ export function createUI(actions = {}) {
     }
     byId('hold-close').classList.toggle('held', snapshot.phase === 'closing');
     byId('hold-close').disabled = snapshot.resolved || !['opening','observing','closing'].includes(snapshot.phase);
+    const seal = Math.round((1 - (snapshot.door?.openness ?? 1)) * 100);
+    byId('door-status').textContent = snapshot.resolved ? 'DOORS SEALED' : snapshot.phase === 'closing' ? `SEALING · ${seal}%` : snapshot.phase === 'opening' ? 'STAND CLEAR' : 'HOLD UNTIL SEALED';
+    byId('door-meter').style.setProperty('--seal', `${seal}%`);
+    if (!snapshot.practice && screen === 'playing' && index < 3 && !snapshot.resolved) caption('Watch the hallway. Normal floors close automatically.');
     if (snapshot.practice && screen === 'playing') caption(snapshot.round?.danger ? 'Something is wrong. Hold Close until the doors seal.' : 'This floor is normal. Wait and let the doors close by themselves.');
   }
 

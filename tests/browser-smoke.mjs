@@ -1,12 +1,17 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile, access } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { runWrongFloorBrowserChecks } from './browser-review.mjs';
 
 const root = path.resolve('dist');
+if (process.argv.includes('--smoke')) process.env.WRONG_FLOOR_SMOKE_ONLY = '1';
+if (process.argv.includes('--full')) {
+  process.env.WRONG_FLOOR_FULL_RUN = '1';
+  process.env.WRONG_FLOOR_REVIEW_DIR ??= '_review/wrong-floor';
+}
 const reviewDir = process.env.WRONG_FLOOR_REVIEW_DIR ? path.resolve(process.env.WRONG_FLOOR_REVIEW_DIR) : null;
 const mime = { '.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.webp':'image/webp','.png':'image/png' };
 const server = createServer(async (request,response) => {
@@ -23,15 +28,23 @@ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const baseUrl = `http://127.0.0.1:${server.address().port}`;
 const delay = ms => new Promise(resolve=>setTimeout(resolve,ms));
 
-const candidates=[process.env.CHROME_PATH,'google-chrome','google-chrome-stable','chromium','chromium-browser'].filter(Boolean);
-const chrome=candidates.find(candidate=>spawnSync(candidate,['--version'],{stdio:'ignore'}).status===0);
+const candidates=[process.env.CHROME_PATH,
+  ...(process.platform==='win32' ? [path.join(process.env.PROGRAMFILES || 'C:/Program Files','Google/Chrome/Application/chrome.exe'),path.join(process.env['PROGRAMFILES(X86)'] || 'C:/Program Files (x86)','Microsoft/Edge/Application/msedge.exe')] : []),
+  ...(process.platform==='darwin' ? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome','/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge'] : []),
+  'google-chrome','google-chrome-stable','chromium','chromium-browser'].filter(Boolean);
+let chrome;
+for(const candidate of candidates) {
+  if(path.isAbsolute(candidate)) { try { await access(candidate); chrome=candidate; break; } catch {} }
+  else if(spawnSync(candidate,['--version'],{stdio:'ignore',timeout:3000,windowsHide:true}).status===0) { chrome=candidate; break; }
+}
 assert.ok(chrome,'Chrome or Chromium is required for the browser check');
 const profile=await mkdtemp(path.join(tmpdir(),'wrong-floor-chrome-'));
 const child=spawn(chrome,[
   '--headless=new','--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader',
   '--ignore-gpu-blocklist','--disable-background-timer-throttling','--disable-renderer-backgrounding','--window-size=1280,800',
   '--remote-debugging-port=0',`--user-data-dir=${profile}`,'about:blank'
-],{stdio:['ignore','ignore','pipe']});
+],{stdio:['ignore','ignore','pipe'],windowsHide:true});
+child.stderr.on('data',()=>{});
 
 async function endpoint(){
   for(let attempt=0;attempt<100;attempt++){
@@ -93,16 +106,17 @@ try{
   await runWrongFloorBrowserChecks({call,event,evaluate,waitFor,listeners,baseUrl,delay});
 }finally{
   socket.close();
-  if(child.exitCode===null){
+  if(child.exitCode===null && child.signalCode===null){
     const gracefulExit=new Promise(resolve=>child.once('exit',resolve));
     child.kill('SIGTERM');
     await Promise.race([gracefulExit,delay(3000)]);
-    if(child.exitCode===null){
+    if(child.exitCode===null && child.signalCode===null){
       const forcedExit=new Promise(resolve=>child.once('exit',resolve));
       child.kill('SIGKILL');
       await forcedExit;
     }
   }
   await rm(profile,{recursive:true,force:true,maxRetries:10,retryDelay:100});
+  server.closeAllConnections();
   await new Promise(resolve=>server.close(resolve));
 }

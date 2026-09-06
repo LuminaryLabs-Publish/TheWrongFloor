@@ -2,7 +2,7 @@ import { createProceduralAudio } from './procedural-audio.mjs';
 import { createSampleAudio } from './sample-audio.mjs';
 
 export function createAudio() {
-  let ctx = null, master = null, limiter = null, ambienceBus = null, effectsBus = null;
+  let ctx = null, master = null, limiter = null, ambienceBus = null, effectsBus = null, rumbleFilter = null;
   let procedural = null, samples = null;
   let settings = { masterVolume: 0.7, ambienceVolume: 0.5, effectsVolume: 0.85, softScares: false };
   let paused = false, disposed = false;
@@ -17,10 +17,11 @@ export function createAudio() {
     ctx = new Audio({ latencyHint: 'interactive' });
     master = ctx.createGain(); ambienceBus = ctx.createGain(); effectsBus = ctx.createGain();
     limiter = ctx.createDynamicsCompressor();
-    limiter.threshold.value = -12; limiter.knee.value = 12; limiter.ratio.value = 12;
-    limiter.attack.value = 0.003; limiter.release.value = 0.18;
-    ambienceBus.connect(limiter); effectsBus.connect(limiter); limiter.connect(master); master.connect(ctx.destination);
-    master.gain.value = 0.5 * settings.masterVolume;
+    limiter.threshold.value = -6; limiter.knee.value = 6; limiter.ratio.value = 8;
+    limiter.attack.value = 0.004; limiter.release.value = 0.24;
+    rumbleFilter = ctx.createBiquadFilter(); rumbleFilter.type = 'highpass'; rumbleFilter.frequency.value = 32; rumbleFilter.Q.value = 0.5;
+    ambienceBus.connect(rumbleFilter); effectsBus.connect(rumbleFilter); rumbleFilter.connect(limiter); limiter.connect(master); master.connect(ctx.destination);
+    master.gain.value = 0.85 * settings.masterVolume;
     ambienceBus.gain.value = settings.ambienceVolume;
     effectsBus.gain.value = settings.effectsVolume;
     const getSettings = () => settings;
@@ -32,8 +33,9 @@ export function createAudio() {
     if (disposed) return;
     try {
       build();
-      await samples?.preload();
+      // Resume inside the initiating gesture, including Safari's stricter activation window.
       if (ctx?.state === 'suspended' && !paused) await ctx.resume();
+      await samples?.preload();
     } catch {
       // Audio is optional; visual gameplay remains available.
     }
@@ -41,7 +43,7 @@ export function createAudio() {
 
   function setSettings(next = {}) {
     settings = { ...settings, ...next };
-    smooth(master?.gain, 0.5 * settings.masterVolume);
+    smooth(master?.gain, 0.85 * settings.masterVolume);
     smooth(ambienceBus?.gain, settings.ambienceVolume);
     smooth(effectsBus?.gain, settings.effectsVolume);
   }
@@ -76,9 +78,11 @@ export function createAudio() {
     disposed = true;
     samples?.dispose(); procedural?.dispose();
     samples = null; procedural = null;
-    for (const node of [ambienceBus, effectsBus, limiter, master]) { try { node?.disconnect(); } catch {} }
+    for (const node of [ambienceBus, effectsBus, rumbleFilter, limiter, master]) { try { node?.disconnect(); } catch {} }
     ctx?.close().catch(() => {}); ctx = null;
   }
 
-  return { unlock, setSettings, update, event, pause, resume, isTerminalCuePlaying, dispose };
+  function reset() { samples?.reset(); procedural?.reset(); }
+  return { unlock, setSettings, update, event, pause, resume, reset, isTerminalCuePlaying, dispose,
+    inspect: () => ({ state: ctx?.state ?? 'unavailable', ...samples?.inspect() }) };
 }

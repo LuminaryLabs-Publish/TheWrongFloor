@@ -12,9 +12,23 @@ npm test
 npm start
 npm run package:linux
 npm run package:windows
+npm run package:mac
 ```
 
 `npm start` installs the pinned Electron runtime if missing, copies the current game into `.generated/app` and opens it. Packaging writes portable application directories into `dist/`; these directories contain the executable plus all required Electron resources. Distribute the entire directory, not just the executable. Linux packages should be built/tested on Linux and Windows packages on Windows before distribution. Cross-packaging does not verify the target OS.
+
+`package:mac` builds both Apple Silicon (`arm64`) and Intel (`x64`) applications. Build on macOS; the packager must preserve Electron framework symlinks. A Windows host without symlink privileges fails explicitly instead of reporting an empty successful package. macOS is deferred from the current completed scope. The active **Build platform candidates** workflow uses Windows and Linux runners, plus a Web build. Packages include original native icons and games category metadata. Signing/notarization is not configured.
+
+From the repository root, run `node scripts/archive-release.mjs win32 x64` (or `linux x64`, `darwin arm64`, `darwin x64`) after packaging. Archives, per-file hashes, and SHA-256 sidecars go into `releases/`. `npm run package:web` creates a Web ZIP with the game entry at its root. Serve it over HTTP(S); opening an HTML file directly does not support module workers.
+
+For isolated Windows verification in PowerShell:
+
+```powershell
+$env:WRONG_FLOOR_SMOKE_OUTPUT = Join-Path $PWD '_review/native'
+& '.\desktop\dist\Wrong Floor-win32-x64\wrong-floor.exe' --smoke-test
+```
+
+Run this from the repository root. The check uses a separate save profile, writes a screenshot and JSON evidence, and exits. Normal gameplay has no review API. The flag enables the same opt-in review API used by browser acceptance; it adds no renderer IPC or network access.
 
 Run as a normal desktop user. No `--no-sandbox` or browser-security-disabling flags are shipped. A managed environment that prevents Chromium process sockets cannot validate the desktop runtime; use a compatible desktop test machine.
 
@@ -35,9 +49,9 @@ Settings and scores use the game's existing localStorage under Electron's per-us
 - Test fullscreen transitions, resolution/DPI combinations, audio devices, muted audio, and accessibility options.
 - Restart the packaged executable and confirm settings and personal bests persist.
 - Verify no runtime network dependency by playing with network access unavailable.
-- Test Linux and Windows packages on their actual supported OS/hardware; record graphics renderer and frame times.
+- Test Linux, Windows, and both macOS architectures on their actual supported OS/hardware; record graphics renderer and frame times.
 - Review the art, audio, and game with human playtesters. A passing package build is not quality evidence.
-- Supply a final application icon and reviewed branding before commercial distribution.
+- Review the supplied application icon and store branding before commercial distribution.
 
 ## Steam publication gates
 

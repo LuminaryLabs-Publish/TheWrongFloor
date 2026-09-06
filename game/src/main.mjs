@@ -16,10 +16,11 @@ function randomSeed(){const values=new Uint32Array(2);crypto.getRandomValues(val
 function setMenu(screen){input?.setMenu(screen!=='playing');}
 function pause(){if(loading)return;if(ui.getScreen()==='settings'){ui.show(game?.snapshot().mode==='paused'?'pause':'title');return;}if(game?.snapshot().mode==='running'){game.pause();input.reset();audio.pause();ui.show('pause');}else if(game?.snapshot().mode==='paused')resume();}
 function resume(){if(!game)return;game.resume();input.reset();audio.resume();previous=performance.now();ui.show('playing');}
-function title(){startToken++;loading=false;game=null;preview=null;terminalAt=null;manual=false;input.reset();audio.pause();ui.show('title');ui.setReady(true);}
+function title(){startToken++;loading=false;game=null;preview=null;terminalAt=null;manual=false;input.reset();audio.reset();audio.pause();ui.show('title');ui.setReady(true);}
 async function start({seed,practice=false,manual:manualClock=false}={}){
   const token=++startToken;loading=true;terminalAt=null;preview=null;manual=manualClock;
-  input.reset();await audio.unlock();audio.setSettings(ui.getSettings());
+  input.reset();audio.reset();audio.resume();audio.setSettings(ui.getSettings());await audio.unlock();
+  if(token!==startToken||disposed)return;
   ui.show('title');ui.setReady(false,'BUILDING YOUR DESCENT');scene.clearPrepared();
   const settings=ui.getSettings(),chosen=String(seed||randomSeed()).slice(0,64);
   try{
@@ -52,7 +53,7 @@ try{
   await scene.prepare(titleState.round,save.settings);scene.render(titleState,0,{},save.settings);ui.setReady(true);
   window.addEventListener('pagehide',dispose);frame=requestAnimationFrame(tick);
   if(review)window.__wrongFloor={
-    start,snapshot:()=>game?.snapshot()??titleState,inspect:()=>scene.inspect(),
+    start,snapshot:()=>game?.snapshot()??titleState,inspect:()=>({...scene.inspect(),audio:audio.inspect()}),
     advance(dt,controls={}){if(!game)throw new Error('Start a review run first');manual=true;game.update(dt,controls);processEvents();const s=game.snapshot();scene.render(s,dt,{},ui.getSettings());ui.update(s);if(s.mode==='won'||s.mode==='lost')finish();return s;},
     async preview(options={}){const round={seed:'review-'+(options.entity??'guest')+'-'+(options.variant??0),danger:true,environment:'office',entity:'guest',variant:0,clueAt:1.8,arrivalAt:4.8,...options};await scene.prepare(round,ui.getSettings());const t=options.roundTime??2.8;preview={mode:'running',roundIndex:options.roundIndex??10,totalRounds:30,round,roundTime:t,elapsed:100+t,door:{openness:1},clueVisible:t>=round.clueAt,threatProgress:Math.max(0,Math.min(1,(t-round.clueAt)/(round.arrivalAt-round.clueAt))),mistakes:0};ui.show('playing');scene.recenter();scene.render(preview,0,{},ui.getSettings());return scene.inspect();},
     stopPreview(){preview=null;title();},pause,resume,dispose,

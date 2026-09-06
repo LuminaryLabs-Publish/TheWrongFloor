@@ -4,12 +4,17 @@
   "slug": "wrong-floor",
   "description": "Thirty floors. Five minutes. Close the doors before something gets inside.",
   "genre": "Horror / Observation",
-  "status": "prototype",
-  "version": "0.1.1",
+  "status": "vertical-slice",
+  "version": "0.2.0",
   "featured": true,
   "thumbnail": "cover.webp",
   "accent": "orange",
   "sortOrder": 1,
-  "controls": ["WASD / Arrows: look", "Hold Space / Gamepad A: close", "Enter / Gamepad B: recenter", "Escape / Start: pause"],
+  "controls": [
+    "WASD / Arrows: look",
+    "Hold Space / Gamepad A: close",
+    "Enter / Gamepad B: recenter",
+    "Escape / Start: pause"
+  ],
   "offlineReady": true
 }
