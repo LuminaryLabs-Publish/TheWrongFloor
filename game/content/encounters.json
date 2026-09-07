@@ -10,7 +10,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -24,22 +24,22 @@
   {
     "entity": "guest",
     "variant": 1,
-    "name": "The Smile",
-    "clueText": "The guest\u2019s mouth stretched while their body stayed still.",
+    "name": "The Twist",
+    "clueText": "The butler’s skull twisted while its body stayed still.",
     "environments": [
       "office",
       "hotel",
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
     "successReaction": "Entity remains outside the sealed cabin; optional impact cannot change resolved success.",
     "failureAnimation": "Short family-specific intrusion and silhouette lunge, softened when softScares or reducedMotion is enabled.",
     "audioCue": "Family cue begins with visible clue; visual evidence remains independently sufficient.",
-    "caption": "The guest\u2019s mouth stretched while their body stayed still.",
+    "caption": "The butler’s skull twisted while its body stayed still.",
     "reducedEffects": "No rapid flashing; suppress camera shake and soften intrusion when enabled.",
     "reset": "Remove encounter geometry/animation/audio bindings and reset all transforms before next floor."
   },
@@ -54,7 +54,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -76,7 +76,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -98,7 +98,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -120,7 +120,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -135,21 +135,21 @@
     "entity": "porter",
     "variant": 0,
     "name": "The Empty Uniform",
-    "clueText": "The porter\u2019s uniform had nobody inside it.",
+    "clueText": "The porter’s uniform had nobody inside it.",
     "environments": [
       "office",
       "hotel",
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
     "successReaction": "Entity remains outside the sealed cabin; optional impact cannot change resolved success.",
     "failureAnimation": "Short family-specific intrusion and silhouette lunge, softened when softScares or reducedMotion is enabled.",
     "audioCue": "Family cue begins with visible clue; visual evidence remains independently sufficient.",
-    "caption": "The porter\u2019s uniform had nobody inside it.",
+    "caption": "The porter’s uniform had nobody inside it.",
     "reducedEffects": "No rapid flashing; suppress camera shake and soften intrusion when enabled.",
     "reset": "Remove encounter geometry/animation/audio bindings and reset all transforms before next floor."
   },
@@ -164,7 +164,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -186,7 +186,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -208,7 +208,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -230,7 +230,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -252,7 +252,7 @@
       "basement"
     ],
     "normalStart": "Clear hallway viewed from the elevator; all threatening deformation remains absent before clueAt.",
-    "clueAt": "Seeded 1.3\u20132.4 seconds after arrival. Fully visible before approach begins.",
+    "clueAt": "Seeded 1.3–2.4 seconds after arrival. Fully visible before approach begins.",
     "threatMovement": "Family-specific procedural deformation and forward approach; threatProgress interpolates from clueAt to arrivalAt.",
     "closureDeadline": "clueAt + 3.0 / 2.6 / 2.2 seconds by tier; assisted adds 0.8 seconds. Full door closure takes 1.2 seconds.",
     "collision": "Entity reaches threshold only at arrivalAt. Door seal at the same instant wins.",
@@ -273,7 +273,7 @@
       "hotel",
       "basement"
     ],
-    "clueAt": "Seeded 1.3\u20132.4 seconds",
+    "clueAt": "Seeded 1.3–2.4 seconds",
     "caption": "The figure walked with its head locked sideways.",
     "reducedEffects": "No extra flashes or camera shake.",
     "reset": "Dispose skin, skeleton, materials and geometry; clear event voices.",
@@ -295,7 +295,7 @@
       "hotel",
       "basement"
     ],
-    "clueAt": "Seeded 1.3\u20132.4 seconds",
+    "clueAt": "Seeded 1.3–2.4 seconds",
     "caption": "The patrol dragged its arms with an impossible gait.",
     "reducedEffects": "No extra flashes or camera shake.",
     "reset": "Dispose skin, skeleton, materials and geometry; clear event voices.",
@@ -317,7 +317,7 @@
       "hotel",
       "basement"
     ],
-    "clueAt": "Seeded 1.3\u20132.4 seconds",
+    "clueAt": "Seeded 1.3–2.4 seconds",
     "caption": "Long fingers moved before the figure stepped forward.",
     "reducedEffects": "No extra flashes or camera shake.",
     "reset": "Dispose skin, skeleton, materials and geometry; clear event voices.",
@@ -339,7 +339,7 @@
       "hotel",
       "basement"
     ],
-    "clueAt": "Seeded 1.3\u20132.4 seconds",
+    "clueAt": "Seeded 1.3–2.4 seconds",
     "caption": "The figure twisted its spine while walking toward the lift.",
     "reducedEffects": "No extra flashes or camera shake.",
     "reset": "Dispose skin, skeleton, materials and geometry; clear event voices.",
@@ -361,7 +361,7 @@
       "hotel",
       "basement"
     ],
-    "clueAt": "Seeded 1.3\u20132.4 seconds",
+    "clueAt": "Seeded 1.3–2.4 seconds",
     "caption": "A shrouded figure approached with a silently opening mouth.",
     "reducedEffects": "No extra flashes or camera shake.",
     "reset": "Dispose skin, skeleton, materials and geometry; clear event voices.",
@@ -383,7 +383,7 @@
       "hotel",
       "basement"
     ],
-    "clueAt": "Seeded 1.3\u20132.4 seconds",
+    "clueAt": "Seeded 1.3–2.4 seconds",
     "caption": "The shroud bent sideways as the figure began its approach.",
     "reducedEffects": "No extra flashes or camera shake.",
     "reset": "Dispose skin, skeleton, materials and geometry; clear event voices.",

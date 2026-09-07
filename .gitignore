@@ -5,3 +5,8 @@ desktop/node_modules/
 desktop/.generated/
 desktop/dist/
 *.log
+
+# Preserve local generated release/cache exclusions across main updates.
+releases/
+desktop/.electron-cache/
+desktop/.npm-cache/

@@ -1,10 +1,11 @@
+import {createOpeningAudio} from './opening.mjs';
 import { createProceduralAudio } from './procedural.mjs';
 import { createSampleAudio } from './voices.mjs';
 
 import {audioPresentation} from './mixer.mjs';
 export function createAudio() {
   let ctx = null, master = null, limiter = null, ambienceBus = null, effectsBus = null, rumbleFilter = null;
-  let procedural = null, samples = null;
+  let procedural = null, samples = null, opening = null;
   let settings = { masterVolume: 0.7, ambienceVolume: 0.5, effectsVolume: 0.85, softScares: false };
   let paused = false, disposed = false;
   const smooth = (parameter, value, time = 0.07) => {
@@ -28,6 +29,8 @@ export function createAudio() {
     const getSettings = () => settings;
     procedural = createProceduralAudio({ context: ctx, ambienceBus, effectsBus, getSettings });
     samples = createSampleAudio({ context: ctx, ambienceBus, effectsBus, getSettings });
+    opening = createOpeningAudio({context:ctx,ambienceBus});
+    opening.preload();
   }
 
   async function unlock() {
@@ -78,13 +81,13 @@ export function createAudio() {
 
   function dispose() {
     disposed = true;
-    samples?.dispose(); procedural?.dispose();
+    opening?.dispose(); samples?.dispose(); procedural?.dispose();
     samples = null; procedural = null;
     for (const node of [ambienceBus, effectsBus, rumbleFilter, limiter, master]) { try { node?.disconnect(); } catch {} }
     ctx?.close().catch(() => {}); ctx = null;
   }
 
   function reset() { samples?.reset(); procedural?.reset(); }
-  return { unlock, setSettings, update, event, pause, resume, reset, isTerminalCuePlaying, dispose,
-    inspect: () => ({ state: ctx?.state ?? 'unavailable', ...samples?.inspect() }) };
+  return { updateOpening:state=>opening?.update(state), unlock, setSettings, update, event, pause, resume, reset, isTerminalCuePlaying, dispose,
+    inspect: () => ({ state: ctx?.state ?? 'unavailable', opening:opening?.inspect(), ...samples?.inspect() }) };
 }

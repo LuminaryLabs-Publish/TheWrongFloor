@@ -102,7 +102,7 @@ export function createSampleAudio({ context: ctx, ambienceBus, effectsBus, getSe
     const soft = getSettings().softScares ? 0.58 : 1;
     if (!running) { if (music) smooth(music.gain.gain, 0, 0.15); return; }
     if (!music && buffers.has('musicBox')) music = createSource('musicBox', ambienceBus, { loop: true, gain: 0, pan: -0.18, cutoff: 3400 });
-    if (music) { smooth(music.gain.gain, mix.music, 0.35); smooth(music.filter.frequency, mix.cutoff, 0.18); }
+    if (music) { smooth(music.gain.gain, snapshot.mode==='lobby'?0:mix.music, 0.35); smooth(music.filter.frequency, mix.cutoff, 0.18); }
     smooth(hallGain.gain, mix.gain); smooth(hallFilter.frequency, mix.cutoff);
     const pressure = clamp01(snapshot.threatProgress);
     // Panic follows the visible clue, leaving the arrival quiet enough to inspect.

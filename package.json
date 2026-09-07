@@ -8,9 +8,12 @@
     "build": "node scripts/build-site.mjs",
     "serve": "node scripts/serve.mjs",
     "validate": "node scripts/validate-project.mjs && node scripts/migration-manifest.mjs --check",
-    "test": "node --test tests/game.test.mjs tests/audio.test.mjs tests/expansion.test.mjs tests/floor30.test.mjs desktop/tests/*.test.mjs && npm run validate && node desktop/stage.mjs && node desktop/validate-stage.mjs",
+    "test": "node --test tests/cinematic.test.mjs tests/intro.test.mjs tests/rooms.test.mjs tests/characters.test.mjs tests/game.test.mjs tests/audio.test.mjs tests/expansion.test.mjs tests/floor30.test.mjs desktop/tests/*.test.mjs && npm run validate && node desktop/stage.mjs && node desktop/validate-stage.mjs",
     "test:browser": "WRONG_FLOOR_SMOKE_ONLY=1 node tests/browser-smoke.mjs",
-    "review:full": "WRONG_FLOOR_FULL_RUN=1 WRONG_FLOOR_REVIEW_DIR=_review/wrong-floor node tests/browser-smoke.mjs"
+    "review:full": "WRONG_FLOOR_FULL_RUN=1 WRONG_FLOOR_REVIEW_DIR=_review/wrong-floor node tests/browser-smoke.mjs",
+    "test:cinematic:browser": "node tests/browser-smoke.mjs --cinematic",
+    "test:intro:browser": "node tests/browser-smoke.mjs --intro",
+    "test:rooms:browser": "node tests/browser-smoke.mjs --room-safety"
   },
   "engines": {
     "node": ">=22.12.0"

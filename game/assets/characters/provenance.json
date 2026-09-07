@@ -1,0 +1,26 @@
+{
+  "butler": {
+    "source_sha256": "134e0c1808fa406ed1d689e42a71f88a822d85a28626ebe4933dd2adf6a2aa62",
+    "sha256": "44dad9af41400021a3c1fbc47ef6d34749746587a70d2c0460e3c163fd0e8962",
+    "source_bytes": 42639300,
+    "bytes": 23183864
+  },
+  "hollow": {
+    "source_sha256": "d12a38365575ae7801f95ab5f65cce8c94ce82489300c5b690717d37bb07d837",
+    "sha256": "2d9436186f70a85b7c4fc214c5cde59b09a3e7217e1b3698c68e736d6d4f71d8",
+    "source_bytes": 16637852,
+    "bytes": 5437160
+  },
+  "matriarch": {
+    "source_sha256": "c78868f02128080df290b2cd1d0b58d3b093227ae71159dff8f898a5168f1589",
+    "sha256": "f49a3834d2ebf976c2a9537a2d0aca90217cce96fd83a686a40f20a85d1685e2",
+    "source_bytes": 48394036,
+    "bytes": 22147080
+  },
+  "unburied": {
+    "source_sha256": "6e82625ca11541ddbdbd92f4015b655e0931d723073c55fe3c8a3d4d2b8a2fdf",
+    "sha256": "a1bd517a90a9c8c23ae5ae44e1dc47ee8217b80693ba091999b2bdf52d4e7ec9",
+    "source_bytes": 42034600,
+    "bytes": 25104132
+  }
+}

@@ -4,7 +4,7 @@ export const ENTITIES = Object.freeze(['guest', 'tall', 'ceiling', 'porter', 'sh
 export const DIFFICULTY = Object.freeze({ rounds: 30, roundSeconds: 10, normalFloors: 12, dangerousFloors: 18, normalResolveAt: 6, assistedExtraSeconds: 0.8 });
 export const ENCOUNTERS = Object.freeze([
   { entity: 'guest', variant: 0, name: 'The Reflection', clueText: 'The reflection moved while the guest stood still.' },
-  { entity: 'guest', variant: 1, name: 'The Smile', clueText: 'The guest’s mouth stretched while their body stayed still.' },
+  { entity: 'guest', variant: 1, name: 'The Twist', clueText: 'The butler’s skull twisted while its body stayed still.' },
   { entity: 'tall', variant: 0, name: 'The Tall Guest', clueText: 'The bent figure was taller than its doorway.' },
   { entity: 'tall', variant: 1, name: 'The Unfolding', clueText: 'A figure unfolded from the maintenance entrance.' },
   { entity: 'ceiling', variant: 0, name: 'Ceiling Walker', clueText: 'Fingers gripped the ceiling above the light.' },

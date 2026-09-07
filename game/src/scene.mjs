@@ -1,7 +1,8 @@
 import {createFloorDetail} from './floors/scene-kit.mjs';
-import {createRiggedCreature,RIGGED_ENTITIES} from './creatures/rig.mjs';
+import {createCharacterModels} from './character-models.mjs';
+import {createRoomModels} from './room-models.mjs';
+import {floorProfile} from './floors/catalog.mjs';
 import * as THREE from '../vendor/three/three.module.js';
-import { kit as horrorKit } from '../vendor/factory-kits/src/domains/factory/object/creature/kits/horror-kit/index.js';
 import { kit as liminalKit } from '../vendor/factory-kits/src/domains/factory/object/structure/kits/liminal-kit/index.js';
 import { createDistressSampler } from '../vendor/factory-kits/src/domains/factory/material/procedural/kits/distressed-kit/index.js';
 
@@ -25,6 +26,8 @@ export function createScene(canvas) {
   const cabin = new THREE.Group(), hall = new THREE.Group(), actors = new THREE.Group();
   scene.add(cabin,hall,actors);
   const textures = [], permanentMaterials = [];
+  const characterModels=createCharacterModels(),roomModels=createRoomModels();
+  let roomModel=null,cabinModel=null;
   function texture(kind,seed=1) {
     const c=document.createElement('canvas');c.width=c.height=512;
     const x=c.getContext('2d');let s=seed>>>0;
@@ -71,13 +74,21 @@ export function createScene(canvas) {
   let floorDetail=null;
   let roundKey='',entity=null,secondary=null,mouth=null,head=null,cart=null,ceiling=null,mirror=null,shadowGlyph=null,clueLamp=null,maintenanceDoor=null,escapeTime=0;
   let lastArtifact=null, yaw=0,pitch=0,lastEnvironment='office',visualTime=0,quality='high',shadowResolution=1024,lastShadowSignature='';
-  batchRigid(cabin,new Set([leftDoor,rightDoor,...indicators]));
-  const prepared=new Map(),pending=new Map();let worker=null,requestId=0;
-  function prepare(round,settings={}){const k=String(round.seed);if(prepared.has(k))return Promise.resolve();
-    if(!worker){worker=new Worker(new URL('./factory-worker.mjs',import.meta.url),{type:'module'});worker.onmessage=({data})=>{const item=pending.get(data.id);if(!item)return;pending.delete(data.id);if(data.error)item.reject(new Error(data.error));else {prepared.set(item.key,data);item.resolve();}};worker.onerror=error=>{for(const item of pending.values())item.reject(new Error(error.message||'Factory worker failed'));pending.clear();worker?.terminate();worker=null;};}
-    return new Promise((resolve,reject)=>{const id=++requestId;pending.set(id,{resolve,reject,key:k});const generationRound=!round.danger&&hash(String(round.seed))%3===0?{...round,danger:true,entity:'mannequin'}:round;worker.postMessage({id,round:generationRound,quality:settings.quality});});
+  const cabinStatic=new THREE.Group();cabinStatic.name='procedural-cabin';
+  for(const o of [...cabin.children])if(![leftDoor,rightDoor,...indicators].includes(o)&&!o.userData.setText)cabinStatic.add(o);
+  cabin.add(cabinStatic);batchRigid(cabinStatic);
+  async function prepareCabin(){
+    if(cabinModel)return;
+    if(await roomModels.prepare('elevator-interior')&&!cabinModel){cabinModel=roomModels.instantiate('elevator-interior');if(cabinModel){cabinStatic.visible=false;cabin.add(cabinModel);}}
   }
-  function disposeGroup(group){group.traverse(o=>{if(o.isSkinnedMesh)o.skeleton?.dispose();if(o.geometry)o.geometry.dispose();if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material]){if(!permanentMaterials.includes(m)){m.map?.dispose();m.dispose();}}}});group.clear();}
+  const prepared=new Map(),pending=new Map();let worker=null,requestId=0;
+  async function prepare(round,settings={}){await characterModels.prepare(round.danger?round.entity:'looming');const k=String(round.seed)+':'+floorProfile(round.profile).id;if(prepared.has(k))return;
+    const [authored]=await Promise.all([roomModels.prepare(floorProfile(round.profile).id),roomModels.prepare('exit-lobby'),prepareCabin()]);
+    if(authored){prepared.set(k,{roomId:floorProfile(round.profile).id});return;}
+    if(!worker){worker=new Worker(new URL('./factory-worker.mjs',import.meta.url),{type:'module'});worker.onmessage=({data})=>{const item=pending.get(data.id);if(!item)return;pending.delete(data.id);if(data.error)item.reject(new Error(data.error));else {prepared.set(item.key,data);item.resolve();}};worker.onerror=error=>{for(const item of pending.values())item.reject(new Error(error.message||'Factory worker failed'));pending.clear();worker?.terminate();worker=null;};}
+    return new Promise((resolve,reject)=>{const id=++requestId;pending.set(id,{resolve,reject,key:k});worker.postMessage({id,round,quality:settings.quality});});
+  }
+  function disposeGroup(group){group.traverse(o=>{o.userData.release?.();if(o.userData.sharedCharacterResource||o.userData.sharedRoomResource)return;if(o.isSkinnedMesh)o.skeleton?.dispose();if(o.geometry)o.geometry.dispose();if(o.material){for(const m of Array.isArray(o.material)?o.material:[o.material]){if(!permanentMaterials.includes(m)){m.map?.dispose();m.dispose();}}}});group.clear();}
   // Batch only rigid siblings with identical material/attribute contracts. Animated
   // parts retain their pivots; every source vertex and triangle is preserved.
   function batchRigid(parent,excluded=new Set()){
@@ -93,7 +104,7 @@ export function createScene(canvas) {
     const mouthMesh=g.getObjectByName('mouth-void');if(mouthMesh){mouthMesh.geometry.computeBoundingBox();const center=mouthMesh.geometry.boundingBox.getCenter(new THREE.Vector3());mouthMesh.geometry.translate(-center.x,-center.y,-center.z);mouthMesh.position.add(center);}
     const faceAssembly=g.getObjectByName('head-assembly');if(faceAssembly)batchRigid(faceAssembly);batchRigid(g);return g;
   }
-  function buildHall(environment,seed,artifact,themed=false){disposeGroup(hall);lastEnvironment=environment;
+  function buildHall(environment,seed,artifact,themed=false){disposeGroup(hall);roomModel=null;lastEnvironment=environment;
     const env=environment==='hotel'?'hotel':environment==='basement'?'basement':'office';
     const wall=new THREE.MeshStandardMaterial({map:texture(env==='basement'?'concrete':'wall',seed),color:env==='hotel'?'#877562':env==='basement'?'#7d8e80':'#adbaa5',roughness:.95});
     const floor=new THREE.MeshStandardMaterial({map:texture(env==='hotel'?'carpet':'concrete',seed+1),roughness:.85,color:env==='hotel'?'#856659':'#737d72'});
@@ -110,20 +121,25 @@ export function createScene(canvas) {
   function makeShadow(){const shape=new THREE.Shape();shape.moveTo(-.12,0);shape.bezierCurveTo(-.65,.18,-.2,.45,-.20,.8);shape.bezierCurveTo(-.8,.55,-1,.85,-.43,.95);shape.lineTo(-.25,1.05);shape.bezierCurveTo(-.38,1.5,.38,1.5,.25,1.05);shape.lineTo(.43,.95);shape.bezierCurveTo(1,.85,.8,.55,.20,.8);shape.bezierCurveTo(.2,.45,.65,.18,.12,0);shape.lineTo(.04,.45);shape.closePath();const m=new THREE.Mesh(new THREE.ShapeGeometry(shape,24),new THREE.MeshBasicMaterial({color:'#030406',transparent:true,opacity:.94,side:THREE.DoubleSide,depthWrite:false}));m.name='impossible-shadow';m.rotation.x=-Math.PI/2;m.scale.set(1.3,2.1,1);m.position.set(0,.028,-3);hall.add(m);return m;}
   function ensurePanel(){if(!ceiling)ceiling=box(hall,1.15,.07,1.15,.15,3.15,-4,dark);return ceiling;}
   function makeMaintenanceDoor(){const frame=new THREE.Group();frame.position.set(-.65,0,-8.45);hall.add(frame);box(frame,.12,2.5,.13,-.77,1.25,0,brass);box(frame,.12,2.5,.13,.77,1.25,0,brass);box(frame,1.65,.12,.13,0,2.5,0,brass);maintenanceDoor=new THREE.Group();maintenanceDoor.position.set(-.70,0,.02);frame.add(maintenanceDoor);box(maintenanceDoor,1.4,2.4,.08,.7,1.2,0,dark);label(frame,'MAINTENANCE',1.3,.17,0,2.68,.09,{font:42});}
-  function buildLobby(){floorDetail=null;disposeGroup(actors);disposeGroup(hall);entity=secondary=mouth=head=cart=ceiling=mirror=shadowGlyph=clueLamp=maintenanceDoor=null;const warm=new THREE.MeshStandardMaterial({color:'#dad1b8',roughness:.7}),stone=new THREE.MeshStandardMaterial({color:'#77796b',roughness:.35});box(hall,9,.15,15,0,-.08,-6.5,stone);box(hall,9,4,.2,0,2,-13,warm);for(const side of [-1,1])box(hall,.2,4,15,side*4.5,2,-6.5,warm);box(hall,4,2.8,.12,0,1.4,-12.8,new THREE.MeshBasicMaterial({color:'#c7e2d2'}));for(const side of [-1,1])box(hall,.09,2.8,.18,side*1.95,1.4,-12.6,brass);box(hall,.09,2.8,.18,0,1.4,-12.6,brass);label(hall,'LOBBY  /  EXIT',3,.42,0,3.22,-12.5,{color:'#e3fff1',bg:'#244737',font:56});label(hall,'YOU MADE IT.',2.3,.28,0,2.3,-6,{color:'#e6e5cc',bg:'#26372f',font:55});fill.color.set('#ffe7bc');lastEnvironment='lobby';escapeTime=0;batchRigid(hall);}
+  function buildLobby(){floorDetail=null;disposeGroup(actors);disposeGroup(hall);roomModel=roomModels.instantiate('exit-lobby');entity=secondary=mouth=head=cart=ceiling=mirror=shadowGlyph=clueLamp=maintenanceDoor=null;
+    if(roomModel){hall.add(roomModel);fill.color.set('#c8d8bd');lastEnvironment='lobby';escapeTime=0;return;}
+    const warm=new THREE.MeshStandardMaterial({color:'#dad1b8',roughness:.7}),stone=new THREE.MeshStandardMaterial({color:'#77796b',roughness:.35});box(hall,9,.15,15,0,-.08,-6.5,stone);box(hall,9,4,.2,0,2,-13,warm);for(const side of [-1,1])box(hall,.2,4,15,side*4.5,2,-6.5,warm);box(hall,4,2.8,.12,0,1.4,-12.8,new THREE.MeshBasicMaterial({color:'#c7e2d2'}));for(const side of [-1,1])box(hall,.09,2.8,.18,side*1.95,1.4,-12.6,brass);box(hall,.09,2.8,.18,0,1.4,-12.6,brass);label(hall,'LOBBY  /  EXIT',3,.42,0,3.22,-12.5,{color:'#e3fff1',bg:'#244737',font:56});label(hall,'YOU MADE IT.',2.3,.28,0,2.3,-6,{color:'#e6e5cc',bg:'#26372f',font:55});fill.color.set('#ffe7bc');lastEnvironment='lobby';escapeTime=0;batchRigid(hall);}
   function loadRound(round,keyValue){roundKey=keyValue;disposeGroup(actors);entity=secondary=mouth=head=cart=ceiling=mirror=shadowGlyph=clueLamp=maintenanceDoor=null;fill.color.set('#adcecd');
-    const seed=hash(String(round.seed??keyValue)),cache=prepared.get(String(round.seed));buildHall(round.environment,seed,cache?.interior,true);floorDetail=createFloorDetail(THREE,round,{label});hall.add(floorDetail);fill.color.set(floorDetail.userData.tint);
-    if(!round.danger){lastArtifact=null;if(cache?.creature){const still=artifactGroup(cache.creature);still.position.set(1.1,0,-7);still.scale.setScalar(.82);actors.add(still);}batchRigid(hall,new Set([ceiling]));return;}
+    const seed=hash(String(round.seed??keyValue)),cache=prepared.get(String(round.seed)+':'+floorProfile(round.profile).id);
+    disposeGroup(hall);roomModel=roomModels.instantiate(floorProfile(round.profile).id);
+    if(roomModel){hall.add(roomModel);lastEnvironment=round.environment;}else buildHall(round.environment,seed,cache?.interior,true);
+    floorDetail=createFloorDetail(THREE,round,{label,decorations:!roomModel});hall.add(floorDetail);fill.color.set(floorDetail.userData.tint);
+    if(!round.danger){lastArtifact=null;if(hash(String(round.seed))%3===0){const still=characterModels.instantiate('looming');still.position.set(1.1,0,-7);still.scale.setScalar(.82);actors.add(still);}batchRigid(hall,new Set([ceiling]));return;}
     const aliases={tall:'tall-one',ceiling:'ceiling-walker'};const archetype=aliases[round.entity]??round.entity;
-    lastArtifact=RIGGED_ENTITIES.includes(round.entity)?null:cache?.creature??horrorKit.services.generate({seed:String(round.seed??keyValue),params:{archetype,detail:quality==='low'?12:18,distortion:.45+(seed%50)/100,stature:archetype==='tall-one'?2.6:2.25,age:.7}});
-    entity=RIGGED_ENTITIES.includes(round.entity)?createRiggedCreature(THREE,round.entity):artifactGroup(lastArtifact);actors.add(entity);entity.position.set(0,0,-8);
-    head=entity.getObjectByName('head-assembly');mouth=entity.getObjectByName('mouth-void');
-    if(archetype==='guest'){secondary=artifactGroup(lastArtifact);actors.add(secondary);secondary.position.set(1.35,0,-8);secondary.scale.setScalar(.85);const m=new THREE.MeshStandardMaterial({color:'#66807b',metalness:.95,roughness:.16});mirror=box(hall,1.35,2.5,.035,1.35,1.25,-8.25,m);for(const side of [-1,1])box(hall,.06,2.55,.06,1.35+side*.69,1.25,-8.20,brass);box(hall,1.42,.06,.06,1.35,2.53,-8.2,brass);}
+    lastArtifact=null;
+    entity=characterModels.instantiate(round.entity);actors.add(entity);entity.position.set(0,0,-8);
+    head=entity.getObjectByName('HEAD')??entity.getObjectByName('head');mouth=null;
+    if(archetype==='guest'){secondary=characterModels.instantiate(round.entity);actors.add(secondary);secondary.position.set(1.35,0,-8);secondary.scale.setScalar(.85);const m=new THREE.MeshStandardMaterial({color:'#66807b',metalness:.95,roughness:.16});mirror=box(hall,1.35,2.5,.035,1.35,1.25,-8.25,m);for(const side of [-1,1])box(hall,.06,2.55,.06,1.35+side*.69,1.25,-8.20,brass);box(hall,1.42,.06,.06,1.35,2.53,-8.2,brass);}
     if(archetype==='tall-one')makeMaintenanceDoor();
     if(archetype==='ceiling-walker')ensurePanel();
     if(archetype==='porter'){ensureCart();if(Number(round.variant)===1)shadowGlyph=makeShadow();}
     if(archetype==='shadow'){shadowGlyph=makeShadow();clueLamp=new THREE.PointLight('#ffe7a8',12,7,1.4);clueLamp.position.set(-1,2.5,-3.5);const bulb=new THREE.Mesh(new THREE.SphereGeometry(.07,12,8),glow);clueLamp.add(bulb);hall.add(clueLamp);}
-    if(archetype==='mannequin'){for(const x of [-1.4,1.4]){const g=artifactGroup(lastArtifact);g.position.set(x,0,-9);g.rotation.y=x*.2;actors.add(g);}}
+    if(archetype==='mannequin'){for(const x of [-1.4,1.4]){const g=characterModels.instantiate(round.entity);g.position.set(x,0,-9);g.rotation.y=x*.2;actors.add(g);}}
     batchRigid(hall,new Set([ceiling,shadowGlyph,mirror]));
   }
   function hash(t){let h=2166136261;for(const c of t)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0;}
@@ -133,7 +149,7 @@ export function createScene(canvas) {
     quality=settings.quality??'medium';const desiredPixelRatio=Math.min(devicePixelRatio,quality==='low'?.75:quality==='high'?1.5:1);if(desiredPixelRatio!==appliedPixelRatio){appliedPixelRatio=desiredPixelRatio;renderer.setPixelRatio(appliedPixelRatio);}
     if(snapshot.mode!=='paused')visualTime+=Math.max(0,dt);const animationTime=Number.isFinite(snapshot.roundTime)?snapshot.roundTime:visualTime;
     const round=snapshot.round??{environment:'office',danger:true,entity:'tall-one',variant:'oversized',seed:'title'};
-    const k=`${round.seed}:${snapshot.roundIndex??-1}:${round.entity}:${round.variant}:${snapshot.mode==='won'?'lobby':'floor'}`;if(k!==roundKey){if(snapshot.mode==='won'){roundKey=k;buildLobby();}else loadRound(round,k);}
+    const k=`${round.seed}:${round.profile??'archive'}:${snapshot.roundIndex??-1}:${round.entity}:${round.variant}:${snapshot.mode==='won'?'lobby':'floor'}`;if(k!==roundKey){if(snapshot.mode==='won'){roundKey=k;buildLobby();}else loadRound(round,k);}
     yaw=THREE.MathUtils.clamp(yaw+(input.lookX??0)*dt*(settings.sensitivity??1)*1.15,-.46,.46);
     pitch=THREE.MathUtils.clamp(pitch+(input.lookY??0)*dt*(settings.sensitivity??1)*.8,-.27,.35);
     camera.rotation.set(pitch,yaw,0,'YXZ');
@@ -143,15 +159,18 @@ export function createScene(canvas) {
     indicators.forEach((m,i)=>{const on=i<3-(snapshot.mistakes??0);m.material.color.set(on?'#8dd1b1':'#cb4935');m.material.emissive.set(on?'#356e48':'#561308');});
     const clue=!!snapshot.clueVisible,progress=Math.max(0,Math.min(1,snapshot.threatProgress??0)),clueAge=clue?Math.max(0,animationTime-(round.clueAt??0)):0;
     floorDetail?.userData.update(snapshot);
+    roomModel?.userData.updateRoom(visualTime,settings);
+    cabinModel?.userData.updateRoom(visualTime,{...settings,reducedFlashes:true});
     const entityName=({tall:'tall-one',ceiling:'ceiling-walker'})[round.entity]??round.entity??'',variant=Number(round.variant??0);
+    for(const actor of actors.children)actor.userData.animate?.(animationTime,actor===entity&&clue&&progress>.14,round.danger&&(!clue||actor!==entity));
     if(entity){const approach=Math.max(0,(progress-.14)/.86)**2;entity.position.set(0,0,-8+approach*7.4);entity.rotation.set(0,0,0);entity.scale.set(1,1,1);entity.visible=true;
       if(entityName==='tall-one'){const reveal=clue?Math.min(1,clueAge/.5):0;entity.rotation.z=(variant===1?1.15:.5)*(1-reveal)+Math.sin(animationTime*3)*.025*reveal;entity.scale.y=(variant===1?.4:.74)+(variant===1?.54:.20)*reveal;entity.position.x=-.65*(1-approach);if(maintenanceDoor)maintenanceDoor.rotation.y=variant===1?-Math.PI*.68*reveal:-Math.PI*.7;entity.visible=variant===0||clue;}
       if(entityName==='ceiling-walker'){entity.rotation.z=Math.PI;entity.position.y=3.08;entity.position.z=-4+approach*3.35;entity.rotation.x=clue?.14*Math.sin(animationTime*7):0;entity.visible=variant===0||clueAge>.15;if(ceiling)ceiling.rotation.x=clue&&variant===1?Math.min(.65,clueAge*3):0;}
       if(entityName==='porter'){entity.position.x=.9*(1-approach);entity.position.z=-5+approach*4.35;entity.visible=clue&&(variant===0||progress>.4);const cartMove=clue?Math.min(1,clueAge*1.7):0;if(cart){cart.position.z=-5+(variant===1?cartMove*.65:0)+approach*2.2;cart.position.x=1.3-(variant===1?cartMove*.6:0);}if(shadowGlyph){shadowGlyph.visible=clue;shadowGlyph.position.set(-.85-cartMove*.4,.028,-2.1-approach*.7);shadowGlyph.scale.x=1.1+cartMove*.6;}}
       if(entityName==='shadow'){entity.visible=clue&&progress>.4;entity.position.z=-6+progress*5.35;entity.scale.set(1+Math.sin(animationTime*5)*.06,Math.max(.08,(progress-.4)/.6),1);if(shadowGlyph){shadowGlyph.visible=clue;shadowGlyph.position.set(variant===1?Math.sin(clueAge*2)*.85:0,.028,-4+progress*3.5);shadowGlyph.scale.y=2.1+progress;}if(clueLamp)clueLamp.position.x=variant===1?Math.sin(clueAge*2)*1.1:-1;}
-      if(entityName==='guest'){entity.position.x=-.45;entity.position.z=-8+approach*7.35;if(secondary){secondary.rotation.y=clue&&variant===0?Math.min(.9,clueAge*2):0;secondary.position.z=-8.15;secondary.visible=variant===0;secondary.scale.setScalar(.85);}if(mouth){mouth.scale.y=clue&&variant===1?1+Math.min(2.1,clueAge*3):1;mouth.scale.x=clue&&variant===1?1+Math.min(.75,clueAge):1;}}
+      if(entityName==='guest'){entity.position.x=-.45;entity.position.z=-8+approach*7.35;if(secondary){secondary.rotation.y=clue&&variant===0?Math.min(.9,clueAge*2):0;secondary.position.z=-8.15;secondary.visible=variant===0;secondary.scale.setScalar(.85);}if(head&&clue&&variant===1)head.rotation.y+=Math.min(Math.PI,clueAge*3);}
       if(entityName==='mannequin'){if(variant===0)entity.position.z=clue?-6.4+approach*5.75:-9;if(head)head.rotation.y=clue&&variant===1?Math.min(.85,clueAge*2):0;}
-      if(RIGGED_ENTITIES.includes(round.entity)){entity.visible=clue;entity.userData.animate(clueAge,progress,variant);}
+      if(['warden','weaver','mourner'].includes(round.entity)){entity.visible=clue;if(clue){if(head&&entityName==='warden')head.rotation.z=variant===0?.8:-.6;if(entityName==='weaver')entity.rotation.z=Math.sin(clueAge*3)*.18;if(entityName==='mourner')entity.rotation.z=variant===1?.25:0;}}
       entity.traverse(part=>{if(['arm','finger','ribbon','cloth'].includes(part.userData.role)){const strength=clue?.018:0;part.rotation.z=Math.sin(animationTime*(clue?9:1)+hash(part.name)%100)*strength;}});
       if(snapshot.mode==='lost'&&snapshot.failureReason==='intrusion'){entity.visible=true;entity.scale.y=Math.max(.8,entity.scale.y);entity.position.z=settings.softScares?.45:1.55;entity.position.y=entityName==='ceiling-walker'?2.9:0;}
     }
@@ -166,6 +185,6 @@ export function createScene(canvas) {
     if(shadowSignature!==lastShadowSignature){renderer.shadowMap.needsUpdate=true;lastShadowSignature=shadowSignature;}
     renderer.render(scene,camera);
   }
-  function dispose(){resizeObserver.disconnect();worker?.terminate();for(const item of pending.values())item.reject(new Error('Scene disposed'));pending.clear();prepared.clear();disposeGroup(actors);disposeGroup(hall);disposeGroup(cabin);for(const t of textures)t.dispose();for(const m of permanentMaterials){m.map?.dispose();m.dispose();}renderer.dispose();}
-  return {render,prepare,drawExternal(world,camera){renderer.shadowMap.needsUpdate=true;renderer.render(world,camera);},clearPrepared(){prepared.clear();},recenter(){yaw=pitch=0;},dispose,inspect(){return {renderer:{...renderer.info.render,quality,driver,pixelRatio:appliedPixelRatio,shadowResolution,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},environment:lastEnvironment,profile:floorDetail?.userData.profile,bones:entity?.userData.boneCount??0,artifactHash:lastArtifact?.deterministicHash,meshes:lastArtifact?.meshes.length,triangles:lastArtifact?.statistics?.triangleCount,roundKey,prepared:prepared.size};},capture(){return canvas.toDataURL('image/png');}};
+  function dispose(){resizeObserver.disconnect();worker?.terminate();for(const item of pending.values())item.reject(new Error('Scene disposed'));pending.clear();prepared.clear();disposeGroup(actors);disposeGroup(hall);disposeGroup(cabin);for(const t of textures)t.dispose();for(const m of permanentMaterials){m.map?.dispose();m.dispose();}characterModels.dispose();roomModels.dispose();renderer.dispose();}
+  return {render,prepare,async prepareLobby(){await roomModels.prepare('entrance-lobby');return roomModels.instantiate('entrance-lobby');},drawExternal(world,camera){renderer.shadowMap.needsUpdate=true;renderer.render(world,camera);},clearPrepared(){prepared.clear();roomModels.clearFailures();},recenter(){yaw=pitch=0;},dispose,inspect(){return {renderer:{...renderer.info.render,quality,driver,pixelRatio:appliedPixelRatio,shadowResolution,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},characters:characterModels.inspect(),rooms:{...roomModels.inspect(),active:roomModel?.userData.roomAsset??null,cabin:cabinModel?.userData.roomAsset??null},actors:actors.children.map(a=>({model:a.userData.characterModel,position:a.position.toArray(),visible:a.visible})),environment:lastEnvironment,profile:floorDetail?.userData.profile,bones:entity?.userData.boneCount??0,artifactHash:lastArtifact?.deterministicHash,meshes:lastArtifact?.meshes.length,triangles:lastArtifact?.statistics?.triangleCount,roundKey,prepared:prepared.size};},capture(){return canvas.toDataURL('image/png');}};
 }

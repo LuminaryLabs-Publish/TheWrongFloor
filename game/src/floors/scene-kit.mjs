@@ -1,7 +1,8 @@
 import {floorProfile,createInspection,inspectionReading} from './catalog.mjs';
 // Local Three.js factory adapter. Shared by the live renderer and review capture.
-export function createFloorDetail(T,round,{label}={}) {
+export function createFloorDetail(T,round,{label,decorations=true}={}) {
  const profile=floorProfile(round.profile),root=new T.Group();root.name='floor-'+profile.id;
+ if(decorations){
  const metal=new T.MeshStandardMaterial({color:profile.tint,roughness:.63,metalness:.42});
  const wood=new T.MeshStandardMaterial({color:'#534335',roughness:.91});
  const dark=new T.MeshStandardMaterial({color:'#161f21',roughness:.82});
@@ -58,6 +59,7 @@ export function createFloorDetail(T,round,{label}={}) {
    case 'lockers':
     box(1,2.3,.7,x,1.15,z,dark);for(let k=0;k<8;k++){box(.43,.5,.035,x+(k%2-.5)*.48,.3+Math.floor(k/2)*.56,z+.36,metal);box(.14,.035,.035,x+(k%2-.5)*.48,.3+Math.floor(k/2)*.56,z+.4,dark);}break;
   }
+ }
  }
  // A close, explicit inspection plaque supplements entity clues without hiding them.
  const puzzle=round.puzzle??createInspection(profile.id,round.seed,round.index??0);

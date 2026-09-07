@@ -1,0 +1,96 @@
+{
+  "source": "Blender asylum environment exports",
+  "units": "metres",
+  "assets": [
+    {
+      "file": "archive.glb",
+      "bytes": 2591356,
+      "sha256": "9ac8d4992212ec40082b3bcf0deab1267b27989e398efc489ccb6411b7d16a63"
+    },
+    {
+      "file": "broadcast.glb",
+      "bytes": 1999320,
+      "sha256": "9fecf4988405989a2e8e11103f76fe0f232bab671f6389fbed8d16d6b01d4a33"
+    },
+    {
+      "file": "chapel.glb",
+      "bytes": 1474320,
+      "sha256": "4808699bd0180308da8cce84b39f4ca8bf04f51c77c20de495e35bc66b721434"
+    },
+    {
+      "file": "cold-store.glb",
+      "bytes": 1590188,
+      "sha256": "3a7e37c8a0d1a6525db4d077c5ef84dbfe7660e4edd5f92796815e636d42f4e4"
+    },
+    {
+      "file": "conservatory.glb",
+      "bytes": 2278844,
+      "sha256": "dee8a948dd8cd092c46df1e5ac1e5b5890c2ce0834eb90b4b3fbeca9cd247f3d"
+    },
+    {
+      "file": "dining.glb",
+      "bytes": 1682840,
+      "sha256": "0dd91b1e90c9e8d96b554b63d169bf05724c83f2289b24bf9af5f4ca6ed3103b"
+    },
+    {
+      "file": "elevator-interior.glb",
+      "bytes": 1018708,
+      "sha256": "97a7cabf2c1e2b03150098fadea0bd0bb55a8d54d6b9213b2ec4967127f9861c"
+    },
+    {
+      "file": "entrance-lobby.glb",
+      "bytes": 6246216,
+      "sha256": "a79ed175a605da2cdfba49fecb4b825625a7c90a0a3eabb8089f1c4dfb15a19d"
+    },
+    {
+      "file": "exit-lobby.glb",
+      "bytes": 1717628,
+      "sha256": "ed3b49a39106c1969c8cbd25f7bb9e6c54ccad7619fdb1464cf28f681e9e4dfd"
+    },
+    {
+      "file": "filtration.glb",
+      "bytes": 1594732,
+      "sha256": "10b54abbc4d0e9f075db9d138c375e9a00f6f5717bc1d5edd8a74a3d7f08a0f4"
+    },
+    {
+      "file": "gallery.glb",
+      "bytes": 1943356,
+      "sha256": "024f1a4279509a9c1d2ed4faae2628388696f183e96e358b88b813cb60f775ba"
+    },
+    {
+      "file": "infirmary.glb",
+      "bytes": 1829516,
+      "sha256": "7fc106e446b3555d74ab6662498857be03a81a070ce6474a84624815e6bf6455"
+    },
+    {
+      "file": "laundry.glb",
+      "bytes": 2189680,
+      "sha256": "c4b1137de96d1eefcd40321893e5529ce2ff6d0668c7b5f4d4729ff5ba748dc2"
+    },
+    {
+      "file": "nursery.glb",
+      "bytes": 2545196,
+      "sha256": "dd78af4d1c91b39a511724f5c1f90bee6537554e450d19f653be18be00ad9f83"
+    },
+    {
+      "file": "security.glb",
+      "bytes": 2039576,
+      "sha256": "e61e43008286e394e688bc49bd292cef2aa3be0c0406724fd2a5f8760ffefb43"
+    },
+    {
+      "file": "switchboard.glb",
+      "bytes": 2575536,
+      "sha256": "c9823d6dc813f2fe368574a1a238366f39677c14ae78e1129e203768f1b77fba"
+    },
+    {
+      "file": "vault.glb",
+      "bytes": 1660620,
+      "sha256": "f55d642a6b7c9ee7deea22345b7fe52f51341b60d0640728e0dd3a7d137b82dc"
+    },
+    {
+      "file": "workshop.glb",
+      "bytes": 1942312,
+      "sha256": "941aee5d45ab3f022c7202271791a761af45743a0baac3752886facd648ebf8b"
+    }
+  ]
+}

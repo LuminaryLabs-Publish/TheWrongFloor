@@ -26,7 +26,7 @@ test('inside camera faces lobby and outside claws remain confined to doorway',as
  });
  try{
   for(const [w,h] of [[1920,1080],[1280,720],[3440,1440],[390,844]]){visual.resize(w,h);assert.equal(visual.camera.position.z,-4.9);assert.equal(visual.camera.position.y,1.64);assert.ok(visual.camera.getWorldDirection(new THREE.Vector3()).z>.99);}
-  const c=createLobbyCycle();for(let i=0;i<400;i++){const s=c.update(.05);visual.update(s);visual.scene.updateMatrixWorld(true);for(const side of [-1,1]){const root=visual.scene.getObjectByName('outside-claw-'+side);if(root.visible){const b=new THREE.Box3().setFromObject(root);assert.ok(b.min.z>-3.35&&b.max.z<-2.5,'claws stay at threshold');assert.ok(Math.max(Math.abs(b.min.x),Math.abs(b.max.x))<.45);}}}
+  const c=createLobbyCycle();for(let i=0;i<400;i++){const s=c.update(.05);visual.update(s);visual.scene.updateMatrixWorld(true);for(const side of [-1,1]){const root=visual.scene.getObjectByName('outside-claw-'+side);if(root.visible){const b=new THREE.Box3().setFromObject(root);assert.ok(b.min.z>-3.35&&b.max.z<-2.5,'claws stay at threshold');assert.ok(Math.max(Math.abs(b.min.x),Math.abs(b.max.x))<.65);}}}
   visual.update({openness:.02,claws:1,strain:1,shudder:.004,stageTime:1},{softScares:true});for(const side of [-1,1])assert.equal(visual.scene.getObjectByName('outside-claw-'+side).visible,false);
  }finally{visual.dispose();}
 });

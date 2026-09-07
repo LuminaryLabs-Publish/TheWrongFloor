@@ -8,9 +8,9 @@ export function createLobbyCycle(seed='floor30-menu'){
  const choose=()=>{durations=[2+6*random(),.5+.5*random(),1,2+random(),1,2+2*random(),2+random()];};choose();
  function pose(){const p=time/durations[stage],u=ease(p);let openness=1,claws=0,strain=0,shudder=0;
   if(stage===1){openness=1-.985*u;shudder=Math.sin(p*60)*.004*Math.sin(p*Math.PI);}
-  if(stage===2){openness=.015;claws=u;}
-  if(stage===3){strain=Math.sin(p*Math.PI)**2;openness=.015+.012*strain;claws=1;}
-  if(stage===4){claws=1-ease(p/.8);openness=p<.8?.015:.015*(1-ease((p-.8)/.2));}
+  if(stage===2){openness=.015+.165*u;claws=u;}
+  if(stage===3){strain=Math.sin(p*Math.PI)**2;openness=.18+.015*strain;claws=1;}
+  if(stage===4){claws=1-ease(p/.8);openness=p<.8?.015+.165*claws:.015*(1-ease((p-.8)/.2));}
   if(stage===5)openness=0;if(stage===6)openness=u;
   return {openness,claws,strain,shudder};
  }

@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -5,6 +6,9 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { runWrongFloorBrowserChecks } from './browser-review.mjs';
+import {runCinematicChecks} from './cinematic-browser-checks.mjs';
+import {runIntroChecks} from './intro-browser-checks.mjs';
+import {runRoomSafetyChecks} from './room-browser-checks.mjs';
 
 const root = path.resolve('dist');
 const reviewDir = process.env.WRONG_FLOOR_REVIEW_DIR ? path.resolve(process.env.WRONG_FLOOR_REVIEW_DIR) : null;
@@ -23,15 +27,15 @@ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
 const baseUrl = `http://127.0.0.1:${server.address().port}`;
 const delay = ms => new Promise(resolve=>setTimeout(resolve,ms));
 
-const candidates=[process.env.CHROME_PATH,'google-chrome','google-chrome-stable','chromium','chromium-browser'].filter(Boolean);
-const chrome=candidates.find(candidate=>spawnSync(candidate,['--version'],{stdio:'ignore'}).status===0);
+const candidates=[process.env.CHROME_PATH,process.platform==='win32'?'C:/Program Files/Google/Chrome/Application/chrome.exe':null,'google-chrome','google-chrome-stable','chromium','chromium-browser'].filter(Boolean);
+const chrome=candidates.find(candidate=>(process.platform==='win32'?existsSync(candidate):spawnSync(candidate,['--version'],{stdio:'ignore'}).status===0));
 assert.ok(chrome,'Chrome or Chromium is required for the browser check');
 const profile=await mkdtemp(path.join(tmpdir(),'wrong-floor-chrome-'));
 const child=spawn(chrome,[
   '--headless=new','--no-sandbox','--disable-dev-shm-usage','--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader',
   '--ignore-gpu-blocklist','--disable-background-timer-throttling','--disable-renderer-backgrounding','--window-size=1280,800',
   '--remote-debugging-port=0',`--user-data-dir=${profile}`,'about:blank'
-],{stdio:['ignore','ignore','pipe']});
+].filter(flag=>process.env.WRONG_FLOOR_HARDWARE_REVIEW!=='1'||!['--enable-unsafe-swiftshader','--use-gl=angle','--use-angle=swiftshader'].includes(flag)),{stdio:['ignore','ignore','pipe']});
 
 async function endpoint(){
   for(let attempt=0;attempt<100;attempt++){
@@ -92,20 +96,23 @@ async function checkLanding(){
 }
 
 try{
-  await checkLanding();
-  await runWrongFloorBrowserChecks({call,event,evaluate,waitFor,listeners,baseUrl,delay});
+  if((process.argv.includes('--cinematic')||process.argv.includes('--cinematic-safety')))await runCinematicChecks({call,evaluate,waitFor,baseUrl,listeners,delay});
+  else if(process.argv.includes('--intro'))await runIntroChecks({call,evaluate,waitFor,baseUrl,listeners,delay});
+  else if(process.argv.includes('--room-safety'))await runRoomSafetyChecks({call,evaluate,waitFor,baseUrl});
+  else{await checkLanding();await runWrongFloorBrowserChecks({call,event,evaluate,waitFor,listeners,baseUrl,delay});}
 }finally{
   socket.close();
-  if(child.exitCode===null){
+  if(child.exitCode===null&&child.signalCode===null){
     const gracefulExit=new Promise(resolve=>child.once('exit',resolve));
     child.kill('SIGTERM');
     await Promise.race([gracefulExit,delay(3000)]);
-    if(child.exitCode===null){
+    if(child.exitCode===null&&child.signalCode===null){
       const forcedExit=new Promise(resolve=>child.once('exit',resolve));
       child.kill('SIGKILL');
       await forcedExit;
     }
   }
   await rm(profile,{recursive:true,force:true,maxRetries:10,retryDelay:100});
+  server.closeAllConnections();
   await new Promise(resolve=>server.close(resolve));
 }

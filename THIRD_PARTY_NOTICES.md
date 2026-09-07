@@ -23,3 +23,9 @@ Wrong Floor bundles the following third-party or separately licensed code for of
 The optional desktop candidate uses the dependencies pinned in `desktop/package-lock.json`. Their licenses remain with their respective authors. They are development/packaging dependencies and are not downloaded by the browser game at runtime.
 
 Wrong Floor project source does not currently declare an open-source license. The included dependency licenses do not grant rights to unrelated project-owned code or art.
+
+Character instances also use Three.js r165 SkeletonUtils (MIT), with its import redirected to the bundled module. User-supplied GLB provenance is recorded in game/assets/characters/provenance.json.
+
+## Metal Mania font
+
+Metal Mania by Open Window, Copyright 2012. Bundled unmodified under SIL Open Font License 1.1. Source: https://github.com/google/fonts/tree/main/ofl/metalmania . License: game/assets/fonts/OFL.txt. Used for the title and main menu; no runtime external font requests.

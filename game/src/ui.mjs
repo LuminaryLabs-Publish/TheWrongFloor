@@ -25,7 +25,7 @@ export function createUI(actions = {}) {
       const output = form.querySelector(`[data-output="${input.name}"]`);
       if (output) output.value = /Volume$/.test(input.name) ? `${Math.round(value * 100)}%` : Number(value).toFixed(2);
     }
-    byId('bind-close').textContent = binding ? 'PRESS A KEY…' : keyLabel(settings.bindings.close);
+    byId('bind-close').textContent = binding ? 'PRESS A KEY\u2026' : keyLabel(settings.bindings.close);
     byId('controls-hint').innerHTML = `WASD / ARROWS <b>LOOK</b><br>HOLD ${keyLabel(settings.bindings.close)} <b>CLOSE</b>`;
     document.body.classList.toggle('reduced-motion', settings.reducedMotion);
   }
@@ -56,7 +56,7 @@ export function createUI(actions = {}) {
       byId('result-floors').textContent = `${survived} / ${data.totalRounds ?? 30}`;
       byId('result-score').textContent = Math.floor(safeNumber(data.score)).toLocaleString();
       byId('result-best').textContent = Math.floor(safeNumber(data.best ?? data.personalBest)).toLocaleString();
-      byId('result-seed').textContent = `${data.assisted ? 'ASSISTED TIMING · ' : ''}${data.seed ? `DESCENT ${data.seed}` : ''}`;
+      byId('result-seed').textContent = `${data.assisted ? 'ASSISTED TIMING \u00b7 ' : ''}${data.seed ? `DESCENT ${data.seed}` : ''}`;
     }
     synchronize();
     const focusTarget = screen === 'playing' ? byId('scene') : screens[screen]?.querySelector('button:not(:disabled),input');
@@ -141,6 +141,7 @@ export function createUI(actions = {}) {
   }
   function setReady(ready = true, text) {
     byId('play-button').disabled = !ready;
+    byId('load-status').dataset.ready = String(ready);
     document.querySelector('[data-action="practice"]').disabled = !ready;
     byId('load-status').textContent = text || (ready ? 'ELEVATOR READY' : 'PREPARING ELEVATOR');
   }

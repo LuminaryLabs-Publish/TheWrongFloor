@@ -1,11 +1,73 @@
+@font-face{font-family:'Metal Mania';src:url('../assets/fonts/MetalMania-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 html,body,#game{height:100dvh;min-height:0;overflow:hidden}
-.title-screen{padding:clamp(16px,3vw,42px);background:linear-gradient(90deg,#050909ad,transparent 40%);pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}
+.title-screen{--horror-font:'Metal Mania',Georgia,serif;display:block;padding:0;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#020403c9 0%,transparent 31%),linear-gradient(270deg,#020403d9 0%,#020403a6 23%,transparent 47%)}
 .title-screen button,.title-screen input,.title-screen summary{pointer-events:auto}
-.title-content{margin:0;padding:0;max-width:min(360px,90vw)}
-.title-content h1{font-size:clamp(38px,5vw,76px);margin:20px 0;line-height:.9}
-.title-content .pitch{font-size:13px;margin-bottom:18px;text-shadow:0 2px 4px #000}
-.title-actions{display:flex;max-width:340px;gap:8px 20px}
-#play-button{--hold:0%;width:100%;background:linear-gradient(90deg,#cba16b var(--hold),#151a19e8 var(--hold));color:#eee9da!important;border:1px solid #cba16b88;user-select:none;touch-action:none}
-.title-footer{text-shadow:0 2px 4px #000}.seed-details[open]{background:#07100be8;padding:10px}
-@media(max-width:700px){.title-screen{background:linear-gradient(0deg,#050909e8,transparent 70%)}.title-content{margin-top:auto}.title-content h1{font-size:42px}.title-content .pitch,.masthead{display:none}.title-footer{margin-top:16px}.title-footer>span:first-child{display:none}.title-footer p{font-size:8px}.seed-details{margin-top:8px}}
-@media(max-height:550px){.title-content h1{font-size:36px;margin:8px 0}.title-content .pitch,.title-footer p,.seed-details,.masthead{display:none}.title-content{margin:auto 0}.title-actions{gap:4px 18px}.title-screen .title-content{padding:0}}
+#game-title{position:absolute;top:3.5vh;left:4vw;right:4vw;margin:0;display:flex;justify-content:center;gap:.18em;font-family:var(--horror-font);font-size:clamp(80px,14.3vw,260px);font-weight:400;font-style:normal;line-height:1.05;letter-spacing:.035em;white-space:nowrap;text-align:center;filter:drop-shadow(0 3px 2px #000) drop-shadow(0 0 24px #0009)}
+#game-title span{display:block;color:#d6d2bc}
+#game-title span:first-child{transform:rotate(-2deg)}
+#game-title span:last-child{transform:rotate(1deg) translateY(.065em)}
+.title-content{position:absolute;right:5vw;top:45%;width:min(34vw,490px);max-width:none;margin:0;padding:0}
+.title-actions{display:flex;flex-direction:column;align-items:stretch;max-width:none;gap:12px}
+.title-actions>button{position:relative;display:block;width:100%;min-height:55px;padding:13px 0 13px 22px;text-align:left;font-family:var(--horror-font);font-weight:400;font-size:clamp(23px,2.9vw,45px);line-height:1.15;letter-spacing:.035em;text-transform:uppercase;color:#bcbba9;text-shadow:0 2px 4px #000,0 0 16px #000;background:transparent;border:0;border-bottom:1px solid #adb09a24;transition:color .16s,background-color .16s}
+.title-actions>button:before{content:'';position:absolute;left:0;top:50%;width:5px;height:21px;transform:translateY(-50%) skewY(-25deg);background:#a44631;opacity:0}
+.title-actions>button:hover,.title-actions>button:focus-visible{color:#f1e9cf;background:linear-gradient(90deg,#73301e2e,transparent);outline:1px solid #c4b48d80;outline-offset:4px}
+.title-actions>button:hover:before,.title-actions>button:focus-visible:before{opacity:1}
+#play-button{--hold:0%;min-height:89px;user-select:none;touch-action:none;-webkit-user-select:none;color:#eee5cc;background:linear-gradient(90deg,#9e412845 var(--hold),transparent var(--hold));border-bottom:1px solid #c6b58b66}
+#play-button span{display:block;font:inherit}
+#play-button:after{content:'';position:absolute;left:0;bottom:-1px;width:var(--hold);height:3px;background:#bf6440;box-shadow:0 0 9px #c3452a88}
+.title-actions>button:disabled{opacity:.42}
+.seed-details{font-family:var(--horror-font);font-size:17px;letter-spacing:.03em;margin:26px 0 0 22px;color:#8e9585;max-width:300px}
+.seed-details[open]{padding:12px;background:#080d0cf0}
+.seed-details input,.seed-details label{font-family:Arial,Helvetica,sans-serif;font-size:12px}
+#load-status{position:absolute;right:5vw;bottom:3vh;max-width:80vw;font:10px 'Courier New',monospace;letter-spacing:.15em;color:#c6b58b}
+#load-status[data-ready='true']{opacity:0}
+@media(max-width:700px){
+ #game-title{top:4vh;left:5vw;right:5vw;display:block;font-size:clamp(56px,20vw,128px);line-height:.90;letter-spacing:.055em}
+ #game-title span:last-child{transform:rotate(1deg);margin-top:.07em}
+ .title-screen{background:linear-gradient(180deg,#020403c9,transparent 30%),linear-gradient(0deg,#020403ef 0%,#0204038c 29%,transparent 57%)}
+ .title-content{top:auto;bottom:8vh;right:7vw;width:75vw}
+ .title-actions{gap:7px}
+ .title-actions>button{font-size:clamp(23px,6vw,34px);min-height:49px;padding:10px 0 10px 18px}
+ #play-button{min-height:64px}
+ #play-button span{display:inline}
+ #play-button span+span:before{content:' '}
+ .seed-details{margin:15px 0 0 18px;font-size:14px}
+}
+@media(max-height:550px) and (min-width:701px){
+ #game-title{top:1vh;font-size:21vh}
+ .title-content{top:36%;right:5vw;width:34vw}
+ .title-actions{gap:4px}
+ .title-actions>button{font-size:5.5vh;min-height:42px;padding:7px 0 7px 18px}
+ #play-button{min-height:62px}
+ .seed-details{margin-top:10px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.title-actions>button{transition:none}}
+
+/* Startup cinematic crossfades over the live menu without a black cut. */
+#cinematic-intro{position:absolute;inset:0;z-index:15;background:#020408;opacity:1}
+#cinematic-canvas{width:100%;height:100%;display:block}
+#studio-credit{position:absolute;top:66%;left:5%;right:5%;margin:0;text-align:center;opacity:0;color:#e8e5d7;font:clamp(15px,2vw,23px) Georgia,serif;letter-spacing:.14em;text-shadow:0 2px 12px #000}
+#studio-credit span{display:block;margin-top:12px;font:clamp(29px,5vw,62px) 'Metal Mania',Georgia,serif;letter-spacing:.07em}
+#skip-intro{position:absolute;right:4vw;bottom:4vh;padding:13px 17px;color:#c1c7c4;background:#0206097d;border:1px solid #cad8d333;font:12px Arial,sans-serif;min-height:44px}
+#skip-intro span{margin-left:18px;opacity:.6;font-size:10px;text-transform:uppercase}
+.cinematic-playing #title-screen{opacity:var(--menu-reveal,0)}
+.cinematic-playing #hud{visibility:hidden}
+.cinematic-playing #title-screen *{pointer-events:none!important}
+
+/* A worn ward record for an optional repeatable descent. */
+.seed-details[open]{padding:16px 18px;background:linear-gradient(125deg,#171d17f5,#080d0cf5);border:1px solid #9d95714d;border-left:3px solid #8a4b32;box-shadow:0 8px 28px #0008}
+.seed-details summary{font-family:var(--horror-font);font-size:18px;letter-spacing:.05em;color:#b7b39b;list-style:none}
+.seed-details summary::-webkit-details-marker{display:none}
+.seed-details summary:before{content:'+';display:inline-block;width:22px;color:#a76c46}
+.seed-details[open] summary:before{content:'−'}
+.seed-details label{margin-top:17px;font-family:var(--horror-font);font-size:20px;letter-spacing:.05em;color:#d6cbb0}
+.seed-details label span{font:10px 'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;margin-left:8px}
+.seed-details input{margin-top:7px;padding:12px 10px;font:14px 'Courier New',monospace;letter-spacing:.06em;background:#050907b0;color:#e0d9bf;border:1px solid #a196724d;border-bottom:2px solid #8a4b32;min-height:44px}
+.seed-details input::placeholder{color:#777d6c;font-size:11px;letter-spacing:0}
+.seed-details input:focus-visible{outline:1px solid #d4b680;outline-offset:3px}
+@media(max-width:700px){.seed-details[open]{padding:12px 14px}.seed-details summary{font-size:16px}.seed-details label{font-size:18px}}
+
+@media(max-height:550px) and (min-width:701px){.title-content:has(.seed-details[open]){top:auto;bottom:4vh}}
+
+#intro-sound{position:absolute;left:24px;bottom:24px;z-index:3;color:#d6d2bc;background:#111a16cc;border:1px solid #77745c;padding:12px 20px;font-family:var(--horror-font);cursor:pointer}
+#intro-sound[hidden]{display:none}

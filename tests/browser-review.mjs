@@ -114,10 +114,11 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await Promise.all(['Page.enable', 'Runtime.enable', 'Log.enable', 'Network.enable'].map(method => call(method, {}, sessionId)));
     await call('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false }, sessionId);
     const loaded = event('Page.loadEventFired', sessionId, 30000);
-    await call('Page.navigate', { url: `${baseUrl}/game/?review=1` }, sessionId);
+    await call('Page.navigate', { url: `${baseUrl}/game/?review=1&skipIntro=1` }, sessionId);
     await loaded;
     await wait('window.__wrongFloor && !document.querySelector("#fatal-error")?.textContent', 30000);
     const webgl = await run(`(()=>{const c=document.querySelector('#scene');const gl=c.getContext('webgl2');const debug=gl?.getExtension('WEBGL_debug_renderer_info');return{width:c.width,height:c.height,webgl2:!!gl,contextLost:gl?.isContextLost(),version:gl?.getParameter(gl.VERSION),driver:{debugExtensionAvailable:!!debug,vendor:debug?gl.getParameter(debug.UNMASKED_VENDOR_WEBGL):null,renderer:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):null,maskedVendor:gl?.getParameter(gl.VENDOR),maskedRenderer:gl?.getParameter(gl.RENDERER)},layout:{width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight},inspection:__wrongFloor.inspect()}})()`);
+    assert.equal(webgl.inspection.lobby.asset,'entrance-lobby','authored entrance loaded');
     assert.equal(webgl.webgl2, true, 'game has a real WebGL2 renderer');
     assert.equal(webgl.contextLost, false, 'WebGL context is live');
     assert.ok(webgl.width >= 640 && webgl.height >= 400, 'renderer has a useful drawing buffer');
@@ -130,6 +131,11 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
       const fit=await run(`(()=>{const r=document.querySelector('#play-button').getBoundingClientRect();return{scroll:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,visible:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight}})()`);
       assert.equal(fit.scroll,false);assert.equal(fit.visible,true,'hold button fits '+width+'x'+height);
       await screenshot('00-title-'+width+'x'+height+'.png');
+      await click('.seed-details summary');
+      const seedFit=await run(`(()=>{const input=document.querySelector('#seed-input'),r=input.getBoundingClientRect();return{open:document.querySelector('.seed-details').open,visible:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};})()`);
+      assert.equal(seedFit.open,true);assert.equal(seedFit.visible,true,'seed input fits '+width+'x'+height);
+      await screenshot('00-descent-record-'+width+'x'+height+'.png');
+      await click('.seed-details summary');
     }
     await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false},sessionId);
 
@@ -215,6 +221,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
       return {rounds,final:__wrongFloor.snapshot(),inspection:__wrongFloor.inspect()};
     })()`);
     assert.equal(complete.rounds.length, 30, 'browser exercised all 30 stops');
+    assert.equal(complete.inspection.rooms.active,'exit-lobby');assert.equal(complete.inspection.rooms.cabin,'elevator-interior');assert.deepEqual(complete.inspection.rooms.failures,{});
     assert.equal(complete.final.mode, 'won'); assert.equal(complete.final.elapsed, 300);
     assert.equal(complete.final.correct, 30); assert.equal(complete.final.mistakes, 0);
     assert.equal(new Set(complete.rounds.filter(r => r.round.danger).map(r => `${r.round.entity}:${r.round.variant}`)).size, 18);
@@ -248,12 +255,12 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
         await run('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
         const inspection = await run('__wrongFloor.inspect()');
         assert.ok(inspection.renderer?.triangles > 0, `${specification.entity}:${variant} rendered geometry`);
-        assert.ok(inspection.artifactHash || inspection.bones === 24, `${specification.entity}:${variant} has a procedural factory artifact`);
+        assert.ok(inspection.actors.some(actor=>actor.model===inspection.characters.roles[specification.entity]), `${specification.entity}:${variant} uses its assigned GLB`);
         variants.push({ ...specification, inspection });
         await screenshot(`entity-${specification.entity}-${variant}.png`);
       }
     }
-    for(const profile of FLOOR_PROFILES){await run(`__wrongFloor.preview(${JSON.stringify({entity:'warden',profile:profile.id,seed:'room-'+profile.id,roundTime:2.5})})`);const info=await run('__wrongFloor.inspect()');assert.equal(info.profile,profile.id);await screenshot('floor-'+profile.id+'.png');}
+    for(const profile of FLOOR_PROFILES){await run(`__wrongFloor.preview(${JSON.stringify({entity:'warden',profile:profile.id,seed:'room-'+profile.id,roundTime:2.5})})`);const info=await run('__wrongFloor.inspect()');assert.equal(info.profile,profile.id);assert.equal(info.rooms.active,profile.id);assert.equal(info.rooms.cabin,'elevator-interior');await screenshot('floor-'+profile.id+'.png');}
     await run('__wrongFloor.stopPreview()');
     if (reviewDir) await writeFile(path.join(reviewDir, 'preflight-evidence.json'), `${JSON.stringify({ provenance, webgl, performancePreflight, complete, failures, variants, screenshots, findings }, null, 2)}\n`);
     if (!performancePreflight.passed) clip.skipReason = 'Real-time full session skipped because the default-profile performance preflight failed.';

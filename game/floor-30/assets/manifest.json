@@ -51,6 +51,20 @@
       "sha256": "51a2f724fcd24bb2ebd2e2cf78036b2c27d08411ab612bd06ae852f3bb97feab",
       "artifact": "sha256:78a0ac819e9c35dcb53acb1db9e1bede20fd2ab7c575065992f3dc591a51ae73",
       "triangles": 1872
+    },
+    {
+      "path": "intro-head.glb",
+      "bytes": 3610900,
+      "sha256": "21178e9c97dff0386237098888b769da5a54fd2fe6135bfd6f65232ca76d205a",
+      "triangles": 98580,
+      "source": "Original Blender corpse doorkeeper; vertex colour and Smile morph"
+    },
+    {
+      "path": "intro-hand.glb",
+      "bytes": 1221172,
+      "sha256": "216836834b52aa447d5d05f6a90233224047f504460b8ff2337f807912d4fec6",
+      "triangles": 51386,
+      "source": "Original Blender corpse doorkeeper; vertex colour and Smile morph"
     }
   ]
 }
