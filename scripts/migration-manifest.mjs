@@ -7,7 +7,7 @@ const root = process.cwd();
 const output = path.join(root, 'MIGRATION-MANIFEST.json');
 const roots = ['game','desktop','docs','marketing','scripts','tests','.github'];
 const rootFiles = ['.gitignore','README.md','THIRD_PARTY_NOTICES.md','index.html','site.css','package.json','package-lock.json'];
-const ignored = new Set(['node_modules','.generated','dist','_review']);
+const ignored = new Set(['node_modules','.generated','dist','_review','.electron-cache','.npm-cache']);
 const files = [];
 async function scan(relative) {
   const absolute = path.join(root, relative);
