@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "status": "frozen-historical-reference",
+  "source": {
+    "repository": "LuminaryLabs-Dev/NexusArcade-Prototypes",
+    "commit": "1d772700edb77eb294f5f7b3f786ad790276fabd",
+    "version": "0.2.0",
+    "arcadeId": "NXA-000010"
+  },
+  "destination": {
+    "repository": "LuminaryLabs-Publish/TheWrongFloor",
+    "path": ".agent/references/prototype-v0.2.0"
+  },
+  "hashAlgorithm": "git-blob-sha1",
+  "files": [
+    {
+      "sourcePath": "docs/wrong-floor/README.md",
+      "referencePath": ".agent/references/prototype-v0.2.0/docs/README.md",
+      "bytes": 7176,
+      "gitBlobSha1": "023be7c53d632c4609d1c56585ae9e1872cc0203"
+    },
+    {
+      "sourcePath": "docs/wrong-floor/rules.md",
+      "referencePath": ".agent/references/prototype-v0.2.0/docs/rules.md",
+      "bytes": 5973,
+      "gitBlobSha1": "ea018ba1848dc0f2c7f4f6b4ee110fb6aa3f0e7f"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/content/difficulty.json",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/content/difficulty.json",
+      "bytes": 526,
+      "gitBlobSha1": "d002724f3bf3864e84c133b84c9531a498baf418"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/content/encounters.json",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/content/encounters.json",
+      "bytes": 17377,
+      "gitBlobSha1": "df5a81db0ed3c69d24cabd5e120553f406197476"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/cover.webp",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/cover.webp",
+      "bytes": 142798,
+      "gitBlobSha1": "bccac59b3b185807b4b61eec995719dddc697333"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/game.json",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/game.json",
+      "bytes": 571,
+      "gitBlobSha1": "85ece29af5f73a7018d546ce3a35614217ac7d23"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/index.html",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/index.html",
+      "bytes": 6026,
+      "gitBlobSha1": "1839ea93f6ab223384e565221147f0f5d3285751"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/opening.css",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/opening.css",
+      "bytes": 1174,
+      "gitBlobSha1": "8f9d68a2dc471bfbbfde564f5e41cd25eb297fc6"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/audio.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/audio.mjs",
+      "bytes": 9434,
+      "gitBlobSha1": "165210ec272ef4e82863c58bd5ada39f3b8ca559"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/director.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/director.mjs",
+      "bytes": 6328,
+      "gitBlobSha1": "5f7306061c3ec65e4fa63b082b9613552329b8d9"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/elevator.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/elevator.mjs",
+      "bytes": 1589,
+      "gitBlobSha1": "6027fd8ad262b530dec0e34d02cc62b193e11ff1"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/factory-worker.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/factory-worker.mjs",
+      "bytes": 923,
+      "gitBlobSha1": "b7442396f4ba3d84fffe53bff0cd6745dbd523f3"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/game.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/game.mjs",
+      "bytes": 5930,
+      "gitBlobSha1": "fa6df7388476fe4a7ad5d36eaca6de815e99cb04"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/input.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/input.mjs",
+      "bytes": 5611,
+      "gitBlobSha1": "395f48796d34c327d4414af099cacf2e1c78622c"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/main.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/main.mjs",
+      "bytes": 10043,
+      "gitBlobSha1": "ca0d374e28d6cac7dac8a949660b97afa014d72c"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/scene.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/scene.mjs",
+      "bytes": 31838,
+      "gitBlobSha1": "83165b2c2b52e801bf7b29228c1c5ccfda432a44"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/storage.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/storage.mjs",
+      "bytes": 2827,
+      "gitBlobSha1": "e52ab7633c7b199074099bb502a49efb6af615e7"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/src/ui.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/src/ui.mjs",
+      "bytes": 8737,
+      "gitBlobSha1": "da9c1eac2e226cb06cf266719648f726e28b6a3f"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/styles.css",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/styles.css",
+      "bytes": 30172,
+      "gitBlobSha1": "bc666007d386bcb92dda8b94419fbf046637b11a"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/LICENSE",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/LICENSE",
+      "bytes": 1073,
+      "gitBlobSha1": "4eed5bcc6d7e3f832478f4c5a8e367bf83d25f71"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/contracts.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/contracts.js",
+      "bytes": 11726,
+      "gitBlobSha1": "d72eb899553480b0d68311ed421148ac4ab7176f"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/domain.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/domain.js",
+      "bytes": 6869,
+      "gitBlobSha1": "21a45bea7a5ed1ad1af784cde6b0f49537ae3aee"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/domains/factory/material/procedural/kits/distressed-kit/index.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/domains/factory/material/procedural/kits/distressed-kit/index.js",
+      "bytes": 1832,
+      "gitBlobSha1": "89b19a722270a6313c70a3edb951d29552e51f0e"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/domains/factory/object/creature/kits/horror-kit/index.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/domains/factory/object/creature/kits/horror-kit/index.js",
+      "bytes": 6904,
+      "gitBlobSha1": "321de906e6ad1caae0dbd0cf7ff7a3828724298e"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/domains/factory/object/structure/kits/liminal-kit/index.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/domains/factory/object/structure/kits/liminal-kit/index.js",
+      "bytes": 3830,
+      "gitBlobSha1": "e69bf85dae37d0f90ff454b90ca25b23e24d072e"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/distressed.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/distressed.js",
+      "bytes": 1190,
+      "gitBlobSha1": "04c6b848dcc171ea1e4a85d0eb7ec75af6d5c8b5"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/geometry.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/geometry.js",
+      "bytes": 7485,
+      "gitBlobSha1": "790f95f27a9cdb68e0e1e0f4772b5e665129b898"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/glb.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/glb.js",
+      "bytes": 7847,
+      "gitBlobSha1": "f31e69290e507f0a927b9595adf18d917295ef89"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/hash.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/hash.js",
+      "bytes": 3140,
+      "gitBlobSha1": "8d1f305bc99b29c03010971d40d27df96f2210f3"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/random.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/random.js",
+      "bytes": 1677,
+      "gitBlobSha1": "6808022a967d5e625e58f6c7ad9d614b06ea9b65"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/raster/png.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/raster/png.js",
+      "bytes": 1987,
+      "gitBlobSha1": "4a994053bd5cf16bbe47cb52887bbc39a535c533"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/raster/surface.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/raster/surface.js",
+      "bytes": 2963,
+      "gitBlobSha1": "151d0ee06068378ab97d60b464a2d465258d759c"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/sculpt-kit.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/sculpt-kit.js",
+      "bytes": 4804,
+      "gitBlobSha1": "d4ed69b8b8d6e8a5ced64a9497376390c006951e"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/factory-kits/src/foundation/sculpt.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/factory-kits/src/foundation/sculpt.js",
+      "bytes": 2254,
+      "gitBlobSha1": "b5e437027e88eeeeb8f255cc9797edb60cd93d0b"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/three/LICENSE",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/three/LICENSE",
+      "bytes": 1081,
+      "gitBlobSha1": "d33709fbf00f10b928bae20baf72a5c6da92d03a"
+    },
+    {
+      "sourcePath": "prototypes/wrong-floor/vendor/three/three.module.js",
+      "referencePath": ".agent/references/prototype-v0.2.0/game/vendor/three/three.module.js",
+      "bytes": 1284652,
+      "gitBlobSha1": "fcf5e09d8ada1f25b9c3218ce9ce65e67fb54eb5"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/.gitignore",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/.gitignore",
+      "bytes": 32,
+      "gitBlobSha1": "450714bc51f6ba1d8492aabbc70863fb056e3a4e"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/README.md",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/README.md",
+      "bytes": 4682,
+      "gitBlobSha1": "13fd78f8b6f9146a8c2fa895689995ed0f993e16"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/asset-path.cjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/asset-path.cjs",
+      "bytes": 819,
+      "gitBlobSha1": "7a47b41789d556bd359e28e58698d82c1027ad8a"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/main.cjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/main.cjs",
+      "bytes": 4609,
+      "gitBlobSha1": "5606f86c2e3e9ff3190f1d81fde929266bf67f30"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/package-lock.json",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/package-lock.json",
+      "bytes": 24338,
+      "gitBlobSha1": "fd45f2a7dea7af7cc0b0c748cce01a27afbe704b"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/package.json",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/package.json",
+      "bytes": 698,
+      "gitBlobSha1": "67b075ff04f7e735039a96446df6891b4f6d329e"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/package.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/package.mjs",
+      "bytes": 835,
+      "gitBlobSha1": "a6824a873b4a38e890bfb0b3505cbdd4bff67257"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/stage.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/stage.mjs",
+      "bytes": 3157,
+      "gitBlobSha1": "30531fa80048618c2cdd39518e0ba6412a0ede5c"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/tests/asset-path.test.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/tests/asset-path.test.mjs",
+      "bytes": 1016,
+      "gitBlobSha1": "bb94569eb19068f97ab6811bfef8d77c1ac0c4e9"
+    },
+    {
+      "sourcePath": "standalone/wrong-floor/validate-stage.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/desktop/validate-stage.mjs",
+      "bytes": 2104,
+      "gitBlobSha1": "1bc8b7e67f3d4dd5251f58ab6ef5a4cf89c5750b"
+    },
+    {
+      "sourcePath": "tests/wrong-floor-browser.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/tests/wrong-floor-browser.mjs",
+      "bytes": 26595,
+      "gitBlobSha1": "3884de8233168a0bb62f3d4b24fd822cb6e72a5a"
+    },
+    {
+      "sourcePath": "tests/wrong-floor.test.mjs",
+      "referencePath": ".agent/references/prototype-v0.2.0/tests/wrong-floor.test.mjs",
+      "bytes": 7895,
+      "gitBlobSha1": "8fd51f08a45e8f9a0c2a8c12c095371c031ae985"
+    }
+  ]
+}

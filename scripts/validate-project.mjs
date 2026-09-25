@@ -23,6 +23,15 @@ assert.equal(encounters.length, 18);
 const cover = await readFile(path.join(game, 'cover.webp'));
 const concept = await readFile(path.join(root, 'marketing/prototype-cover/wrong-floor-prototype-cover.webp'));
 assert.equal(createHash('sha256').update(cover).digest('hex'), createHash('sha256').update(concept).digest('hex'));
+const prototypeRoot = path.join(root, '.agent', 'references', 'prototype-v0.2.0');
+const prototypeMetadata = JSON.parse(await readFile(path.join(prototypeRoot, 'game', 'game.json'), 'utf8'));
+assert.equal(prototypeMetadata.id, 'NXA-000010');
+assert.equal(prototypeMetadata.version, '0.2.0');
+const prototypeSource = JSON.parse(await readFile(path.join(prototypeRoot, 'source.json'), 'utf8'));
+assert.equal(prototypeSource.source.repository, 'LuminaryLabs-Dev/NexusArcade-Prototypes');
+assert.equal(prototypeSource.source.commit, '1d772700edb77eb294f5f7b3f786ad790276fabd');
+await access(path.join(root, 'compare', 'index.html'));
+
 const landing = await readFile(path.join(root, 'index.html'), 'utf8');
 assert.match(landing, /href="\.\/game\/"/);
 assert.match(landing, /src="\.\/game\/cover\.webp"/);
@@ -43,4 +52,4 @@ async function scan(directory) {
   }
 }
 await scan(game);
-console.log(`[validate] ${required.length} required files, ${encounters.length} encounters, exact 300-second contract, local runtime imports`);
+console.log(`[validate] current 0.3.0 authority + frozen 0.2.0 prototype reference; ${required.length} required current files, ${encounters.length} encounters`);

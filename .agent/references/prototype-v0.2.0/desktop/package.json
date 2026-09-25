@@ -1,0 +1,22 @@
+{
+  "name": "wrong-floor-desktop-build",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reproducible desktop packaging for the Wrong Floor arcade game",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "stage": "node stage.mjs && node validate-stage.mjs",
+    "start": "install-electron && npm run stage && electron .generated/app",
+    "package:linux": "npm run stage && node package.mjs linux x64",
+    "package:windows": "npm run stage && node package.mjs win32 x64",
+    "runtime:install": "install-electron"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.2.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

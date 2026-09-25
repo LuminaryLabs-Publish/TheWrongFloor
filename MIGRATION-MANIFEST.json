@@ -824,13 +824,13 @@
     },
     {
       "path": "package.json",
-      "bytes": 1189,
-      "sha256": "9e6b36b764f2c13af0828e3548d544a0f3b6a5d39c94d034427d8871e47b1f2e"
+      "bytes": 1224,
+      "sha256": "92b47b2ac3a68a667af8822dd8f53a280c731ec6df85190834351ce372594b79"
     },
     {
       "path": "README.md",
-      "bytes": 5467,
-      "sha256": "8c7cd91e7c977dfe7cef56d6ae1b065752597f012305b8664aac416a8664d053"
+      "bytes": 5958,
+      "sha256": "721afdbe483a13d2a7a9df05825e91e03dd730c1ef2b2ea44272ab3a4a1efe52"
     },
     {
       "path": "scripts/audit-floor30.mjs",
@@ -844,8 +844,8 @@
     },
     {
       "path": "scripts/build-site.mjs",
-      "bytes": 568,
-      "sha256": "c0b5aff8ce848c7342417d0344ce7f43f3f5383969a513058f027f2f79c7f428"
+      "bytes": 1670,
+      "sha256": "ff2737c26c6bce0abe2ea9f92ebc549407e7c391e7264e9108b7c576f13b2e1c"
     },
     {
       "path": "scripts/migration-manifest.mjs",
@@ -879,8 +879,8 @@
     },
     {
       "path": "scripts/validate-project.mjs",
-      "bytes": 2803,
-      "sha256": "8743b9c90c4ef801ae15fc7050ae9879d04b953f35238ffa3cc004da538cb258"
+      "bytes": 3452,
+      "sha256": "993bf36ba48700cb82f2fbfc87907939c45c46d70ace00ef505b396cd863fa32"
     },
     {
       "path": "site.css",
@@ -946,6 +946,11 @@
       "path": "tests/intro.test.mjs",
       "bytes": 3917,
       "sha256": "af68380c038783d4a9d5306024319174c01ce12288c593fd6f9885a41f800ce5"
+    },
+    {
+      "path": "tests/prototype-reference.test.mjs",
+      "bytes": 2675,
+      "sha256": "6ddb2a55aa8eb618e15480fb3635c066bb11112c78f123d1fd2c8aecd12d3e7b"
     },
     {
       "path": "tests/room-browser-checks.mjs",

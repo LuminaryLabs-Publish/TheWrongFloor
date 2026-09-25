@@ -1,0 +1,28 @@
+{
+  "rounds": 30,
+  "roundSeconds": 10,
+  "normalFloors": 12,
+  "dangerousFloors": 18,
+  "normalResolveAt": 6,
+  "assistedExtraSeconds": 0.8,
+  "doorOpeningSeconds": 0.8,
+  "doorClosingSeconds": 1.2,
+  "releaseDelaySeconds": 0.15,
+  "clueRangeSeconds": [
+    1.3,
+    2.4
+  ],
+  "responseWindowSeconds": {
+    "early": 3,
+    "middle": 2.6,
+    "late": 2.2
+  },
+  "maxConsecutiveDanger": 3,
+  "falseAlarmLimit": 3,
+  "score": {
+    "correct": 100,
+    "maxReactionBonus": 50,
+    "escape": 500,
+    "unusedMistake": 100
+  }
+}

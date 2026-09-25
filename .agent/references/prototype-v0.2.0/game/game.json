@@ -1,0 +1,21 @@
+{
+  "id": "NXA-000010",
+  "title": "Wrong Floor",
+  "slug": "wrong-floor",
+  "description": "Thirty stops. Five minutes. Close the doors before something gets inside.",
+  "genre": "Horror / Observation",
+  "status": "prototype",
+  "version": "0.2.0",
+  "featured": true,
+  "thumbnail": "cover.webp",
+  "accent": "orange",
+  "sortOrder": 1,
+  "controls": [
+    "Pointer / Enter / Gamepad A: descend from Floor 30",
+    "WASD / Arrows: look",
+    "Hold Space / Gamepad A: close",
+    "Enter / Gamepad B: recenter",
+    "Escape / Start: pause"
+  ],
+  "offlineReady": true
+}

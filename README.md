@@ -82,3 +82,15 @@ The supplied The Thirtieth Floor shader plays once per page load for40active sec
 Run npm run test:cinematic:browser for a40second real-time check of cadence, credit, crossfade and entry. Existing gameplay reviews explicitly use skipIntro only alongside review=1.
 
 Opening audio uses the supplied `horrorintro.wav` (including its rain) during the 40-second shader, crossfading into looping `creepytheme.wav` for the menu. Both follow Master and Ambience volume. Browsers that block autoplay show Enable sound; any click or key unlocks audio at the current cinematic position. Menu music stops on descent and resumes on return to title.
+
+## Historical prototype reference
+
+The complete Nexus Arcade `0.2.0` prototype is preserved read-only under `.agent/references/prototype-v0.2.0/`. It is historical evidence, not the active implementation.
+
+After a Pages build:
+
+- Current game: `/game/`
+- Frozen prototype: `/prototype/`
+- Comparison launcher: `/compare/`
+
+The build rewrites only the deployed prototype's localStorage key so it cannot overwrite current-game settings or scores. The stored reference bytes remain unchanged.
