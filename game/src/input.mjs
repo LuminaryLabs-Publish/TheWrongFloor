@@ -39,11 +39,12 @@ export function createInput(canvas, callbacks = {}) {
   listen(canvas, 'pointerdown', event => {
     if (mode === 'playing') { drag = { id: event.pointerId, x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); }
   });
-  // Floor 30 uses click rather than raw pointerdown so mouse, touch, and CDP
-  // trusted input all activate the same physical 3D DESCEND hit target.
-  listen(canvas, 'click', event => {
+  // Floor 30 listens at the window capture phase so the fullscreen title
+  // overlay cannot swallow a trusted click. Coordinates must still hit the
+  // projected bounds of the physical 3D DESCEND mesh.
+  listen(window, 'click', event => {
     if (mode === 'intro' && callbacks.onIntroPointer?.(event.clientX, event.clientY)) event.preventDefault();
-  });
+  }, { capture: true });
   listen(canvas, 'pointermove', event => {
     if (!drag || drag.id !== event.pointerId || mode !== 'playing') return;
     dx += event.clientX - drag.x; dy += event.clientY - drag.y;
