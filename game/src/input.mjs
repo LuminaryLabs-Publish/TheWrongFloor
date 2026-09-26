@@ -37,11 +37,12 @@ export function createInput(canvas, callbacks = {}) {
   const releaseClose = () => { pointerClose = false; holdButton?.classList.remove('held'); };
   listen(holdButton, 'pointerup', releaseClose); listen(holdButton, 'pointercancel', releaseClose); listen(holdButton, 'lostpointercapture', releaseClose);
   listen(canvas, 'pointerdown', event => {
-    if (mode === 'intro') {
-      if (callbacks.onIntroPointer?.(event.clientX, event.clientY)) event.preventDefault();
-      return;
-    }
     if (mode === 'playing') { drag = { id: event.pointerId, x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); }
+  });
+  // Floor 30 uses click rather than raw pointerdown so mouse, touch, and CDP
+  // trusted input all activate the same physical 3D DESCEND hit target.
+  listen(canvas, 'click', event => {
+    if (mode === 'intro' && callbacks.onIntroPointer?.(event.clientX, event.clientY)) event.preventDefault();
   });
   listen(canvas, 'pointermove', event => {
     if (!drag || drag.id !== event.pointerId || mode !== 'playing') return;
