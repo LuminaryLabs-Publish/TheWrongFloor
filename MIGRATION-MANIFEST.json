@@ -689,8 +689,8 @@
     },
     {
       "path": "game/src/input.mjs",
-      "bytes": 5798,
-      "sha256": "a54f7359ee4c68f83977dd1fe5fb42bcf5204e007262b07b561776d9a163a4f2"
+      "bytes": 6017,
+      "sha256": "55af4f88dcbfb34ed49266198167436d198c2bafe76be2d6279812485f0af6b8"
     },
     {
       "path": "game/src/main.mjs",

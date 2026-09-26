@@ -39,12 +39,15 @@ export function createInput(canvas, callbacks = {}) {
   listen(canvas, 'pointerdown', event => {
     if (mode === 'playing') { drag = { id: event.pointerId, x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); }
   });
-  // Floor 30 listens at the window capture phase so the fullscreen title
-  // overlay cannot swallow a trusted click. Coordinates must still hit the
-  // projected bounds of the physical 3D DESCEND mesh.
-  listen(window, 'click', event => {
+  // Floor 30 listens at window capture phase so the fullscreen title overlay
+  // cannot swallow the physical control. CDP mousePressed reliably produces
+  // mousedown; pointerdown covers touch/pen devices. A second event is harmless
+  // because descend immediately clears its ready state.
+  const activateIntroPointer = event => {
     if (mode === 'intro' && callbacks.onIntroPointer?.(event.clientX, event.clientY)) event.preventDefault();
-  }, { capture: true });
+  };
+  listen(window, 'mousedown', activateIntroPointer, { capture: true });
+  listen(window, 'pointerdown', activateIntroPointer, { capture: true });
   listen(canvas, 'pointermove', event => {
     if (!drag || drag.id !== event.pointerId || mode !== 'playing') return;
     dx += event.clientX - drag.x; dy += event.clientY - drag.y;
