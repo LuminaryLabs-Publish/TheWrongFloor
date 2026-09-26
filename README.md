@@ -94,3 +94,9 @@ After a Pages build:
 - Comparison launcher: `/compare/`
 
 The build rewrites only the deployed prototype's localStorage key so it cannot overwrite current-game settings or scores. The stored reference bytes remain unchanged.
+
+## Branch model
+
+Wrong Floor follows the Nexus Engine milestone pattern: `main` is the only active development line; `0.0.1`, `0.0.2`, and `0.0.3` are frozen historical milestones. The future `0.0.4` branch is created only after the Polished Descent milestone passes its release gate.
+
+Candidate archives can be generated with `npm run package:web`, `npm run package:windows`, `npm run package:linux`, or `npm run package:mac`. See [installation](docs/INSTALL.md) and [candidate review](docs/CANDIDATE_REVIEW.md).

@@ -13,7 +13,11 @@
     "review:full": "WRONG_FLOOR_FULL_RUN=1 WRONG_FLOOR_REVIEW_DIR=_review/wrong-floor node tests/browser-smoke.mjs",
     "test:cinematic:browser": "node tests/browser-smoke.mjs --cinematic",
     "test:intro:browser": "node tests/browser-smoke.mjs --intro",
-    "test:rooms:browser": "node tests/browser-smoke.mjs --room-safety"
+    "test:rooms:browser": "node tests/browser-smoke.mjs --room-safety",
+    "package:web": "node scripts/build-site.mjs && node scripts/archive-release.mjs web",
+    "package:windows": "npm --prefix desktop run package:windows",
+    "package:linux": "npm --prefix desktop run package:linux",
+    "package:mac": "npm --prefix desktop run package:mac"
   },
   "engines": {
     "node": ">=22.12.0"

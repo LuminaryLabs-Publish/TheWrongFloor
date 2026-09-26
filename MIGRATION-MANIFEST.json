@@ -23,6 +23,11 @@
   },
   "files": [
     {
+      "path": ".github/workflows/build-candidates.yml",
+      "bytes": 1532,
+      "sha256": "83b1e4456991eb5e2e6c185ce0729b47682fe805150948ad37932a6d2505a55a"
+    },
+    {
       "path": ".github/workflows/full-browser-review.yml",
       "bytes": 821,
       "sha256": "10d5c7099d4a64d356730bfe28770c149f0c63c655bc2e10db7cbc88d08d9e15"
@@ -34,8 +39,8 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 220,
-      "sha256": "0cf372a0fdc649cab6ff8370091476ac034308d1d9e312f02d83f04835d2b15a"
+      "bytes": 265,
+      "sha256": "3b29c680b59211115a19b5a7f8b62964d09a9bbd736191a605b29c23e2091d7a"
     },
     {
       "path": "desktop/.gitignore",
@@ -46,6 +51,21 @@
       "path": "desktop/asset-path.cjs",
       "bytes": 819,
       "sha256": "1727942be58ea1d1f02346b93f383a64b1f04a543658458d086088024b48c648"
+    },
+    {
+      "path": "desktop/icons/wrong-floor.icns",
+      "bytes": 20981,
+      "sha256": "23075c5abba136c3af43c4d472d087555bdf82be6ef30568cc76e444e0eed91f"
+    },
+    {
+      "path": "desktop/icons/wrong-floor.ico",
+      "bytes": 2792,
+      "sha256": "b25b545e908796bf96946297df88d314df229d13caaae0ee72b7014edc79118e"
+    },
+    {
+      "path": "desktop/icons/wrong-floor.png",
+      "bytes": 5509,
+      "sha256": "0e09f9ad9bf59022b4ba08823d16006fb7f2b8dd7272244cdf9838ae5d1c4bc7"
     },
     {
       "path": "desktop/main.cjs",
@@ -59,13 +79,13 @@
     },
     {
       "path": "desktop/package.json",
-      "bytes": 701,
-      "sha256": "334023734c2ce587c90ec8e0c6704f8f5039a04c421f241f294f4e8c48f2d86a"
+      "bytes": 947,
+      "sha256": "ac42817fde02817de6a91e83bf9ce7754c326a918a062b12ad93743a29918a60"
     },
     {
       "path": "desktop/package.mjs",
-      "bytes": 835,
-      "sha256": "5194bc5154338b441726bf2abf5b3574d73e5817a0b53c2bfc97a87a856fc611"
+      "bytes": 1325,
+      "sha256": "9636674d16491249a6b62b9a6cba3a693e369da4c02dc34763dbc45fc9ba9635"
     },
     {
       "path": "desktop/README.md",
@@ -88,6 +108,11 @@
       "sha256": "e612c90db9199397bc46afd8d43a19fa9f0af3269649be32b59f13990f8471e3"
     },
     {
+      "path": "docs/CANDIDATE_REVIEW.md",
+      "bytes": 744,
+      "sha256": "0e6f7e00b074e50757171cfc296c61feb0392f7938c9e89e134d5e184f435020"
+    },
+    {
       "path": "docs/expansion-0.3.0.md",
       "bytes": 7256,
       "sha256": "a8aecfa7bf11e27a7f77d72ff3e7512ff4f1c122044b275ef38f0f87fbac480d"
@@ -98,6 +123,11 @@
       "sha256": "776c791958e9fe540e6c45989df1586cc7bbbc5a61613e538f859dbc8cca2a09"
     },
     {
+      "path": "docs/INSTALL.md",
+      "bytes": 819,
+      "sha256": "eaa030d4495e81e7a925717dc6309d4c4436c088e7781141b80fa5ffee2d448c"
+    },
+    {
       "path": "docs/README.md",
       "bytes": 3835,
       "sha256": "e5cb2dd4b8e706015c4977f738c7fb814976dcf055f5e446a977827fecd214cf"
@@ -106,6 +136,11 @@
       "path": "docs/rules.md",
       "bytes": 5740,
       "sha256": "1725f9697f908116e807ef20732996e2274a8d3fe6dac5592a37157c2219e67c"
+    },
+    {
+      "path": "docs/SLICE_ALIGNMENT.md",
+      "bytes": 554,
+      "sha256": "bab719cdef59feabb5484bb5d80208b8c861f9b7ea4f3b9cca2e5abc98fe82c1"
     },
     {
       "path": "game/assets/audio/creepytheme.wav",
@@ -824,13 +859,18 @@
     },
     {
       "path": "package.json",
-      "bytes": 1224,
-      "sha256": "92b47b2ac3a68a667af8822dd8f53a280c731ec6df85190834351ce372594b79"
+      "bytes": 1503,
+      "sha256": "b5c8a3c75c312458e0c90af801daa0be10e837aeceedc6da8bac05106f5f5756"
     },
     {
       "path": "README.md",
-      "bytes": 5958,
-      "sha256": "721afdbe483a13d2a7a9df05825e91e03dd730c1ef2b2ea44272ab3a4a1efe52"
+      "bytes": 6473,
+      "sha256": "8c8cb114cdb8bb364d6b9d692f07965a7662802ea999c015579dd2da8baed4c6"
+    },
+    {
+      "path": "scripts/archive-release.mjs",
+      "bytes": 5015,
+      "sha256": "a7f0dd0f85f5c588a9568768869fbe8d2e443c0e643197a4c1f69179cdbf3702"
     },
     {
       "path": "scripts/audit-floor30.mjs",
@@ -866,6 +906,11 @@
       "path": "scripts/prepare-unburied.py",
       "bytes": 8755,
       "sha256": "aee54297166b83f7c098f16611637cf66976442a6c6cf80636c0d11c1d9c92ef"
+    },
+    {
+      "path": "scripts/render-icon.mjs",
+      "bytes": 2686,
+      "sha256": "2c2c4bc1a4ba08809cd4ea97331a71c079a333082378039d795f9b08765520bd"
     },
     {
       "path": "scripts/render-music-box.mjs",

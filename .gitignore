@@ -10,3 +10,6 @@ desktop/dist/
 releases/
 desktop/.electron-cache/
 desktop/.npm-cache/
+.npm-cache/
+.electron-cache/
+_review/native/

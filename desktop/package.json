@@ -10,7 +10,10 @@
     "start": "install-electron && npm run stage && electron .generated/app",
     "package:linux": "npm run stage && node package.mjs linux x64",
     "package:windows": "npm run stage && node package.mjs win32 x64",
-    "runtime:install": "install-electron"
+    "runtime:install": "install-electron",
+    "package:mac": "npm run stage && node package.mjs darwin arm64 && node package.mjs darwin x64",
+    "package:mac:arm64": "npm run stage && node package.mjs darwin arm64",
+    "package:mac:x64": "npm run stage && node package.mjs darwin x64"
   },
   "devDependencies": {
     "@electron/packager": "20.3.0",
