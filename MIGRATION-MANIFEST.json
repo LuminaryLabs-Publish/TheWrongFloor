@@ -114,13 +114,13 @@
     },
     {
       "path": "docs/expansion-0.3.0.md",
-      "bytes": 7256,
-      "sha256": "a8aecfa7bf11e27a7f77d72ff3e7512ff4f1c122044b275ef38f0f87fbac480d"
+      "bytes": 7329,
+      "sha256": "3e65eaf3e074f33d706a57caa0f8e18a591ec7fad959cbf871a4091586036c20"
     },
     {
       "path": "docs/floor-30.md",
-      "bytes": 6214,
-      "sha256": "776c791958e9fe540e6c45989df1586cc7bbbc5a61613e538f859dbc8cca2a09"
+      "bytes": 2409,
+      "sha256": "35471aae7c4bd8387e9173522354f826d4990f1759b285d0519a68e34e6b7a3c"
     },
     {
       "path": "docs/INSTALL.md",
@@ -129,13 +129,13 @@
     },
     {
       "path": "docs/README.md",
-      "bytes": 3835,
-      "sha256": "e5cb2dd4b8e706015c4977f738c7fb814976dcf055f5e446a977827fecd214cf"
+      "bytes": 2453,
+      "sha256": "e97eb6e2ca26538cea80e0626de29059eb7759343d628e5243bfffc320aba8d3"
     },
     {
       "path": "docs/rules.md",
-      "bytes": 5740,
-      "sha256": "1725f9697f908116e807ef20732996e2274a8d3fe6dac5592a37157c2219e67c"
+      "bytes": 3681,
+      "sha256": "5ac7d9ea44b6c02fdb883cd64fb73e8db2424bf9aa962fbd42b143f3a8c49399"
     },
     {
       "path": "docs/SLICE_ALIGNMENT.md",
@@ -474,8 +474,8 @@
     },
     {
       "path": "game/content/difficulty.json",
-      "bytes": 526,
-      "sha256": "fa78e6a011d8a4377246a07c3cc877ce6f090896f4abb93886ecd0c834bf1985"
+      "bytes": 525,
+      "sha256": "ba1d7dc52d4f42e75ffd69e84ca6e25d4989af0e072708cf44553396d1bbee88"
     },
     {
       "path": "game/content/encounters.json",
@@ -569,23 +569,23 @@
     },
     {
       "path": "game/floor-30/menu.css",
-      "bytes": 6794,
-      "sha256": "4beafdf38315f0f5f62212acf68684ee39c90aaca89d65d30671663ce8c772ab"
+      "bytes": 1588,
+      "sha256": "78ab3a485f308f2ee989711fb939e1d5d5f041f36ace0bbd277efa597c2b0cbd"
     },
     {
       "path": "game/floor-30/scene.mjs",
-      "bytes": 4197,
-      "sha256": "87213cca79dcfc35c7e304f9c0c68fbd61ac9f139031baeaa0017894ce97953a"
+      "bytes": 6665,
+      "sha256": "77225cb6192134a0d2d60bdb0ecf39da3ede3a7bb4fb894b1c97fc6d6033cb9c"
     },
     {
       "path": "game/game.json",
-      "bytes": 494,
-      "sha256": "7fd720e733fc946b94e2294ab05502fa8738462936627a189677d34e08a14368"
+      "bytes": 531,
+      "sha256": "4d2cd60971c2c366e183cd4ce1f917c0b094dca37e2b9f25e0e6f57cf5ba4d61"
     },
     {
       "path": "game/index.html",
-      "bytes": 7117,
-      "sha256": "c22b91863bee3a835a6ba84824980fb22749ad510ee98a728613a8847d1bf844"
+      "bytes": 6183,
+      "sha256": "ca0979bc9aefd2a591809dbb087af9255d58e1d3dd0bc9f0bfd6736e393dc358"
     },
     {
       "path": "game/shaders/thirtieth-floor.frag",
@@ -659,8 +659,8 @@
     },
     {
       "path": "game/src/director.mjs",
-      "bytes": 7349,
-      "sha256": "36dc3a6c628294e2b914538df23abf03fcec0110dc60543a5db590bcade153c8"
+      "bytes": 7568,
+      "sha256": "1c605767fac2e68c0d2e2158d984bfaf54794c1698320f71efd30729650903ca"
     },
     {
       "path": "game/src/elevator.mjs",
@@ -684,18 +684,18 @@
     },
     {
       "path": "game/src/game.mjs",
-      "bytes": 6325,
-      "sha256": "e22f34338071922d108a1e56168bc49ef834745668ee57f8ec6e507955f0b42a"
+      "bytes": 6462,
+      "sha256": "66c2fdeb34981d59101fd7d8ef8800db1eaf80bf48c6ccfd6a330e2c3e9025d2"
     },
     {
       "path": "game/src/input.mjs",
-      "bytes": 5024,
-      "sha256": "a1d9fb3d5a7cbb398eff786cf653502dc794bb310db30fa1c493648cab4e459d"
+      "bytes": 5561,
+      "sha256": "0d65dd874fdace69a50cfb0decbbfca7e6d01da76a8a8bc41fde1fe44e7ec308"
     },
     {
       "path": "game/src/main.mjs",
-      "bytes": 10159,
-      "sha256": "41df0ab2dec3757d257ebfccbdcb0836f68905aec8b3ce56295b4799f2331d54"
+      "bytes": 11357,
+      "sha256": "36bf3d3240ea83c79056620b84ecf5f7113725a5157d34139f7683075c9090d3"
     },
     {
       "path": "game/src/procedural-audio.mjs",
@@ -729,8 +729,8 @@
     },
     {
       "path": "game/src/ui.mjs",
-      "bytes": 8719,
-      "sha256": "79e0bff4fff09d801be2ed05fcd56b1ee73b08291ceb308ca98a7a13cc71b67e"
+      "bytes": 8741,
+      "sha256": "e3f9b31297a46558d65e2563a9fcff5a5ad6157db6dd327b5399f59441a2ec40"
     },
     {
       "path": "game/styles.css",
@@ -839,8 +839,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 1894,
-      "sha256": "8569c626771b2b5dc1e69226392a075eb7eb4ffbf30075356021069cd777c76e"
+      "bytes": 1922,
+      "sha256": "d4d111dceb7b22b277606eb0973df6d4f8d85fe83aaba617c1163198ee4a3534"
     },
     {
       "path": "marketing/prototype-cover/PROVENANCE.md",
@@ -859,13 +859,13 @@
     },
     {
       "path": "package.json",
-      "bytes": 1503,
-      "sha256": "b5c8a3c75c312458e0c90af801daa0be10e837aeceedc6da8bac05106f5f5756"
+      "bytes": 1374,
+      "sha256": "e64496576bc7ecc2ff9a9c8451ceb75df28dee39a43fbafc02fdaa1ad237a812"
     },
     {
       "path": "README.md",
-      "bytes": 6473,
-      "sha256": "8c8cb114cdb8bb364d6b9d692f07965a7662802ea999c015579dd2da8baed4c6"
+      "bytes": 3619,
+      "sha256": "28e63703c4e9bfde29160030c85a5eb730550862784d0494c92af102d573ec77"
     },
     {
       "path": "scripts/archive-release.mjs",
@@ -924,8 +924,8 @@
     },
     {
       "path": "scripts/validate-project.mjs",
-      "bytes": 3452,
-      "sha256": "993bf36ba48700cb82f2fbfc87907939c45c46d70ace00ef505b396cd863fa32"
+      "bytes": 4064,
+      "sha256": "e8af92303a904db7ad0747285cad30f2576a3583c828faa99fe067fb6e1a8610"
     },
     {
       "path": "site.css",
@@ -944,13 +944,13 @@
     },
     {
       "path": "tests/browser-review.mjs",
-      "bytes": 28870,
-      "sha256": "cce2f3086362e2753837db788d9d8766661c4b1b61c65c4c80fa75697871be72"
+      "bytes": 28827,
+      "sha256": "c59951f28e43c5ce5a44b79a4807c469fd4df46541b31969db799ca98e2facd6"
     },
     {
       "path": "tests/browser-smoke.mjs",
-      "bytes": 8379,
-      "sha256": "93ddc402958aac2bbf4aa622bec75e703379aec3b593df855bccf5d195dc6cd2"
+      "bytes": 8120,
+      "sha256": "9b3e89bfcb7c4c7599f5b67ba89bac41b52829af5452c891fc4b70dde27e6cf8"
     },
     {
       "path": "tests/characters.test.mjs",
@@ -974,13 +974,13 @@
     },
     {
       "path": "tests/floor30.test.mjs",
-      "bytes": 6201,
-      "sha256": "2d96393181675f28b538d296538efbe763971cd4a9eb9e3fcfe420b5994b2afd"
+      "bytes": 3218,
+      "sha256": "448af4920e0b0688cd32f4086c5579ab6073744ef677fae1e02acb2dc24d98c1"
     },
     {
       "path": "tests/game.test.mjs",
-      "bytes": 8900,
-      "sha256": "1572a5590b2fa92e48d45681c4aad54ef02c1ec1da838fd4bfdaa0d834706330"
+      "bytes": 9408,
+      "sha256": "9862c0baf6bc465a2296728cd18857dc17c654142ebf584cb2900a4ba84046db"
     },
     {
       "path": "tests/intro-browser-checks.mjs",

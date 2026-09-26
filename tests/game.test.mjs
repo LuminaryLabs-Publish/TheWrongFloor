@@ -22,6 +22,8 @@ test('seeded director preserves balance, teaching, timing, baselines, and all au
     assert.deepEqual(validateSchedule(schedule), [], `seed ${seed}`);
     assert.deepEqual(schedule, createSchedule(seed));
     assert.equal(schedule.filter(r => !r.danger).length, 12);
+    assert.equal(schedule[0].floor, 29);
+    assert.equal(schedule.at(-1).floor, 'G');
     assert.deepEqual(schedule.slice(0, 3).map(r => r.environment), ['office', 'hotel', 'basement']);
     assert.equal(new Set(schedule.filter(r => r.danger).map(r => `${r.entity}:${r.variant}`)).size, ENCOUNTERS.length);
     assert.ok(schedule.slice(24, 29).some(r => !r.danger), 'late normal floor prevents blind closure');
@@ -29,13 +31,24 @@ test('seeded director preserves balance, teaching, timing, baselines, and all au
   assert.notDeepEqual(createSchedule(1), createSchedule(2));
 });
 
-test('complete runs last exactly 300 active seconds across different frame rates', () => {
+test('complete runs last exactly 270 active seconds across different frame rates', () => {
   for (const dt of [1 / 30, 1 / 60, 1 / 144, 0.037]) {
     const result = play(createGame({ seed: 'duration' }), dt);
-    assert.equal(result.mode, 'won'); assert.equal(result.elapsed, 300);
+    assert.equal(result.mode, 'won'); assert.equal(result.elapsed, 270);
     assert.equal(result.roundIndex, 29); assert.equal(result.correct, 30); assert.equal(result.mistakes, 0);
     assert.ok(result.score >= 3800 && result.score <= 4700);
   }
+});
+
+test('initialOpen begins Floor 29 fully open without consuming active time', () => {
+  const game = createGame({ seed: 'intro-handoff', initialOpen: true });
+  const state = game.snapshot();
+  assert.equal(state.round.floor, 29);
+  assert.equal(state.elapsed, 0);
+  assert.equal(state.roundTime, 0);
+  assert.equal(state.opened, true);
+  assert.equal(state.door.openness, 1);
+  assert.equal(state.phase, 'observing');
 });
 
 test('no input loses to a threat; permanently held close cannot bypass fresh-press rule', () => {
@@ -55,7 +68,7 @@ test('closing every floor ends at the third false alarm', () => {
 
 test('normal automatic closure accepts once and does not count as a false alarm', () => {
   const game = createGame(); game.drainEvents();
-  game.update(9, { close: false });
+  game.update(8, { close: false });
   const snapshot = game.snapshot();
   assert.equal(snapshot.correct, 1); assert.equal(snapshot.score, 100); assert.equal(snapshot.mistakes, 0);
   assert.equal(snapshot.door.openness, 0); assert.equal(snapshot.outcome, 'accepted');
@@ -65,7 +78,7 @@ test('normal automatic closure accepts once and does not count as a false alarm'
 test('exact arrival/closure tie favors sealing and a late seal fails', () => {
   for (const lateness of [0, 0.001]) {
     const game = createGame({ practice: true, seed: 'tie' });
-    game.update(10, { close: false });
+    game.update(9, { close: false });
     const { arrivalAt } = game.snapshot().round;
     game.update(arrivalAt - 1.2 + lateness, { close: false });
     game.update(1.2, { close: true });
@@ -97,14 +110,14 @@ test('practice has two rounds outside the scored run; snapshots cannot mutate li
   const game = createGame({ practice: true });
   const exposed = game.snapshot(); exposed.round.danger = true; exposed.door.openness = 100;
   assert.equal(game.snapshot().round.danger, false); assert.equal(game.snapshot().door.openness, 0);
-  const result = play(game); assert.equal(result.mode, 'won'); assert.equal(result.elapsed, 20);
+  const result = play(game); assert.equal(result.mode, 'won'); assert.equal(result.elapsed, 18);
   assert.equal(createGame().snapshot().elapsed, 0);
 });
 
 test('assisted mode grants additional threat response time without lengthening a run', () => {
   const standard = createSchedule('assist'), assisted = createSchedule('assist', { assisted: true });
   standard.forEach((r, i) => { if (r.danger) assert.ok(Math.abs(assisted[i].arrivalAt - r.arrivalAt - 0.8) < 1e-9); });
-  const result = play(createGame({ assisted: true })); assert.equal(result.elapsed, 300); assert.equal(result.mode, 'won');
+  const result = play(createGame({ assisted: true })); assert.equal(result.elapsed, 270); assert.equal(result.mode, 'won');
 });
 
 test('door audio crossfade preserves a quiet synchronized music layer and raises it as doors open', () => {
@@ -119,7 +132,7 @@ test('monster approach emits once at the same progress threshold used by the vis
   const firstDanger = createSchedule(seed).findIndex(round => round.danger);
   const game = createGame({ seed });
   game.drainEvents();
-  for (let index = 0; index < firstDanger; index++) game.update(10, { close: false });
+  for (let index = 0; index < firstDanger; index++) game.update(9, { close: false });
   game.drainEvents();
   const round = game.snapshot().round;
   const expected = approachTimeForRound(round);

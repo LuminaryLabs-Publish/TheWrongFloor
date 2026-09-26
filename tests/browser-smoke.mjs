@@ -87,18 +87,16 @@ async function checkLanding(){
     await waitFor(sessionId,'document.querySelector(".play") && document.querySelector(".hero img")?.complete',20000);
     const state=await evaluate(sessionId,'(()=>{const a=document.querySelector(".play"),i=document.querySelector(".hero img");return{title:document.title,heading:document.querySelector("h1")?.textContent,play:new URL(a.href).pathname,cover:{complete:i.complete,width:i.naturalWidth,height:i.naturalHeight}}})()');
     assert.equal(state.heading,'Wrong Floor');assert.equal(state.play,'/game/');assert.deepEqual(state.cover,{complete:true,width:1536,height:1024});
-    await waitFor(sessionId,'document.querySelector("#lobby-frame")?.contentDocument?.querySelector("#play-button")?.disabled === false',60000);
+    await waitFor(sessionId,'document.querySelector("#lobby-frame")?.contentDocument?.querySelector("#descend-accessible")?.disabled === false',60000);
     const frameState=await evaluate(sessionId,'(()=>{const f=document.querySelector("#lobby-frame"),d=f.contentDocument,c=d.querySelector("#scene"),r=f.getBoundingClientRect();return{width:r.width,height:r.height,canvasWidth:c.width,canvasHeight:c.height,scroll:document.documentElement.scrollHeight>innerHeight,error:d.querySelector("#fatal-error").textContent}})()');
     assert.ok(frameState.width>600&&frameState.height>400&&frameState.canvasWidth>0&&frameState.canvasHeight>0);assert.equal(frameState.scroll,false);assert.equal(frameState.error,'');
     if(reviewDir){await mkdir(reviewDir,{recursive:true});const {data}=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false},sessionId);await writeFile(path.join(reviewDir,'landing.png'),Buffer.from(data,'base64'));await writeFile(path.join(reviewDir,'landing.json'),`${JSON.stringify(state,null,2)}\n`);}
-    console.log('browser landing ok: cover, title and Play link');
+    console.log('browser landing ok: cover, title and Floor 30 DESCEND readiness');
   }finally{await call('Target.closeTarget',{targetId});}
 }
 
 try{
-  if((process.argv.includes('--cinematic')||process.argv.includes('--cinematic-safety')))await runCinematicChecks({call,evaluate,waitFor,baseUrl,listeners,delay});
-  else if(process.argv.includes('--intro'))await runIntroChecks({call,evaluate,waitFor,baseUrl,listeners,delay});
-  else if(process.argv.includes('--room-safety'))await runRoomSafetyChecks({call,evaluate,waitFor,baseUrl});
+  if(process.argv.includes('--room-safety'))await runRoomSafetyChecks({call,evaluate,waitFor,baseUrl});
   else{await checkLanding();await runWrongFloorBrowserChecks({call,event,evaluate,waitFor,listeners,baseUrl,delay});}
 }finally{
   socket.close();

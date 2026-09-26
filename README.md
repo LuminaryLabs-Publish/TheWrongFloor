@@ -2,11 +2,11 @@
 
 ![Wrong Floor prototype concept art](game/cover.webp)
 
-Thirty floors. Five minutes. Close the doors before something gets inside.
+Thirty scored stops. Four and a half minutes. Close the doors before something gets inside.
 
-Wrong Floor is a first-person 3D observation-horror vertical slice by Luminary Labs. Every seeded run contains 30 ten-second elevator stops, nine entity families, eighteen encounter variants, and exactly 300 seconds of active simulation.
+Wrong Floor is a first-person 3D observation-horror vertical slice by Luminary Labs. `main` is the only active development line. Floor 30 is an untimed diegetic opening; the scored descent begins on Floor 29 and runs through Ground for exactly 270 active simulation seconds.
 
-**Status:** development vertical slice `0.3.0`. This repository is the independent home of the five-minute game. It is not the planned full campaign and is not a Steam-ready release.
+**Status:** active development on `main`, working toward the future `0.0.4 — Polished Descent` milestone. There is no `0.0.4` branch yet.
 
 ## Play
 
@@ -14,89 +14,92 @@ After GitHub Pages deploys:
 
 - Landing page: https://luminarylabs-publish.github.io/TheWrongFloor/
 - Direct game: https://luminarylabs-publish.github.io/TheWrongFloor/game/
+- Historical prototype preview: https://luminarylabs-publish.github.io/TheWrongFloor/prototype/
+- Comparison launcher: https://luminarylabs-publish.github.io/TheWrongFloor/compare/
 
-Controls:
+Opening flow:
+
+```text
+Launch
+→ already inside the Floor 30 elevator
+→ read the physical panel
+→ DESCEND illuminates
+→ activate DESCEND
+→ doors close / travel
+→ display changes 30 → 29
+→ Floor 29 opens
+→ full gameplay begins
+```
+
+Gameplay controls:
 
 - WASD, arrows, or gamepad stick: inspect
 - Hold Space or gamepad A: close the doors
-- Enter or gamepad B: recenter/confirm
+- Enter or gamepad B: recenter
 - Escape or Start: pause
 
-Wait through normal floors. Seal the doors when an entity appears. Three false alarms shut down the elevator; an intrusion ends the run immediately.
+## Current game
+
+The active game keeps the strongest current systems:
+
+- 15 authored asylum room profiles plus entrance/exit lobbies and elevator interior
+- 9 threat families / 18 authored encounter variants
+- modular local audio with conditioned samples, procedural machinery, room tone, threat cues and opening ambience
+- accessibility settings for motion, flashes, scare intensity, captions and assisted timing
+- deterministic schedules, scores and recoverable settings/personal bests
+- browser and Electron desktop builds
+- local runtime dependencies only
+
+The retired corpse/claw Floor 30 sequence is preserved as source/assets for future design use, but it is not required by the canonical opening. The exact first Floor 30 anomaly remains unresolved by the Master GDD.
+
+## Branch model
+
+Wrong Floor follows the Nexus Engine milestone pattern:
+
+```text
+0.0.1   frozen initial standalone milestone
+0.0.2   frozen Floor 30 / elevator presentation milestone
+0.0.3   frozen expanded authored vertical slice
+main    only active development branch
+```
+
+Future milestone branches are created only after the corresponding state of `main` is validated. Development does not move onto the frozen branches.
 
 ## Develop and validate
 
 Node.js 22.12 or newer is required.
 
 ```sh
+npm ci
 npm test
 npm run build
-npm run serve
-```
-
-With Chrome or Chromium installed:
-
-```sh
 npm run test:browser
 ```
 
-The complete real-time five-minute browser acceptance run is intentionally manual:
+The optional real-time review is:
 
 ```sh
 npm run review:full
 ```
 
-Desktop candidate packaging is documented in [desktop/README.md](desktop/README.md). The game is self-contained at runtime; Three.js and the procedural factory modules are bundled locally.
+Desktop candidate packaging:
+
+```sh
+npm ci --prefix desktop
+npm run package:windows
+npm run package:linux
+npm run package:mac
+npm run package:web
+```
+
+See [docs/README.md](docs/README.md), [docs/rules.md](docs/rules.md), [docs/floor-30.md](docs/floor-30.md), [docs/INSTALL.md](docs/INSTALL.md), and [docs/CANDIDATE_REVIEW.md](docs/CANDIDATE_REVIEW.md).
 
 ## Provenance
 
 - Historical Nexus Arcade identity: `NXA-000010`
-- Version: `0.3.0`
+- Current package/game metadata version: `0.3.0`
+- Active milestone target: `0.0.4 — Polished Descent` (not branched yet)
 - Migration source: `LuminaryLabs-Dev/NexusArcade-Prototypes@ba5071b7219375980f2085bfb106bc3fedd53193`
-- Destination baseline: `LuminaryLabs-Publish/TheWrongFloor@04591fc4021f27ebb7fa1dcaa3eb3adfcf321a14`
+- Frozen prototype reference: `.agent/references/prototype-v0.2.0/`
 
-The cover is AI-generated promotional concept art, not a gameplay screenshot. Its original bytes and provenance are preserved under [marketing/prototype-cover](marketing/prototype-cover/PROVENANCE.md).
-
-See [docs/README.md](docs/README.md), [docs/rules.md](docs/rules.md), [MIGRATION-MANIFEST.json](MIGRATION-MANIFEST.json), and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
-
-## Expanded floor content
-
-Version 0.3.0 adds fifteen themed observation rooms, five inspection rule types, three skinned threats (nine entities / eighteen encounters total), and event-driven reference audio. A run remains thirty stops and 300 active seconds. See [the expansion and audio contract](docs/expansion-0.3.0.md).
-
-## Authored asylum environments
-
-The fifteen observation rooms, entry and exit lobbies, and playable elevator interior use local Blender GLBs in `game/assets/rooms`. Rooms preload before the run clock starts; unavailable models fall back to the existing procedural scenery. Puzzle plaques, anomalies, characters, elevator controls and door timing remain runtime-owned. The original character integration is retained. Reduced flashes keeps fixture illumination steady; cabin illumination stays steady for control readability.
-
-Run `npm run build` before browser validation. `npm run test:rooms:browser` exercises repeated room transitions and a complete run with all new environment GLBs deliberately blocked. The standard browser review also asserts all fifteen authored themes, both lobbies and the elevator are active. Browser GPU checks are measurements on the test device, not minimum-hardware certification.
-
-## Intro corpse doorkeeper
-
-The title elevator uses original local intro-head.glb and intro-hand.glb assets under game/floor-30/assets. The head has a Smile morph; the hands have four curled fingers and an opposed thumb with worn claws. The existing intro clock drives a short pry, smile, head tilt and shared withdrawal. Hold-to-start and stage durations are unchanged. Soft scares hides the whole character; reduced motion disables head tilt. A failed character load restores the original claws.
-
-Run npm run test:intro:browser after building to verify the visible animation, synchronized disappearance, actual hold-to-start input and blocked-asset fallback. Editable Blender source is in C:/Users/simon/Documents/ChatGPT/Blendering/intro_character/corpse-doorkeeper.blend.
-
-## Opening cinematic
-
-The supplied The Thirtieth Floor shader plays once per page load for40active seconds, capped at30shader frames per second. Made by Luminary Labs fades in during seconds3-5 and out during10-13. During38.8-40 the moving shader crossfades over the live lobby and horror menu; menu input becomes available after the fade. Escape or Skip intro takes the same1.2-second fade. Hidden tabs pause playback. Existing reduced flashes/soft scares suppress lightning and fixture flicker, and reduced motion suppresses camera sway. Shader failure restores the menu. No textures or external runtime requests are needed, and the cinematic GPU context is released afterward.
-
-Run npm run test:cinematic:browser for a40second real-time check of cadence, credit, crossfade and entry. Existing gameplay reviews explicitly use skipIntro only alongside review=1.
-
-Opening audio uses the supplied `horrorintro.wav` (including its rain) during the 40-second shader, crossfading into looping `creepytheme.wav` for the menu. Both follow Master and Ambience volume. Browsers that block autoplay show Enable sound; any click or key unlocks audio at the current cinematic position. Menu music stops on descent and resumes on return to title.
-
-## Historical prototype reference
-
-The complete Nexus Arcade `0.2.0` prototype is preserved read-only under `.agent/references/prototype-v0.2.0/`. It is historical evidence, not the active implementation.
-
-After a Pages build:
-
-- Current game: `/game/`
-- Frozen prototype: `/prototype/`
-- Comparison launcher: `/compare/`
-
-The build rewrites only the deployed prototype's localStorage key so it cannot overwrite current-game settings or scores. The stored reference bytes remain unchanged.
-
-## Branch model
-
-Wrong Floor follows the Nexus Engine milestone pattern: `main` is the only active development line; `0.0.1`, `0.0.2`, and `0.0.3` are frozen historical milestones. The future `0.0.4` branch is created only after the Polished Descent milestone passes its release gate.
-
-Candidate archives can be generated with `npm run package:web`, `npm run package:windows`, `npm run package:linux`, or `npm run package:mac`. See [installation](docs/INSTALL.md) and [candidate review](docs/CANDIDATE_REVIEW.md).
+The cover is AI-generated promotional concept art, not gameplay evidence. Its original bytes and provenance are preserved under `marketing/prototype-cover/`.

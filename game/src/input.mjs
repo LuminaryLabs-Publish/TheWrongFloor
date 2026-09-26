@@ -2,7 +2,7 @@ export function createInput(canvas, callbacks = {}) {
   const abort = new AbortController();
   const listen = (target, name, fn, options = {}) => target?.addEventListener(name, fn, { ...options, signal: abort.signal });
   const keys = new Set();
-  let menu = true, pointerClose = false, drag = null, dx = 0, dy = 0, closeArmed=false;
+  let mode = 'menu', pointerClose = false, drag = null, dx = 0, dy = 0, closeArmed=false;
   let settings = {}, oldButtons = [], lastMenu = 0;
   const holdButton = document.getElementById('hold-close');
   const typing = target => target?.matches?.('input:not([type=range]):not([type=checkbox]),textarea');
@@ -11,11 +11,15 @@ export function createInput(canvas, callbacks = {}) {
   function reset() { keys.clear(); pointerClose = false; closeArmed=false; drag = null; dx = 0; dy = 0; holdButton?.classList.remove('held'); }
   listen(window, 'keydown', event => {
     if (typing(event.target)) return;
-    if (menu) {
+    if (mode === 'menu') {
       if (event.code === binding('pause')) { event.preventDefault(); callbacks.onPause?.(); }
       if (['ArrowUp','ArrowDown'].includes(event.code) && !event.target.matches?.('input[type=range],select')) {
         event.preventDefault(); callbacks.onMenuMove?.(event.code === 'ArrowDown' ? 1 : -1);
       }
+      return;
+    }
+    if (mode === 'intro') {
+      if (!event.repeat && event.code === 'Enter') { event.preventDefault(); callbacks.onDescend?.(); }
       return;
     }
     if ([binding('close'),binding('pause'),binding('recenter'),'ArrowUp','ArrowDown','ArrowLeft','ArrowRight','KeyW','KeyA','KeyS','KeyD'].includes(event.code)) event.preventDefault();
@@ -27,14 +31,20 @@ export function createInput(canvas, callbacks = {}) {
   listen(window, 'blur', () => { reset(); callbacks.onBlur?.(); });
   listen(document, 'visibilitychange', () => { if (document.hidden) { reset(); callbacks.onBlur?.(); } });
   listen(holdButton, 'pointerdown', event => {
-    if (menu || holdButton.disabled) return;
+    if (mode !== 'playing' || holdButton.disabled) return;
     event.preventDefault(); holdButton.setPointerCapture?.(event.pointerId); pointerClose = true; holdButton.classList.add('held');
   });
   const releaseClose = () => { pointerClose = false; holdButton?.classList.remove('held'); };
   listen(holdButton, 'pointerup', releaseClose); listen(holdButton, 'pointercancel', releaseClose); listen(holdButton, 'lostpointercapture', releaseClose);
-  listen(canvas, 'pointerdown', event => { if (!menu) { drag = { id: event.pointerId, x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); } });
+  listen(canvas, 'pointerdown', event => {
+    if (mode === 'intro') {
+      if (callbacks.onIntroPointer?.(event.clientX, event.clientY)) event.preventDefault();
+      return;
+    }
+    if (mode === 'playing') { drag = { id: event.pointerId, x: event.clientX, y: event.clientY }; canvas.setPointerCapture?.(event.pointerId); }
+  });
   listen(canvas, 'pointermove', event => {
-    if (!drag || drag.id !== event.pointerId || menu) return;
+    if (!drag || drag.id !== event.pointerId || mode !== 'playing') return;
     dx += event.clientX - drag.x; dy += event.clientY - drag.y;
     drag.x = event.clientX; drag.y = event.clientY;
   });
@@ -47,7 +57,7 @@ export function createInput(canvas, callbacks = {}) {
     const buttons = pad?.buttons.map(b => b.pressed) ?? [];
     const edge = index => buttons[index] && !oldButtons[index];
     if (edge(9)) callbacks.onPause?.();
-    if (menu) {
+    if (mode === 'menu') {
       if (edge(0) || edge(1)) callbacks.onConfirm?.();
       const direction = buttons[13] || (pad?.axes[1] ?? 0) > .6 ? 1 : buttons[12] || (pad?.axes[1] ?? 0) < -.6 ? -1 : 0;
       const now = performance.now();
@@ -58,6 +68,8 @@ export function createInput(canvas, callbacks = {}) {
         input.value = String(Math.max(Number(input.min), Math.min(Number(input.max), Number(input.value) + horizontal * Number(input.step))));
         input.dispatchEvent(new Event('input', { bubbles: true })); lastMenu = now;
       }
+    } else if (mode === 'intro') {
+      if (edge(0)) callbacks.onDescend?.();
     } else if (edge(1)) callbacks.onRecenter?.();
     oldButtons = buttons;
     const dead = Math.min(.5, Math.max(.05, settings.deadZone ?? .18));
@@ -66,7 +78,8 @@ export function createInput(canvas, callbacks = {}) {
     const lookY = (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) - (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) + axis(pad?.axes[1]) + dy * .07;
     dx = 0; dy = 0;
     const requestedClose=keys.has(binding('close'))||pointerClose||Boolean(buttons[0]);if(!requestedClose)closeArmed=true;
-    return { close: !menu && closeArmed && requestedClose, lookX: menu ? 0 : Math.max(-3, Math.min(3, lookX)), lookY: menu ? 0 : Math.max(-3, Math.min(3, lookY)) };
+    const playing=mode==='playing';
+    return { close: playing && closeArmed && requestedClose, lookX: playing ? Math.max(-3, Math.min(3, lookX)) : 0, lookY: playing ? Math.max(-3, Math.min(3, lookY)) : 0 };
   }
-  return { poll, reset, setMenu(value) { if (menu !== value) reset(); menu = Boolean(value); }, dispose() { reset(); abort.abort(); } };
+  return { poll, reset, setMode(value) { const next=['menu','intro','playing'].includes(value)?value:'menu'; if(mode!==next)reset(); mode=next; }, dispose() { reset(); abort.abort(); } };
 }

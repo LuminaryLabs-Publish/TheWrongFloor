@@ -1,6 +1,6 @@
 {
   "rounds": 30,
-  "roundSeconds": 10,
+  "roundSeconds": 9,
   "normalFloors": 12,
   "dangerousFloors": 18,
   "normalResolveAt": 6,

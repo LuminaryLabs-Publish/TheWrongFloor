@@ -114,7 +114,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await Promise.all(['Page.enable', 'Runtime.enable', 'Log.enable', 'Network.enable'].map(method => call(method, {}, sessionId)));
     await call('Emulation.setDeviceMetricsOverride', { width: 1280, height: 800, deviceScaleFactor: 1, mobile: false }, sessionId);
     const loaded = event('Page.loadEventFired', sessionId, 30000);
-    await call('Page.navigate', { url: `${baseUrl}/game/?review=1&skipIntro=1` }, sessionId);
+    await call('Page.navigate', { url: `${baseUrl}/game/?review=1` }, sessionId);
     await loaded;
     await wait('window.__wrongFloor && !document.querySelector("#fatal-error")?.textContent', 30000);
     const webgl = await run(`(()=>{const c=document.querySelector('#scene');const gl=c.getContext('webgl2');const debug=gl?.getExtension('WEBGL_debug_renderer_info');return{width:c.width,height:c.height,webgl2:!!gl,contextLost:gl?.isContextLost(),version:gl?.getParameter(gl.VERSION),driver:{debugExtensionAvailable:!!debug,vendor:debug?gl.getParameter(debug.UNMASKED_VENDOR_WEBGL):null,renderer:debug?gl.getParameter(debug.UNMASKED_RENDERER_WEBGL):null,maskedVendor:gl?.getParameter(gl.VENDOR),maskedRenderer:gl?.getParameter(gl.RENDERER)},layout:{width:innerWidth,height:innerHeight,scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight},inspection:__wrongFloor.inspect()}})()`);
@@ -124,51 +124,47 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.ok(webgl.width >= 640 && webgl.height >= 400, 'renderer has a useful drawing buffer');
     assert.ok(webgl.inspection.renderer?.triangles > 0, 'actual triangles were rendered');
     assert.ok(webgl.layout.scrollWidth <= webgl.layout.width && webgl.layout.scrollHeight <= webgl.layout.height, 'game fits desktop viewport');
-    await screenshot('00-title.png');
+    await wait('__wrongFloor.snapshot().mode === "intro" && __wrongFloor.inspect().lobby.descendReady',60000);
+    const introState=await run('({state:__wrongFloor.snapshot(),lobby:__wrongFloor.inspect().lobby})');
+    assert.equal(introState.state.elapsed,0,'Floor 30 consumes no active game time');
+    assert.equal(introState.state.displayFloor,30);
+    assert.ok(introState.lobby.camera.position[0] < -.8,'Floor 30 camera is in the back/side corner');
+    assert.equal(introState.lobby.asset,'entrance-lobby');
+    await screenshot('00-floor-30-ready.png');
     for(const [width,height] of [[1280,540],[3440,1440],[390,844]]){
       await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false},sessionId);
       await delay(150);
-      const fit=await run(`(()=>{const r=document.querySelector('#play-button').getBoundingClientRect();return{scroll:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,visible:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight}})()`);
-      assert.equal(fit.scroll,false);assert.equal(fit.visible,true,'hold button fits '+width+'x'+height);
-      await screenshot('00-title-'+width+'x'+height+'.png');
-      await click('.seed-details summary');
-      const seedFit=await run(`(()=>{const input=document.querySelector('#seed-input'),r=input.getBoundingClientRect();return{open:document.querySelector('.seed-details').open,visible:r.left>=0&&r.right<=innerWidth&&r.top>=0&&r.bottom<=innerHeight};})()`);
-      assert.equal(seedFit.open,true);assert.equal(seedFit.visible,true,'seed input fits '+width+'x'+height);
-      await screenshot('00-descent-record-'+width+'x'+height+'.png');
-      await click('.seed-details summary');
+      const layout=await run('({scroll:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,descend:__wrongFloor.inspect().lobby.descendScreen})');
+      assert.equal(layout.scroll,false);
+      assert.ok(Number.isFinite(layout.descend.x)&&Number.isFinite(layout.descend.y),'physical DESCEND projects on screen');
+      await screenshot('00-floor-30-'+width+'x'+height+'.png');
     }
     await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false},sessionId);
 
-
-    // This uses trusted browser input, not the deterministic review controls.
+    const point=await run('__wrongFloor.inspect().lobby.descendScreen');
+    await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1},sessionId);
+    await call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1},sessionId);
+    await wait('__wrongFloor.snapshot().mode === "running" && __wrongFloor.snapshot().round.floor === 29 && __wrongFloor.snapshot().opened === true',15000);
+    const beforeClose=await run('__wrongFloor.snapshot()');
+    assert.ok(beforeClose.elapsed < .5,'active timer begins only after Floor 29 opens');
+    assert.equal(beforeClose.round.danger,false,'first scored floor establishes a safe baseline');
+    await screenshot('01-floor-29-normal.png');
     await key('Space',true);
-    await delay(250);
+    await wait('__wrongFloor.snapshot().mistakes === 1',5000);
     await key('Space',false);
-    await wait('__wrongFloor.lobby().holdProgress === 0');
-    assert.equal(await run('__wrongFloor.snapshot().mode'),'title','short hold does not start');
-    await key('Space',true);
-    await wait('__wrongFloor.lobby().accepted',30000);
-    await key('Space',false);
-    await wait('__wrongFloor.snapshot().mode === "running" && __wrongFloor.snapshot().roundTime > 1.0', 60000);
-    const beforeClose = await run('__wrongFloor.snapshot()');
-    assert.equal(beforeClose.round.danger, false, 'first floor establishes a safe baseline');
-    await screenshot('01-normal-floor.png');
-    await key('Space', true);
-    await wait('__wrongFloor.snapshot().mistakes === 1');
-    await key('Space', false);
-    const afterClose = await run('__wrongFloor.snapshot()');
-    assert.equal(afterClose.outcome, 'false-alarm');
-    assert.equal(afterClose.door.openness, 0);
-    interactions.push({ action: 'Hold Space entry, real Space closure and release', before: beforeClose, after: afterClose });
+    const afterClose=await run('__wrongFloor.snapshot()');
+    assert.equal(afterClose.outcome,'false-alarm');
+    assert.equal(afterClose.door.openness,0);
+    interactions.push({action:'Physical DESCEND, then real Space closure and release',intro:introState,before:beforeClose,after:afterClose});
     await tap('Escape');
     await wait('__wrongFloor.snapshot().mode === "paused"');
-    const paused = await run('__wrongFloor.snapshot()');
+    const paused=await run('__wrongFloor.snapshot()');
     await delay(400);
-    assert.deepEqual(await run('__wrongFloor.snapshot()'), paused, 'pause freezes the complete game snapshot');
+    assert.deepEqual(await run('__wrongFloor.snapshot()'),paused,'pause freezes the complete game snapshot');
     await screenshot('02-paused.png');
     await tap('Escape');
     await wait('__wrongFloor.snapshot().mode === "running"');
-    interactions.push({ action: 'Real Escape pause and resume', pausedAt: paused.elapsed });
+    interactions.push({action:'Real Escape pause and resume',pausedAt:paused.elapsed});
 
     await wait('__wrongFloor.inspect().audio.state === \'running\'',10000);
     const audioState=await run('__wrongFloor.inspect().audio');assert.equal(audioState.state,'running');assert.equal(audioState.loaded,8);assert.deepEqual(audioState.failures,[]);
@@ -216,13 +212,13 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
         const result=__wrongFloor.snapshot();
         rounds.push({roundIndex:result.roundIndex,round:result.round,elapsed:result.elapsed,door:result.door,outcome:result.outcome,mode:result.mode,score:result.score});
         if(result.mode!=='running')break;
-        __wrongFloor.advance(Math.max(0,10-result.roundTime),{close:false});
+        __wrongFloor.advance(Math.max(0,9-result.roundTime),{close:false});
       }
       return {rounds,final:__wrongFloor.snapshot(),inspection:__wrongFloor.inspect()};
     })()`);
     assert.equal(complete.rounds.length, 30, 'browser exercised all 30 stops');
     assert.equal(complete.inspection.rooms.active,'exit-lobby');assert.equal(complete.inspection.rooms.cabin,'elevator-interior');assert.deepEqual(complete.inspection.rooms.failures,{});
-    assert.equal(complete.final.mode, 'won'); assert.equal(complete.final.elapsed, 300);
+    assert.equal(complete.final.mode, 'won'); assert.equal(complete.final.elapsed, 270);
     assert.equal(complete.final.correct, 30); assert.equal(complete.final.mistakes, 0);
     assert.equal(new Set(complete.rounds.filter(r => r.round.danger).map(r => `${r.round.entity}:${r.round.variant}`)).size, 18);
     assert.ok(complete.rounds.every(r => r.outcome === 'sealed' || r.outcome === 'accepted'));
@@ -230,14 +226,14 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
 
     const failures = await run(`(async()=>{
       await __wrongFloor.start({seed:'browser-no-input',manual:true});
-      __wrongFloor.advance(300,{close:false});
+      __wrongFloor.advance(270,{close:false});
       const intrusion=__wrongFloor.snapshot();
       await __wrongFloor.start({seed:'browser-false-alarms',manual:true});
       for(let i=0;i<3;i++){
         __wrongFloor.advance(.81,{close:false});
         __wrongFloor.advance(1.2,{close:true});
         const s=__wrongFloor.snapshot();if(s.mode!=='running')break;
-        __wrongFloor.advance(10-s.roundTime,{close:false});
+        __wrongFloor.advance(9-s.roundTime,{close:false});
       }
       return {intrusion,shutdown:__wrongFloor.snapshot()};
     })()`);
@@ -264,7 +260,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await run('__wrongFloor.stopPreview()');
     if (reviewDir) await writeFile(path.join(reviewDir, 'preflight-evidence.json'), `${JSON.stringify({ provenance, webgl, performancePreflight, complete, failures, variants, screenshots, findings }, null, 2)}\n`);
     if (!performancePreflight.passed) clip.skipReason = 'Real-time full session skipped because the default-profile performance preflight failed.';
-    assert.ok(performancePreflight.passed, `Wrong Floor default-profile performance preflight failed: ${JSON.stringify(performancePreflight)}. Full 300-second session was not attempted; retained manual trace and encounter images are not real-time performance proof.`);
+    assert.ok(performancePreflight.passed, `Wrong Floor default-profile performance preflight failed: ${JSON.stringify(performancePreflight)}. Full 270-second session was not attempted; retained manual trace and encounter images are not real-time performance proof.`);
 
     if (process.env.WRONG_FLOOR_FULL_RUN === '1') {
       // This is a wall-clock browser session. It must never invoke advance(),
@@ -311,16 +307,16 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
           await delay(100);
         }
         assert.equal(fullSession.final.mode, 'won', `real-time full session did not escape: ${JSON.stringify(fullSession.final)}`);
-        assert.equal(fullSession.final.elapsed, 300, 'real-time session must accumulate 300 active seconds');
+        assert.equal(fullSession.final.elapsed, 270, 'real-time session must accumulate 270 active seconds');
         assert.equal(fullSession.rounds.length, 30, 'real-time session must observe all 30 resolved rounds');
         assert.equal(fullSession.final.correct, 30);
         assert.equal(fullSession.final.mistakes, 0);
-        assert.ok(fullSession.wallSeconds >= 299, 'full session cannot be accelerated');
+        assert.ok(fullSession.wallSeconds >= 269, 'full session cannot be accelerated');
         assert.ok(fullSession.rounds.every(round => ['sealed', 'accepted'].includes(round.outcome)));
         fullSession.completed = true;
         await delay(1800);
         await screenshot('full-session-escape.png');
-        console.log(`browser Wrong Floor real-time session ok: ${fullSession.wallSeconds.toFixed(1)} wall seconds, 300 active seconds, 30 correct rounds`);
+        console.log(`browser Wrong Floor real-time session ok: ${fullSession.wallSeconds.toFixed(1)} wall seconds, 270 active seconds, 30 correct rounds`);
       } finally {
         if (holding) await key('Space', false);
         await stopClip(fullSession.final);
@@ -334,10 +330,10 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     const externalRequests = requests.filter(url => /^https?:/.test(url) && new URL(url).origin !== new URL(baseUrl).origin);
     assert.deepEqual(externalRequests, [], 'game runtime uses only bundled local resources');
     assert.deepEqual(findings.filter(f => f.level === 'error'), [], `Wrong Floor emitted errors: ${JSON.stringify(findings)}`);
-    report = { schema: 'wrong-floor-browser-review/1', provenance, captureKind: fullSession ? 'real-time-input-session-plus-screenshots-and-manual-trace' : 'screenshots-and-manual-simulation-trace', realTimeFullRunVideo: false, silentGameplayCapture: clip, viewport: { width: 1280, height: 800 }, webgl, performancePreflight, interactions, fullSession, complete, failures, variants, screenshots, requests: [...new Set(requests)], findings, checks: { actualWebGL: true, realKeyboardClosure: true, realKeyboardPause: true, thirtyRoundEscape: true, activeSimulationSeconds: 300, defaultProfilePerformance: performancePreflight.passed, realtimeFullSession: fullSession?.completed ?? 'not requested', silentGameplayClip: clipRequested ? clip.status === 'complete' : 'not requested', allEighteenVariants: true, bothFailureTypes: true, noExternalRuntimeDependencies: true, noBrowserErrors: true } };
+    report = { schema: 'wrong-floor-browser-review/1', provenance, captureKind: fullSession ? 'real-time-input-session-plus-screenshots-and-manual-trace' : 'screenshots-and-manual-simulation-trace', realTimeFullRunVideo: false, silentGameplayCapture: clip, viewport: { width: 1280, height: 800 }, webgl, performancePreflight, interactions, fullSession, complete, failures, variants, screenshots, requests: [...new Set(requests)], findings, checks: { actualWebGL: true, realKeyboardClosure: true, realKeyboardPause: true, thirtyRoundEscape: true, activeSimulationSeconds: 270, defaultProfilePerformance: performancePreflight.passed, realtimeFullSession: fullSession?.completed ?? 'not requested', silentGameplayClip: clipRequested ? clip.status === 'complete' : 'not requested', allEighteenVariants: true, bothFailureTypes: true, noExternalRuntimeDependencies: true, noBrowserErrors: true } };
     if (reviewDir) await writeFile(path.join(reviewDir, 'validation.json'), `${JSON.stringify(report, null, 2)}\n`);
     if (clipRequested) assert.equal(clip.status, 'complete', `Silent gameplay capture incomplete: ${JSON.stringify({ status: clip.status, frames: clip.frames.length, sourceTimelineSeconds: clip.sourceTimelineSeconds, errors: clip.errors })}`);
-    console.log('browser Wrong Floor ok: real keyboard closure/pause, 30 stops/300 simulated seconds, 18 variants and 15 themed rooms');
+    console.log('browser Wrong Floor ok: real keyboard closure/pause, 30 stops/270 simulated seconds, 18 variants and 15 themed rooms');
     return report;
   } finally {
     await stopClip(fullSession?.final);

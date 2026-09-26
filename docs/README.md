@@ -1,28 +1,40 @@
 # Wrong Floor vertical slice
 
-Wrong Floor is a first-person, seeded observation-horror game. Survive thirty elevator stops in 300 seconds of active simulation. Each stop occupies ten seconds; tutorial, loading, pause, and results are outside that clock.
+Wrong Floor is a first-person, seeded observation-horror game. Floor 30 is an untimed controlled opening inside the elevator. The scored run begins on Floor 29 and contains thirty nine-second stops, ending on Ground after exactly 270 active simulation seconds.
 
-This repository contains the `0.3.0` expansion of the independent vertical slice originally migrated from `LuminaryLabs-Dev/NexusArcade-Prototypes@ba5071b7219375980f2085bfb106bc3fedd53193`. It is the baseline for future full-game development, not the planned 8–10-hour campaign.
+This repository contains the current independent game on `main`. Historical milestone branches are frozen evidence; they are not active development lanes.
 
-## Controls and rules
+## Opening contract
 
-WASD/arrows or gamepad stick inspect; hold Space/gamepad A to seal; Enter/B recenters; Escape/Start pauses. Pointer drag and an on-screen hold button support touch. Close can be remapped. A fresh press is required after each opening. Fully sealing takes 1.2 seconds.
+```text
+Floor 30 (untimed)
+→ physical elevator panel
+→ illuminated DESCEND
+→ doors close
+→ 30 → 29
+→ Floor 29 doors open
+→ controls unlock
+```
 
-Wait through normal floors. Seal on danger. Three false alarms shut down the lift; intrusion ends immediately. Twelve normal floors and eighteen dangerous floors include all eighteen entity variations. See [rules.md](rules.md) and `game/content/` for the complete contracts.
+There is no conventional Play button or seed selector in the normal opening. Settings remain secondary. The exact first Floor 30 anomaly is intentionally unresolved.
 
-## Procedural construction
+## Gameplay contract
 
-The game uses three vendored NexusFactory-Kits generators: Horror Entities, Liminal Corridor Architecture, and Distressed Architectural Surfaces. They produce seeded creature geometry, architecture, and material fields before active play begins. Runtime modules came from `LuminaryLabs-Dev/NexusFactory-Kits@c6f232b6c104638983e0a163fc1ca62e3190290a`; their MIT license is bundled.
+Every scored run contains 12 normal and 18 dangerous stops. All 18 encounter variants appear in a complete deterministic schedule. Normal floors establish readable baselines; dangerous floors alter a room rule or present a threat. Three false alarms shut down the elevator.
 
-Three.js r165 is bundled locally under `game/vendor/three/`. Audio is synthesized through Web Audio. The browser game performs no external runtime downloads.
+The 15 authored room profiles are reused across the run. Authored GLBs carry the primary room/elevator identity; procedural systems remain supporting fallback/dressing.
 
-The cover is AI-generated prototype promotional art, not gameplay evidence. Its bytes and disclosure record are preserved under `marketing/prototype-cover/`.
+## Controls
+
+- WASD/arrows or gamepad stick: inspect after Floor 29 opens
+- Hold Space/gamepad A: close
+- Enter/gamepad B: recenter
+- Escape/Start: pause
+- Floor 30: physical DESCEND via pointer, Enter, or gamepad A
 
 ## Saves and lifecycle
 
 Historical Arcade ID: `NXA-000010`. Settings, tutorial completion, and standard/assisted personal bests use `wrong-floor.save.v1`. Corrupt or unavailable storage recovers safely. Transient run state is not persisted.
-
-Browser Exit returns to the title. The desktop launch uses `?standalone=1`, labels Exit as Quit Game, and closes the native window. Input and active simulation clear or pause on focus loss.
 
 ## Validation
 
@@ -30,24 +42,11 @@ Browser Exit returns to the title. The desktop launch uses `?standalone=1`, labe
 npm test
 npm run build
 npm run test:browser
-```
-
-`npm test` covers deterministic schedules, exact 300-second runs at several frame rates, door deadlines, false alarms, exploits, pause, practice, assistance, save recovery, project structure, migration hashes, and desktop staging.
-
-`npm run test:browser` opens the built site in headless Chrome with software WebGL and checks the landing page, cover, actual rendered geometry, Play, keyboard door closure, pause/resume, local-only runtime requests, and browser errors.
-
-The complete review is manual:
-
-```sh
 npm run review:full
 ```
 
-It adds a ten-second render preflight, a deterministic 30-stop browser trace, both failure modes, all eighteen encounter screenshots and fifteen room screenshots, and an actual real-time 300-second keyboard-controlled session. This is automated evidence, not human playtesting or native-device proof.
+Unit validation covers deterministic schedules, exact 270-second runs, Floor 29/G labels, the initial-open handoff, door deadlines, failures, pause, saves, authored rooms/characters, Floor 30 panel behavior, migration hashes and desktop staging.
 
-## Known validation boundary
+Browser validation exercises the real Floor 30 scene, physical DESCEND hit target, Floor 30 → 29 handoff, WebGL rendering, trusted keyboard closure/pause, local-only resources, all threat variants and room profiles. The optional full review adds a real-time 270-second session.
 
-The earliest Arcade publication failed its long Chrome performance run. Version `0.1.1` reduced repeated render-buffer resets, canvas uploads, and drawing work. The standalone migration does not claim Steam readiness, native quality, audio quality, cabinet performance, or human horror quality.
-
-## Future architecture
-
-The current game owns its deterministic rules directly and uses vendored procedural factory code. A future NexusEngine integration remains proposed work. Production must inspect and pin exact public NexusEngine contracts before moving gameplay ownership into Core, Kits/DSKs, Sequences, and host/renderer adapters.
+These checks establish implementation evidence, not human horror-quality approval or minimum-device certification.

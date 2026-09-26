@@ -3,14 +3,15 @@ import { ElevatorDoors, DOOR_TIMING } from './elevator.mjs';
 import { approachTimeForRound } from './audio-config.mjs';
 
 const EPS = 1e-9;
-export function createGame({ seed = 'wrong-floor', assisted = false, practice = false } = {}) {
+export function createGame({ seed = 'wrong-floor', assisted = false, practice = false, initialOpen = false } = {}) {
   const schedule = createSchedule(seed, { assisted, practice });
   const errors = validateSchedule(schedule, { practice });
   if (errors.length) throw new Error(`Invalid encounter schedule: ${errors.join(', ')}`);
   const door = new ElevatorDoors();
   let mode = 'running', elapsed = 0, roundIndex = 0, roundTime = 0;
   let mistakes = 0, score = 0, correct = 0, resolved = false, outcome = null, failureReason = null;
-  let heldPreviously = false, closeActive = false, closeStartedAt = null, opened = false, clueEmitted = false, approachEmitted = false;
+  let heldPreviously = false, closeActive = false, closeStartedAt = null, opened = Boolean(initialOpen), clueEmitted = false, approachEmitted = false;
+  if (initialOpen) door.openness = 1;
   const events = [];
   const emit = (type, data = {}) => events.push({ type, elapsed, roundIndex, data });
   const round = () => schedule[roundIndex];
@@ -62,7 +63,7 @@ export function createGame({ seed = 'wrong-floor', assisted = false, practice = 
       const closing = automaticClose || closeActive;
       const sealed = resolved && door.openness <= EPS;
       const approachAt = current.danger ? approachTimeForRound(current) : Infinity;
-      let step = Math.min(remaining, 1 / 120, 10 - roundTime);
+      let step = Math.min(remaining, 1 / 120, DIFFICULTY.roundSeconds - roundTime);
       const boundaries = [
         opening ? 0.8 - roundTime : Infinity,
         !resolved && current.danger ? current.arrivalAt - roundTime : Infinity,
@@ -89,8 +90,8 @@ export function createGame({ seed = 'wrong-floor', assisted = false, practice = 
         resolved = true; outcome = 'intrusion'; lose('intrusion');
       }
       if (!resolved && !current.danger && roundTime >= current.normalResolveAt - EPS) resolve('accepted');
-      if (mode === 'running' && roundTime >= 10 - EPS) {
-        roundTime = 10;
+      if (mode === 'running' && roundTime >= DIFFICULTY.roundSeconds - EPS) {
+        roundTime = DIFFICULTY.roundSeconds;
         nextRound();
       }
     }

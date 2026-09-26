@@ -17,7 +17,9 @@ assert.equal(metadata.id, 'NXA-000010');
 assert.equal(metadata.slug, 'wrong-floor');
 assert.equal(metadata.version, '0.3.0');
 const difficulty = JSON.parse(await readFile(path.join(game, 'content/difficulty.json'), 'utf8'));
-assert.equal(difficulty.rounds * difficulty.roundSeconds, 300);
+assert.equal(difficulty.rounds, 30);
+assert.equal(difficulty.roundSeconds, 9);
+assert.equal(difficulty.rounds * difficulty.roundSeconds, 270);
 const encounters = JSON.parse(await readFile(path.join(game, 'content/encounters.json'), 'utf8'));
 assert.equal(encounters.length, 18);
 const cover = await readFile(path.join(game, 'cover.webp'));
@@ -31,6 +33,15 @@ const prototypeSource = JSON.parse(await readFile(path.join(prototypeRoot, 'sour
 assert.equal(prototypeSource.source.repository, 'LuminaryLabs-Dev/NexusArcade-Prototypes');
 assert.equal(prototypeSource.source.commit, '1d772700edb77eb294f5f7b3f786ad790276fabd');
 await access(path.join(root, 'compare', 'index.html'));
+
+const gameHtml = await readFile(path.join(game, 'index.html'), 'utf8');
+assert.doesNotMatch(gameHtml, /id="play-button"|id="seed-input"|data-action="practice"/);
+assert.match(gameHtml, /id="descend-accessible"/);
+const directorSource = await readFile(path.join(game, 'src', 'director.mjs'), 'utf8');
+assert.match(directorSource, /index === 29 \? 'G' : 29 - index/);
+const mainSource = await readFile(path.join(game, 'src', 'main.mjs'), 'utf8');
+assert.match(mainSource, /mode:'intro'/);
+assert.match(mainSource, /initialOpen:true/);
 
 const landing = await readFile(path.join(root, 'index.html'), 'utf8');
 assert.match(landing, /href="\.\/game\/"/);
@@ -52,4 +63,4 @@ async function scan(directory) {
   }
 }
 await scan(game);
-console.log(`[validate] current 0.3.0 authority + frozen 0.2.0 prototype reference; ${required.length} required current files, ${encounters.length} encounters`);
+console.log(`[validate] current main: untimed Floor 30, Floor 29→G, 30×9s=270s; ${required.length} required current files, ${encounters.length} encounters`);

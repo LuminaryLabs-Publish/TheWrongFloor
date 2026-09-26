@@ -1,7 +1,7 @@
 import {FLOOR_PROFILES,createInspection} from './floors/catalog.mjs';
 export const ENVIRONMENTS = Object.freeze(['office', 'hotel', 'basement']);
 export const ENTITIES = Object.freeze(['guest', 'tall', 'ceiling', 'porter', 'shadow', 'mannequin', 'warden', 'weaver', 'mourner']);
-export const DIFFICULTY = Object.freeze({ rounds: 30, roundSeconds: 10, normalFloors: 12, dangerousFloors: 18, normalResolveAt: 6, assistedExtraSeconds: 0.8 });
+export const DIFFICULTY = Object.freeze({ rounds: 30, roundSeconds: 9, normalFloors: 12, dangerousFloors: 18, normalResolveAt: 6, assistedExtraSeconds: 0.8 });
 export const ENCOUNTERS = Object.freeze([
   { entity: 'guest', variant: 0, name: 'The Reflection', clueText: 'The reflection moved while the guest stood still.' },
   { entity: 'guest', variant: 1, name: 'The Twist', clueText: 'The butler’s skull twisted while its body stayed still.' },
@@ -90,7 +90,7 @@ export function createSchedule(seed, { assisted = false, practice = false } = {}
     previous = danger ? entity : null;
     const profile=profileOrder[index%profileOrder.length].id, decorSeed=seedNumber(`${seed}:decor:${index}`), puzzle=createInspection(profile,decorSeed,index);
     return {
-      index, profile, puzzle, floor: practice ? 2 - index : 30 - index, danger, entity, variant,
+      index, profile, puzzle, floor: practice ? 2 - index : (index === 29 ? 'G' : 29 - index), danger, entity, variant,
       environment: index < 3 ? ENVIRONMENTS[index] : ENVIRONMENTS[Math.floor(random() * 3)],
       seed: seedNumber(`${seed}:decor:${index}`), clueAt,
       arrivalAt: danger ? clueAt + allowance + (assisted ? 0.8 : 0) : null,
@@ -105,6 +105,8 @@ export function validateSchedule(rounds, { practice = false } = {}) {
   const errors = [];
   if (rounds.length !== (practice ? 2 : 30)) errors.push('Incorrect round count');
   if (!practice && rounds.filter(round => round.danger).length !== 18) errors.push('Incorrect danger balance');
+  if (!practice && rounds[0]?.floor !== 29) errors.push('Scored descent must begin on Floor 29');
+  if (!practice && rounds.at(-1)?.floor !== 'G') errors.push('Scored descent must end on Ground');
   if (!practice && rounds.slice(0, 3).some(round => round.danger)) errors.push('Missing normal baselines');
   const taught = new Set(); let streak = 0;
   rounds.forEach((round, index) => {

@@ -2,7 +2,7 @@
 
 ## Scope and source
 
-This update preserves the 30-stop, exactly 300-active-second survival game. The additional content is **15 reusable floor variations in that run**, not 15 additional timed stops. Every run visits each variation twice, with different encounters and progression timing. The game remains a development vertical slice, not a finished AAA campaign.
+The 0.3.0 content expansion introduced the authored room/threat set. Current `main` now runs that content across 30 scored stops / 270 active seconds. The additional content is **15 reusable floor variations in that run**, not 15 additional timed stops. Every run visits each variation twice, with different encounters and progression timing. The game remains a development vertical slice, not a finished AAA campaign.
 
 Baseline main: `2b12534f90634957928b2e6fc81175ad3e48817a`.
 Audio reference: `audio-shifts` at `f1e59634603d1050414e51475b55486eb1a8a51c`.
@@ -63,8 +63,8 @@ These are game-local modules aligned with domain ownership. They are not newly r
 | State or event | Audible behavior |
 | --- | --- |
 | User gesture | Resume the context and load bundled assets; failure stays playable |
-| Safe Floor 30 menu | Quiet music box and machinery; no panic or intrusion sting |
-| Menu closing / pry / retreat / entry | Restrained latch, strain, scrape and confirmation; softer mode suppresses pry/retreat accents |
+| Floor 30 opening | Quiet music box and machinery; no panic or intrusion sting |
+| Floor 30 DESCEND / travel | Restrained latch, strain, scrape and confirmation; softer mode suppresses pry/retreat accents |
 | Arrival | Bell, clear prior threat voices, begin current room ambience |
 | Inspection clue | Eligible distant voice once after opening floors; panic only when the threat is visible |
 | Approach | Filtered/panned bone movement; no death sting |
@@ -81,6 +81,6 @@ All audio remains local. The sample layer caps voices at 24, preserves stereo ba
 
 ## Verification boundaries
 
-Deterministic tests cover all room assignments, explicit clue readings, normalized bone weights, changed animation transforms, full-run timing, both failure conditions, saves, pause, input and lobby safety. Browser review checks actual WebGL, trusted input, all 18 variants, all 15 room captures, an offline mixed-audio signal and lifecycle cleanup. The manual full-session workflow remains separate from automatic startup checks.
+Deterministic tests cover all room assignments, explicit clue readings, normalized bone weights, changed animation transforms, full-run timing, both failure conditions, saves, pause, input and Floor 30 handoff safety. Browser review checks actual WebGL, trusted input, all 18 variants, all 15 room captures, an offline mixed-audio signal and lifecycle cleanup. The manual full-session workflow remains separate from automatic startup checks.
 
 Lavapipe videos import the real new room and creature builders but use an adapter cabin and lights. They are visual review evidence, not browser performance measurements. Browser screenshots and traces cover the actual application. Native Electron gameplay and human listening remain separate checks.

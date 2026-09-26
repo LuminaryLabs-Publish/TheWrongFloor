@@ -67,7 +67,7 @@ export function createUI(actions = {}) {
   function invoke(action) {
     if (action === 'settings') return show('settings');
     if (action === 'back') return show(settingsReturn === 'settings' ? 'title' : settingsReturn);
-    if (action === 'play' || action === 'practice') return actions[action]?.(byId('seed-input').value.trim());
+    if (action === 'descend') return actions.descend?.();
     actions[action]?.();
   }
 
@@ -102,7 +102,8 @@ export function createUI(actions = {}) {
   function update(snapshot = {}) {
     const total = snapshot.totalRounds ?? 30;
     const index = Math.max(0, snapshot.roundIndex ?? 0);
-    const floor = snapshot.mode === 'won' ? 'L' : String(Math.max(1, total - index)).padStart(2, '0');
+    const rawFloor = snapshot.mode === 'intro' ? (snapshot.displayFloor ?? 30) : snapshot.mode === 'won' ? 'G' : (snapshot.round?.floor ?? 29);
+    const floor = typeof rawFloor === 'number' ? String(rawFloor).padStart(2, '0') : String(rawFloor);
     if (lastFloor !== floor) {
       lastFloor = floor;
       byId('floor-number').textContent = floor;
@@ -140,10 +141,9 @@ export function createUI(actions = {}) {
     if (active?.matches('select')) { active.selectedIndex = (active.selectedIndex + 1) % active.options.length; active.dispatchEvent(new Event('input', { bubbles: true })); } else if (active?.matches('button,summary,input[type=checkbox]')) active.click();
   }
   function setReady(ready = true, text) {
-    byId('play-button').disabled = !ready;
+    byId('descend-accessible').disabled = !ready;
     byId('load-status').dataset.ready = String(ready);
-    document.querySelector('[data-action="practice"]').disabled = !ready;
-    byId('load-status').textContent = text || (ready ? 'ELEVATOR READY' : 'PREPARING ELEVATOR');
+    byId('load-status').textContent = text || (ready ? 'DESCEND READY' : 'PREPARING DESCENT');
   }
   synchronize();
   return { show, update, caption, setReady, getSettings, updateSettings, menuMove, confirm, getScreen: () => screen, dispose: () => controller.abort() };
