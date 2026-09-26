@@ -575,7 +575,7 @@
     {
       "path": "game/floor-30/scene.mjs",
       "bytes": 6665,
-      "sha256": "77225cb6192134a0d2d60bdb0ecf39da3ede3a7bb4fb894b1c97fc6d6033cb9c"
+      "sha256": "acd95651d058c6ac885e0174ba2a5ce56e48f125cf7ea8b2190b3ef069f661f0"
     },
     {
       "path": "game/game.json",
@@ -944,8 +944,8 @@
     },
     {
       "path": "tests/browser-review.mjs",
-      "bytes": 28827,
-      "sha256": "c59951f28e43c5ce5a44b79a4807c469fd4df46541b31969db799ca98e2facd6"
+      "bytes": 28987,
+      "sha256": "8199ae958463628df945f5c8596becb5078a9be3ac58e429ec1cdd84181c5384"
     },
     {
       "path": "tests/browser-smoke.mjs",

@@ -23,7 +23,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null}={}){
     return mesh;
   }
 
-  const panel=new T.Group();panel.position.set(1.62,1.72,-3.42);panel.rotation.y=-Math.PI/2;scene.add(panel);
+  const panel=new T.Group();panel.position.set(1.62,1.72,-1.6);panel.rotation.y=-Math.PI/2;scene.add(panel);
   const boardMat=new T.MeshStandardMaterial({color:'#20231f',roughness:.72,metalness:.48});
   const trimMat=new T.MeshStandardMaterial({color:'#90764d',roughness:.42,metalness:.8});
   const board=new T.Mesh(new T.BoxGeometry(1.28,2.72,.12),boardMat);panel.add(board);
@@ -45,7 +45,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null}={}){
   return{
     scene,camera,hitTestDescend,
     inspect:()=>({asset:authored?.userData.roomAsset??null,doorPositions:[left.position.x,right.position.x],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor}),
-    resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?66:56;camera.updateProjectionMatrix();},
+    resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?104:56;camera.updateProjectionMatrix();},
     update(s,settings={},dt=0){if(disposed)return;visualTime+=Math.max(0,dt);authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));left.position.x=leftClosed-openness*1.4;right.position.x=rightClosed+openness*1.4;lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.position.z=s.descendPressed?.075:.11;currentFloor=s.displayFloor??30;display.userData.setText(currentFloor);const phase=visualTime%4.6;const flicker=settings.reducedFlashes?1:(phase>2.88&&phase<2.96?.55:phase>3.08&&phase<3.14?.72:1+Math.sin(visualTime*29)*.012);key.intensity=82*flicker;car.intensity=8*flicker;},
     dispose(){if(disposed)return;disposed=true;key.shadow.map?.dispose();release();}
   };

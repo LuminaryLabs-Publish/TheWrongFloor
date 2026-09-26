@@ -137,6 +137,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
       const layout=await run('({scroll:document.documentElement.scrollWidth>innerWidth||document.documentElement.scrollHeight>innerHeight,descend:__wrongFloor.inspect().lobby.descendScreen})');
       assert.equal(layout.scroll,false);
       assert.ok(Number.isFinite(layout.descend.x)&&Number.isFinite(layout.descend.y),'physical DESCEND projects on screen');
+      assert.ok(layout.descend.x>=0&&layout.descend.x<=width&&layout.descend.y>=0&&layout.descend.y<=height,'physical DESCEND stays inside '+width+'x'+height);
       await screenshot('00-floor-30-'+width+'x'+height+'.png');
     }
     await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false},sessionId);
