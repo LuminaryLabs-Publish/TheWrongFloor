@@ -694,8 +694,8 @@
     },
     {
       "path": "game/src/main.mjs",
-      "bytes": 11357,
-      "sha256": "36bf3d3240ea83c79056620b84ecf5f7113725a5157d34139f7683075c9090d3"
+      "bytes": 11610,
+      "sha256": "9129f5f75d3cc9fcf292a59af0dc8dd8ca6462877ac49b47caedfd117f53a3ba"
     },
     {
       "path": "game/src/procedural-audio.mjs",

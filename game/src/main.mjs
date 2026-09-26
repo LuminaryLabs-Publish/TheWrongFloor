@@ -82,10 +82,14 @@ async function start({seed,practice=false,manual:manualClock=false}={}){
 function processEvents(){for(const event of game?.drainEvents()??[]){audio.event(event);if(event.type==='arrival'){const r=game.snapshot().round;ui.caption(r.puzzle ? `INSPECT: ${r.puzzle.rule}. A mismatch means close.` : '');}if(event.type==='clue'&&game.snapshot().practice)ui.caption(game.snapshot().round.clueText);if(event.type==='sealed')ui.caption('Heavy impact outside. The doors held.');if(event.type==='false-alarm')ui.caption('Normal floor rejected. False alarm.');if(event.type==='accepted')ui.caption('Floor clear. Descending.');if(event.type==='failure'||event.type==='escape'){save=recordResult(save,game.snapshot());writeSave(save);terminalAt=performance.now();}}}
 function finish(){const s=game.snapshot();ui.show('results',{...s,best:save.best[s.assisted?'assisted':'standard'],clueText:s.round.clueText});input.reset();audio.pause();}
 function tick(now){
-  if(disposed)return;frame=requestAnimationFrame(tick);const dt=Math.min(.1,Math.max(0,(now-(previous||now))/1000));previous=now;
+  if(disposed)return;frame=requestAnimationFrame(tick);
+  const rawDt=Math.max(0,(now-(previous||now))/1000),dt=Math.min(.1,rawDt);previous=now;
   const settings=ui.getSettings(),controls=input.poll(settings);
   audio.updateOpening({active:false,menu:!game&&!preview&&!document.hidden});
-  if(!game&&!preview&&introState.introPhase!=='open')advanceIntro(dt);
+  // Floor 30 is presentation, not deterministic simulation. Advance its
+  // close/travel/open sequence by real visible wall time so low render FPS
+  // cannot turn a three-second transition into a minute-long wait.
+  if(!game&&!preview&&introState.introPhase!=='open')advanceIntro(document.hidden?0:rawDt);
   if(game&&!manual&&!preview&&!loading&&game.snapshot().mode==='running'){game.update(dt,controls);processEvents();}
   const state=preview??game?.snapshot()??introState;
   if(lobby&&!game&&!preview){
