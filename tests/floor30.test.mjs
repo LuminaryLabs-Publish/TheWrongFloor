@@ -32,6 +32,10 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
     assert.equal(visual.inspect().descendReady,true);
     assert.equal(visual.inspect().displayFloor,30);
     assert.ok(descend.material.emissiveIntensity > 1,'DESCEND illuminates when available');
+    visual.scene.updateMatrixWorld(true);visual.camera.updateMatrixWorld(true);
+    const point=visual.inspect().descendScreen;
+    assert.equal(visual.hitTestDescend(point.x,point.y),true,'projected center hits the physical DESCEND mesh bounds');
+    assert.equal(visual.hitTestDescend(point.x+500,point.y+500),false,'distant screen point does not hit DESCEND');
     visual.update({door:{openness:0},descendReady:false,descendPressed:true,introPhase:'travel',displayFloor:29},{reducedFlashes:true},.5);
     assert.equal(visual.inspect().displayFloor,29);
     assert.equal(visual.inspect().descendReady,false);

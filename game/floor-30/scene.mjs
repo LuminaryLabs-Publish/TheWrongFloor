@@ -39,8 +39,18 @@ export async function createLobbyScene(T,loadAsset,{authored=null}={}){
   for(const x of [-3,3]){const fill=new T.PointLight('#ffdfb5',15,10,2);fill.position.set(x,3.2,5.5);scene.add(fill);}
   const car=new T.PointLight('#afc6cb',8,5,2);car.position.set(0,2.7,-4.5);scene.add(car);
 
-  function descendScreen(){const point=descendButton.getWorldPosition(new T.Vector3()).project(camera),rect=document.getElementById('scene').getBoundingClientRect();return{x:rect.left+(point.x+1)*.5*rect.width,y:rect.top+(1-point.y)*.5*rect.height};}
-  function hitTestDescend(clientX,clientY){if(!lastDescendReady)return false;const canvas=document.getElementById('scene'),rect=canvas.getBoundingClientRect(),mouse=new T.Vector2(((clientX-rect.left)/rect.width)*2-1,-((clientY-rect.top)/rect.height)*2+1),ray=new T.Raycaster();ray.setFromCamera(mouse,camera);return ray.intersectObject(descendButton,false).length>0;}
+  function descendBounds(){
+    const canvas=document.getElementById('scene'),rect=canvas.getBoundingClientRect();
+    scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);camera.updateProjectionMatrix();
+    const box=new T.Box3().setFromObject(descendButton),points=[];
+    for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){
+      const p=new T.Vector3(x,y,z).project(camera);
+      points.push({x:rect.left+(p.x+1)*.5*rect.width,y:rect.top+(1-p.y)*.5*rect.height});
+    }
+    return{left:Math.min(...points.map(p=>p.x)),right:Math.max(...points.map(p=>p.x)),top:Math.min(...points.map(p=>p.y)),bottom:Math.max(...points.map(p=>p.y))};
+  }
+  function descendScreen(){const b=descendBounds();return{x:(b.left+b.right)/2,y:(b.top+b.bottom)/2};}
+  function hitTestDescend(clientX,clientY){if(!lastDescendReady)return false;const b=descendBounds(),pad=10;return clientX>=b.left-pad&&clientX<=b.right+pad&&clientY>=b.top-pad&&clientY<=b.bottom+pad;}
 
   return{
     scene,camera,hitTestDescend,
