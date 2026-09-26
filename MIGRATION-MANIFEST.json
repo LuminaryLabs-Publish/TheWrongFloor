@@ -989,8 +989,8 @@
     },
     {
       "path": "tests/intro.test.mjs",
-      "bytes": 3917,
-      "sha256": "af68380c038783d4a9d5306024319174c01ce12288c593fd6f9885a41f800ce5"
+      "bytes": 3775,
+      "sha256": "74a946a3248bb87fa4437b5479003490ee5c654f0de6529d640d901ada44e8b5"
     },
     {
       "path": "tests/prototype-reference.test.mjs",
@@ -1004,8 +1004,8 @@
     },
     {
       "path": "tests/rooms.test.mjs",
-      "bytes": 5527,
-      "sha256": "d8a7fe7478684c5e982f759840f90be98bf632b80a42422f05cff812ad16ea28"
+      "bytes": 4988,
+      "sha256": "d785c07ea6b8856d51eb904f8adefb6024b33fcc38689ef09e6c1878b2b86c06"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",

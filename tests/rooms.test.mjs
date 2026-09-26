@@ -4,7 +4,6 @@ import {readFile} from 'node:fs/promises';
 import * as T from '../game/vendor/three/three.module.js';
 import {createRoomModels,ROOM_IDS} from '../game/src/room-models.mjs';
 import {createFloorDetail} from '../game/src/floors/scene-kit.mjs';
-import {createLobbyScene} from '../game/floor-30/scene.mjs';
 import {bindRoomFlicker} from '../game/src/room-flicker.mjs';
 
 test('all 18 authored environments ship offline with embedded textures',async()=>{
@@ -32,10 +31,10 @@ test('authored rooms retain changing inspection clues without procedural furnitu
  const round={profile:'archive',seed:3,danger:true,puzzle:{rule:'MATCH 45',normal:'45',anomaly:'54'}};
  const detail=createFloorDetail(T,round,{label,decorations:false});assert.equal(detail.children.length,3);assert.equal(detail.children.filter(o=>o.isMesh).length,0);detail.userData.update({clueVisible:false});assert.equal(labels[2].userData.value,'45');detail.userData.update({clueVisible:true});assert.equal(labels[2].userData.value,'54');
 });
-test('combined entrance skips old scenery while preserving doors and claws',async()=>{
- const root=new T.Group();root.userData.roomAsset='entrance-lobby';let releases=0,updates=0;root.userData.release=()=>releases++;root.userData.updateRoom=()=>updates++;
- for(const [name,x] of [['door-left',-.7],['door-right',.7]]){const p=new T.Group();p.name=name;p.position.set(x,0,-2.96);root.add(p);}
- const loaded=[];const lobby=await createLobbyScene(T,async name=>{loaded.push(name);return new T.Group();},{authored:root});assert.deepEqual(loaded,['claw']);lobby.update({openness:1,claws:0,strain:0,shudder:0,stageTime:0},{},.1);assert.deepEqual(lobby.inspect().doorPositions,[-2.0999999999999996,2.0999999999999996]);assert.equal(updates,1);assert.ok(lobby.scene.getObjectByName('outside-claw--1'));lobby.dispose();lobby.dispose();assert.equal(releases,1);
+test('entrance lobby authored asset exposes both runtime sliding doors',async()=>{
+ const bytes=await readFile(new URL('../game/assets/rooms/entrance-lobby.glb',import.meta.url));
+ const g=JSON.parse(bytes.subarray(20,20+bytes.readUInt32LE(12)));
+ for(const name of ['door-left','door-right'])assert.ok(g.nodes.some(n=>n.name===name&&n.extras.runtimeRole==='slidingDoor'));
 });
 test('flicker dims paired fixtures without mutating templates and supports steady mode',()=>{
  const root=new T.Group(),light=new T.PointLight(0xffffff,9),material=new T.MeshStandardMaterial({emissive:0xffffff,emissiveIntensity:3}),mesh=new T.Mesh(new T.BoxGeometry(),material);

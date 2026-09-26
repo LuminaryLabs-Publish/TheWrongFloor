@@ -4,7 +4,6 @@ import {readFile} from 'node:fs/promises';
 import * as T from '../game/vendor/three/three.module.js';
 import {createIntroCharacter} from '../game/floor-30/intro-character.mjs';
 import {createLobbyCycle,STAGES} from '../game/floor-30/cycle.mjs';
-import {createLobbyScene} from '../game/floor-30/scene.mjs';
 
 function fixture(name,disposed=()=>{}){
  const root=new T.Group(),node=new T.Group();node.name=name;root.add(node);
@@ -41,7 +40,8 @@ test('shared hand geometry releases once and failed partial load releases head',
  let count=0;const actor=await createIntroCharacter(T,async name=>fixture(name,()=>count++));actor.dispose();actor.dispose();assert.equal(count,2);
  count=0;await assert.rejects(createIntroCharacter(T,async name=>{if(name==='intro-hand')throw Error('missing hand');return fixture(name,()=>count++);}),/missing hand/);assert.equal(count,1);
 });
-test('lobby falls back to old claws when intro asset fails',async()=>{
- const loaded=[],lobby=await createLobbyScene(T,async name=>{loaded.push(name);return new T.Group();},{loadIntro:async()=>{throw Error('offline');}});
- assert.equal(lobby.inspect().intro.fallback,true);assert.equal(lobby.inspect().intro.error,'offline');assert.ok(loaded.includes('claw'));lobby.dispose();
+test('canonical Floor 30 no longer depends on the preserved intro character',async()=>{
+ const source=await readFile(new URL('../game/floor-30/scene.mjs',import.meta.url),'utf8');
+ assert.doesNotMatch(source,/createIntroCharacter|loadIntro|outside-claw/);
+ assert.match(source,/descend-button/);
 });
