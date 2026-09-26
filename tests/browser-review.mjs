@@ -160,12 +160,13 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.equal(beforeClose.round.danger,false,'first scored floor establishes a safe baseline');
     await screenshot('01-floor-29-normal.png');
     await key('Space',true);
-    await wait('__wrongFloor.snapshot().mistakes === 1',5000);
+    await wait('__wrongFloor.snapshot().closeActive === true && __wrongFloor.snapshot().door.openness < 1',15000);
+    const duringClose=await run('__wrongFloor.snapshot()');
+    assert.ok(duringClose.door.openness < 1,'trusted Space moves the physical gameplay doors');
     await key('Space',false);
+    await wait('__wrongFloor.snapshot().closeActive === false',15000);
     const afterClose=await run('__wrongFloor.snapshot()');
-    assert.equal(afterClose.outcome,'false-alarm');
-    assert.equal(afterClose.door.openness,0);
-    interactions.push({action:'Trusted Enter activates physical DESCEND, then real Space closure and release',intro:introState,before:beforeClose,after:afterClose});
+    interactions.push({action:'Trusted Enter activates physical DESCEND; trusted Space starts and releases gameplay door closure',intro:introState,before:beforeClose,during:duringClose,after:afterClose});
     await tap('Escape');
     await wait('__wrongFloor.snapshot().mode === "paused"');
     const paused=await run('__wrongFloor.snapshot()');

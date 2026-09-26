@@ -944,8 +944,8 @@
     },
     {
       "path": "tests/browser-review.mjs",
-      "bytes": 29660,
-      "sha256": "4d2aec09ab0753a9467697095d63cb3201579454c903d944563b6321c075dbdb"
+      "bytes": 29880,
+      "sha256": "53ab5708bf05614a44708074ddba49c9f0301f8bc19f7c0162a0e83a7b301b23"
     },
     {
       "path": "tests/browser-smoke.mjs",
