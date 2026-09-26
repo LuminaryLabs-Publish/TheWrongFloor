@@ -37,7 +37,7 @@ for (const file of files) {
     throw new Error('Game changed while staging; rerun after edits finish: ' + file.path);
   }
 }
-for (const file of ['main.cjs', 'asset-path.cjs']) await cp(path.join(here, file), path.join(output, file));
+for (const file of ['main.cjs', 'asset-path.cjs', 'runtime-check.cjs']) await cp(path.join(here, file), path.join(output, file));
 await writeFile(path.join(output, 'package.json'), JSON.stringify({
   name: 'wrong-floor', productName: 'Wrong Floor', version: definition.version,
   description: definition.description, main: 'main.cjs', author: 'Luminary Labs', private: true

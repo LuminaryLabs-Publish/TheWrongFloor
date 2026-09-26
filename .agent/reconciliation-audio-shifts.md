@@ -24,6 +24,9 @@ The branch diverged from `04e636e83731f90c015f052d06cb7a6a0b33650a`. It is not m
 - `game/src/atmosphere.mjs`: generic wear/dust/light-shaft ideas remain useful, but the old implementation predates authored room models. Reuse only during room-by-room polish.
 - `game/src/retro-pass.mjs`: console-era low-resolution presentation is not canonical. Keep only as historical visual reference.
 
+### PORT
+- Native Electron runtime smoke, adapted to the canonical physical DESCEND → Floor 29 handoff.
+
 ### ARCHIVE / do not port
 - `scripts/capture-media.mjs`: hard-coded to the older `0.2.0` runtime and review API.
 - `memory.md`: branch-local planning memory, superseded by current docs and `.agent` context.

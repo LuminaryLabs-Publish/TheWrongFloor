@@ -8,7 +8,7 @@ A candidate is acceptable only when it is built from a known commit on `main` or
 2. `npm run build`
 3. Browser smoke on the built web output.
 4. Desktop stage and integrity validation.
-5. Native launch on each packaged target when that target is being considered for release.
+5. Run `npm --prefix desktop run smoke` on a compatible native host, then launch each packaged target when that target is being considered for release.
 6. Confirm the packaged game ID remains `NXA-000010`.
 7. Confirm no runtime network dependency was introduced.
 8. Record the exact source commit and archive SHA-256.

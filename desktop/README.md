@@ -12,13 +12,21 @@ npm test
 npm start
 npm run package:linux
 npm run package:windows
+npm run package:mac
+npm run smoke
 ```
 
-`npm start` installs the pinned Electron runtime if missing, copies the current game into `.generated/app` and opens it. Packaging writes portable application directories into `dist/`; these directories contain the executable plus all required Electron resources. Distribute the entire directory, not just the executable. Linux packages should be built/tested on Linux and Windows packages on Windows before distribution. Cross-packaging does not verify the target OS.
+`npm start` installs the pinned Electron runtime if missing, copies the current game into `.generated/app` and opens it. Packaging writes portable application directories into `dist/`; these directories contain the executable plus all required Electron resources. Distribute the entire directory, not just the executable. Linux, Windows, and macOS candidates should be built and tested on their actual target OS. Cross-packaging does not verify the target OS.
 
 Run as a normal desktop user. No `--no-sandbox` or browser-security-disabling flags are shipped. A managed environment that prevents Chromium process sockets cannot validate the desktop runtime; use a compatible desktop test machine.
 
 The game version comes from `game.json`. `build-manifest.json` records source commit, dirty state, and SHA-256/size of every staged game file. Rebuild after every game change. Generated copies, dependencies, and executable packages are ignored by Git.
+
+## Native smoke
+
+After `npm run stage`, `npm run smoke` launches the staged Electron app in review mode, activates the physical Floor 30 DESCEND control through native Electron input, verifies the Floor 29 handoff, closes a safe floor to prove real keyboard input, verifies pause, protocol isolation, Quit labeling, and writes evidence under `_review/native/`.
+
+This is a runtime sanity check, not a substitute for a full native-device playthrough.
 
 ## Runtime boundary
 
@@ -31,11 +39,11 @@ Settings and scores use the game's existing localStorage under Electron's per-us
 ## Verification required before distributing
 
 - Confirm the source manifest matches the final committed game and reports `dirty: false`.
-- Run a complete 300-second game, tutorial, every failure, pause/focus loss, controller reconnect, retry, and quit.
+- Run a complete 270-second scored game after the untimed Floor 30 opening, tutorial, every failure, pause/focus loss, controller reconnect, retry, and quit.
 - Test fullscreen transitions, resolution/DPI combinations, audio devices, muted audio, and accessibility options.
 - Restart the packaged executable and confirm settings and personal bests persist.
 - Verify no runtime network dependency by playing with network access unavailable.
-- Test Linux and Windows packages on their actual supported OS/hardware; record graphics renderer and frame times.
+- Test Linux, Windows, and macOS packages where supported on their actual supported OS/hardware; record graphics renderer and frame times.
 - Review the art, audio, and game with human playtesters. A passing package build is not quality evidence.
 - Supply a final application icon and reviewed branding before commercial distribution.
 

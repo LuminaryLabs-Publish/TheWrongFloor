@@ -20,7 +20,7 @@ npm ci --prefix desktop
 npm --prefix desktop run start
 ```
 
-The Electron shell stages the exact current `game/` tree before launch.
+The Electron shell stages the exact current `game/` tree before launch. Use `npm --prefix desktop run smoke` for the canonical Floor 30 → Floor 29 native runtime sanity check.
 
 ## Candidate packages
 
