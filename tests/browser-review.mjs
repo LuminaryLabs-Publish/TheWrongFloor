@@ -141,8 +141,14 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
       await screenshot('00-floor-30-'+width+'x'+height+'.png');
     }
     await call('Emulation.setDeviceMetricsOverride',{width:1280,height:800,deviceScaleFactor:1,mobile:false},sessionId);
+    // ResizeObserver/camera projection update on animation frames. Wait for the
+    // restored desktop viewport before using the projected 3D button position.
+    await delay(250);
+    await run('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
 
     const point=await run('__wrongFloor.inspect().lobby.descendScreen');
+    const viewport=await run('({width:innerWidth,height:innerHeight})');
+    assert.ok(point.x>=0&&point.x<=viewport.width&&point.y>=0&&point.y<=viewport.height,'DESCEND projects inside restored desktop viewport');
     await call('Input.dispatchMouseEvent',{type:'mousePressed',...point,button:'left',clickCount:1},sessionId);
     await call('Input.dispatchMouseEvent',{type:'mouseReleased',...point,button:'left',clickCount:1},sessionId);
     await wait('__wrongFloor.snapshot().mode === "running" && __wrongFloor.snapshot().round.floor === 29 && __wrongFloor.snapshot().opened === true',15000);
