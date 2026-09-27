@@ -37,13 +37,14 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
   try{
     const direction=visual.camera.getWorldDirection(new THREE.Vector3());
     assert.ok(visual.camera.position.x < -.8);
-    assert.ok(visual.camera.position.z < -4);
+    assert.ok(visual.camera.position.z > -5.5 && visual.camera.position.z < -4.5,'camera remains in front of the authored lobby rear wall');
     assert.ok(direction.x > .1 && direction.z > .8,'camera looks diagonally across the lobby');
     const descend=visual.scene.getObjectByName('DescendButton');
     assert.ok(descend?.isMesh,'physical DESCEND button exists in the Three.js scene');
     const inspection=visual.inspect();
     assert.ok(inspection.panel.position[2] < -3.0,'panel comes from the elevator interior');
     assert.ok(inspection.character,'rear character exists');
+    assert.ok(inspection.character.position[2] > inspection.camera.position[2],'rear character remains in front of the camera');
     assert.ok(inspection.character.position[2] < -3.5,'character is in the rear half of the elevator');assert.ok(inspection.character.position[0] > -.8&&inspection.character.position[0] < .4,'character remains visible in the rear peripheral composition');
     assert.ok(inspection.character.bounds.max[0] < 1.7,'character does not intersect the right-side panel wall');
     visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:true},0);
@@ -52,6 +53,7 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
     assert.ok(descend.material.emissiveIntensity > 1,'DESCEND illuminates when available');
     visual.scene.updateMatrixWorld(true);visual.camera.updateMatrixWorld(true);
     const point=visual.inspect().descendScreen;
+    assert.ok(point.x>=0&&point.x<=1280&&point.y>=0&&point.y<=800,'DESCEND stays inside the opening viewport');
     assert.equal(visual.hitTestDescend(point.x,point.y),true,'projected center hits the physical DESCEND mesh bounds');
     assert.equal(visual.hitTestDescend(point.x+500,point.y+500),false,'distant screen point does not hit DESCEND');
     visual.setVisualTime(2.90);
