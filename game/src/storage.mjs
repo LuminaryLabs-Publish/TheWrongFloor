@@ -1,5 +1,5 @@
 export const SAVE_KEY = 'wrong-floor.save.v1';
-export const DEFAULT_SETTINGS = Object.freeze({ sensitivity: 1, deadZone: 0.18, masterVolume: 0.7, effectsVolume: 0.85, ambienceVolume: 0.5, captions: true, reducedMotion: false, reducedFlashes: true, softScares: false, assisted: false, quality: 'medium', bindings: { close: 'Space', recenter: 'Enter', pause: 'Escape' } });
+export const DEFAULT_SETTINGS = Object.freeze({ sensitivity: 1, deadZone: 0.18, masterVolume: 0.7, effectsVolume: 0.85, ambienceVolume: 0.5, captions: true, reducedMotion: false, reducedFlashes: false, softScares: false, assisted: false, quality: 'medium', bindings: { close: 'Space', recenter: 'Enter', pause: 'Escape' } });
 const fresh = () => ({ version: 1, settings: { ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_SETTINGS.bindings } }, tutorialComplete: false, best: { standard: 0, assisted: 0 } });
 const bounded = (value, min, max, fallback) => Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : fallback;
 export function sanitizeSave(value) {

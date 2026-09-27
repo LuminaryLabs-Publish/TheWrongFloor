@@ -160,3 +160,9 @@ test('corrupt, blocked, future, and malformed saves recover; scores stay separat
   assert.equal(writeSave(scored, storage), true); assert.deepEqual(loadSave(storage), scored);
   assert.equal(sanitizeSave({ version: 999, best: { standard: 9999 } }).best.standard, 0);
 });
+
+
+test('hard light changes are opt-in to reduce, not suppressed by default', () => {
+  const save = loadSave({ getItem() { return null; } });
+  assert.equal(save.settings.reducedFlashes, false);
+});

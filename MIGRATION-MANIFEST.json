@@ -734,8 +734,8 @@
     },
     {
       "path": "game/src/storage.mjs",
-      "bytes": 2827,
-      "sha256": "c98d8b581ed5feda60af6cbc38a496bcbb3118a2915672ffe8b0ac43426d67d4"
+      "bytes": 2828,
+      "sha256": "c562e665f68c059a6bc6823079430954726f8f79bb816ee9a3c7d374faf50961"
     },
     {
       "path": "game/src/ui.mjs",
@@ -989,8 +989,8 @@
     },
     {
       "path": "tests/game.test.mjs",
-      "bytes": 9408,
-      "sha256": "9862c0baf6bc465a2296728cd18857dc17c654142ebf584cb2900a4ba84046db"
+      "bytes": 9607,
+      "sha256": "a95da51502333d635c0241cc08baca4e67b2a6836d6879faa2e2038b7740c67b"
     },
     {
       "path": "tests/intro-browser-checks.mjs",
