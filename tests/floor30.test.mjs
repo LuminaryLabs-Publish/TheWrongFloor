@@ -30,9 +30,9 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
     const descend=visual.scene.getObjectByName('descend-button');
     assert.ok(descend?.isMesh,'physical DESCEND button exists in the Three.js scene');
     const inspection=visual.inspect();
-    assert.ok(inspection.panel.position[2] < -3.3,'panel is mounted deep inside the elevator');
+    assert.ok(inspection.panel.position[2] < -3.3,'panel is mounted deep inside the elevator');assert.ok(inspection.panel.position[0] < 1.5,'panel stays visible from the corner camera');
     assert.ok(inspection.character,'rear character exists');
-    assert.ok(inspection.character.position[2] < -4.6,'character is at the rear of the elevator');
+    assert.ok(inspection.character.position[2] < -3.8,'character is in the rear half of the elevator');
     assert.ok(inspection.character.bounds.max[0] < 1.7,'character does not intersect the right-side panel wall');
     visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:true},0);
     assert.equal(visual.inspect().descendReady,true);

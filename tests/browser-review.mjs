@@ -142,7 +142,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.equal(blackout.blackout,true,'strong Floor 30 flicker reaches full blackout');
     assert.equal(blackout.lights.key,0);assert.equal(blackout.lights.hemi,0);assert.ok(blackout.lights.fills.every(v=>v===0));
     assert.ok(blackout.panel.position[2] < -3.3,'panel remains deep inside elevator');
-    assert.ok(blackout.character?.position?.[2] < -4.6,'character remains at rear of elevator');
+    assert.ok(blackout.character?.position?.[2] < -3.8,'character remains in rear half of elevator');
     await screenshot('00-floor-30-blackout.png');
     await run('__wrongFloor.setFloor30VisualTime(0)');
 

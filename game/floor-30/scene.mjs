@@ -5,7 +5,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   const camera=new T.PerspectiveCamera(56,16/9,.05,70);
   const cameraTarget=new T.Vector3(.55,1.42,1.65);
   camera.position.set(-1.12,1.48,-4.72);camera.lookAt(cameraTarget);
-  const templates=new Map();let disposed=false,visualTime=0,lastDescendReady=false,currentFloor=30,lastBlackout=false;
+  const templates=new Map();let disposed=false,visualTime=0,forcedVisualTime=null,lastDescendReady=false,currentFloor=30,lastBlackout=false;
   function release(){authored?.userData.release?.();const gs=new Set(),ms=new Set(),ts=new Set();const visit=o=>{if(o.userData.sharedRoomResource)return;if(o.geometry)gs.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){ms.add(m);for(const t of Object.values(m))if(t?.isTexture)ts.add(t);}};scene.traverse(visit);for(const root of templates.values())root.traverse(visit);gs.forEach(g=>g.dispose());ts.forEach(t=>t.dispose());ms.forEach(m=>m.dispose());templates.clear();scene.clear();}
   async function place(name,p=[0,0,0],r=0){if(!templates.has(name)){const template=await loadAsset(name);template.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=!/wall|wing|ceiling/.test(o.name);}});templates.set(name,batchRigid(T,template));}const root=templates.get(name).clone(true);root.position.set(...p);root.rotation.y=r;scene.add(root);return root;}
   let left,right;
@@ -24,7 +24,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   }
 
   // Mount the panel against the cabin's right wall, well behind the threshold.
-  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(1.72,1.72,-3.62);panel.rotation.y=-Math.PI/2;scene.add(panel);
+  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(1.28,1.72,-3.52);panel.rotation.y=-Math.PI/2;scene.add(panel);
   const boardMat=new T.MeshStandardMaterial({color:'#20231f',roughness:.72,metalness:.48});
   const trimMat=new T.MeshStandardMaterial({color:'#90764d',roughness:.42,metalness:.8});
   const board=new T.Mesh(new T.BoxGeometry(1.28,2.72,.12),boardMat);panel.add(board);
@@ -42,7 +42,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     const bounds=new T.Box3().setFromObject(rearCharacter),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
     const scale=size.y>0?1.82/size.y:1;
     rearCharacter.scale.setScalar(scale);
-    rearCharacter.position.set(.72,-bounds.min.y*scale,-4.94);
+    rearCharacter.position.set(1.00,-bounds.min.y*scale,-4.12);
     rearCharacter.position.x-=center.x*scale;
     rearCharacter.position.z-=center.z*scale;
     rearCharacter.rotation.y=Math.PI;
@@ -84,12 +84,12 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
       const characterBounds=rearCharacter?new T.Box3().setFromObject(rearCharacter):null;
       return{asset:authored?.userData.roomAsset??null,doorPositions:[left.position.x,right.position.x],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},panel:{position:panel.position.toArray(),rotationY:panel.rotation.y},character:rearCharacter?{position:rearCharacter.position.toArray(),bounds:{min:characterBounds.min.toArray(),max:characterBounds.max.toArray()}}:null,descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor,blackout:lastBlackout,lights:{hemi:hemi.intensity,key:key.intensity,car:car.intensity,fills:fills.map(l=>l.intensity),authored:authoredLights.map(x=>x.light.intensity)}};},
     resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?104:56;camera.updateProjectionMatrix();},
-    update(s,settings={},dt=0){if(disposed)return;visualTime+=Math.max(0,dt);authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));left.position.x=leftClosed-openness*1.4;right.position.x=rightClosed+openness*1.4;lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.position.z=s.descendPressed?.075:.11;currentFloor=s.displayFloor??30;display.userData.setText(currentFloor);
+    update(s,settings={},dt=0){if(disposed)return;if(forcedVisualTime===null)visualTime+=Math.max(0,dt);else visualTime=forcedVisualTime;authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));left.position.x=leftClosed-openness*1.4;right.position.x=rightClosed+openness*1.4;lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.position.z=s.descendPressed?.075:.11;currentFloor=s.displayFloor??30;display.userData.setText(currentFloor);
       const phase=visualTime%4.6;
       const blackout=!settings.reducedFlashes&&((phase>=2.88&&phase<3.00)||(phase>=3.10&&phase<3.22));
       setBlackout(blackout);
     },
-    setVisualTime(value){visualTime=Math.max(0,Number(value)||0);},
+    setVisualTime(value){if(value===null){forcedVisualTime=null;return;}forcedVisualTime=Math.max(0,Number(value)||0);visualTime=forcedVisualTime;},
     dispose(){if(disposed)return;disposed=true;key.shadow.map?.dispose();rearCharacter?.removeFromParent();release();}
   };
 }
