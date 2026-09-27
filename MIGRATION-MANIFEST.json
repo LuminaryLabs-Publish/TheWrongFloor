@@ -600,7 +600,7 @@
     {
       "path": "game/floor-30/scene.mjs",
       "bytes": 8558,
-      "sha256": "eaecf5f929071978c7b3fd771c6a3ef16933177939f7f4dce374b7503cb4a245"
+      "sha256": "6e9a8c9902d03d184430d9076ab805bac8fea02443efea75ef78c10f92a06865"
     },
     {
       "path": "game/game.json",
