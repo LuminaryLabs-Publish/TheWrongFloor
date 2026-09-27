@@ -3,8 +3,8 @@ import {batchRigid} from './batch.mjs';
 export async function createLobbyScene(T,loadAsset,{authored=null,character=null,elevator=null}={}){
   const scene=new T.Scene();scene.background=new T.Color('#0b1014');scene.fog=new T.FogExp2('#101216',.018);
   const camera=new T.PerspectiveCamera(56,16/9,.05,70);
-  const cameraTarget=new T.Vector3(.55,1.42,1.65);
-  camera.position.set(-1.12,1.48,-4.72);camera.lookAt(cameraTarget);
+  const cameraTarget=new T.Vector3(-.10,1.42,1.65);
+  camera.position.set(-.70,1.48,-6.20);camera.lookAt(cameraTarget);
   const templates=new Map();let disposed=false,visualTime=0,forcedVisualTime=null,lastDescendReady=false,currentFloor=30,lastBlackout=false;
   function release(){authored?.userData.release?.();const gs=new Set(),ms=new Set(),ts=new Set();const visit=o=>{if(o.userData.sharedRoomResource)return;if(o.geometry)gs.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){ms.add(m);for(const t of Object.values(m))if(t?.isTexture)ts.add(t);}};scene.traverse(visit);for(const root of templates.values())root.traverse(visit);gs.forEach(g=>g.dispose());ts.forEach(t=>t.dispose());ms.forEach(m=>m.dispose());templates.clear();scene.clear();}
   async function place(name,p=[0,0,0],r=0){if(!templates.has(name)){const template=await loadAsset(name);template.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=!/wall|wing|ceiling/.test(o.name);}});templates.set(name,batchRigid(T,template));}const root=templates.get(name).clone(true);root.position.set(...p);root.rotation.y=r;scene.add(root);return root;}
@@ -40,7 +40,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     const bounds=new T.Box3().setFromObject(rearCharacter),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
     const scale=size.y>0?1.20/size.y:1;
     rearCharacter.scale.setScalar(scale);
-    rearCharacter.position.set(-.15,-bounds.min.y*scale,-3.78);
+    rearCharacter.position.set(0,-bounds.min.y*scale,-5.30);
     rearCharacter.position.x-=center.x*scale;
     rearCharacter.position.z-=center.z*scale;
     rearCharacter.rotation.y=Math.PI;
