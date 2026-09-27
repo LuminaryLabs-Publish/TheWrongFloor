@@ -389,8 +389,8 @@
     },
     {
       "path": "game/assets/elevator/wrong-floor-elevator.glb",
-      "bytes": 10012,
-      "sha256": "478ad5af6484d0304b6bf44c712a3bccd33d93702ffae3d9870f1ffe14762e12"
+      "bytes": 9876,
+      "sha256": "1ec129b9ff44d1d0a72b63b0d7da9dbbc4d3efefb1be6a184d644ae651163c37"
     },
     {
       "path": "game/assets/fonts/MetalMania-Regular.ttf",
