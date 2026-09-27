@@ -140,9 +140,9 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     await run('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
     const blackout=await run('__wrongFloor.inspect().lobby');
     assert.equal(blackout.blackout,true,'strong Floor 30 flicker reaches full blackout');
-    assert.equal(blackout.lights.key,0);assert.equal(blackout.lights.hemi,0);assert.ok(blackout.lights.fills.every(v=>v===0));
-    assert.ok(blackout.panel.position[2] < -3.3&&blackout.panel.position[0] < -1.2,'panel remains on the left interior wall');
-    assert.ok(blackout.character?.position?.[2] < -3.8&&blackout.character.position[0] > -.8&&blackout.character.position[0] < .2,'character remains visible in rear half of elevator');
+    assert.equal(blackout.lights.key,0);assert.equal(blackout.lights.hemi,0);assert.ok(blackout.lights.fills.every(v=>v===0));assert.ok(blackout.lights.silhouette>0&&blackout.lights.silhouette<3,'blackout keeps only faint silhouette rim');
+    assert.ok(blackout.panel.position[2] < -3.0&&Math.abs(blackout.panel.position[0]) < .8,'panel remains inside and visible');
+    assert.ok(blackout.character?.position?.[2] < -3.5&&blackout.character.position[0] > -.8&&blackout.character.position[0] < .4,'character remains in rear peripheral composition');
     await screenshot('00-floor-30-blackout.png');
     await run('__wrongFloor.setFloor30VisualTime(0)');
 

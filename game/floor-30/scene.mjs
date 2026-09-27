@@ -24,7 +24,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   }
 
   // Mount the panel against the cabin's right wall, well behind the threshold.
-  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(-1.55,1.72,-3.45);panel.rotation.y=Math.PI/2;scene.add(panel);
+  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(.45,1.72,-3.15);panel.rotation.y=-Math.PI/2;scene.add(panel);
   const boardMat=new T.MeshStandardMaterial({color:'#20231f',roughness:.72,metalness:.48});
   const trimMat=new T.MeshStandardMaterial({color:'#90764d',roughness:.42,metalness:.8});
   const board=new T.Mesh(new T.BoxGeometry(1.28,2.72,.12),boardMat);panel.add(board);
@@ -40,9 +40,9 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     rearCharacter=character;
     rearCharacter.name='floor30-rear-character';
     const bounds=new T.Box3().setFromObject(rearCharacter),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
-    const scale=size.y>0?1.82/size.y:1;
+    const scale=size.y>0?1.20/size.y:1;
     rearCharacter.scale.setScalar(scale);
-    rearCharacter.position.set(-.25,-bounds.min.y*scale,-4.00);
+    rearCharacter.position.set(-.15,-bounds.min.y*scale,-3.78);
     rearCharacter.position.x-=center.x*scale;
     rearCharacter.position.z-=center.z*scale;
     rearCharacter.rotation.y=Math.PI;
@@ -54,6 +54,10 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   const key=new T.SpotLight('#ffdfb5',82,20,Math.PI/3,.55,2);key.position.set(0,4,1);key.target.position.set(0,1.5,6);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.bias=-.003;key.shadow.normalBias=.035;scene.add(key,key.target);
   const fills=[];for(const x of [-3,3]){const fill=new T.PointLight('#ffdfb5',15,10,2);fill.position.set(x,3.2,5.5);scene.add(fill);fills.push(fill);}
   const car=new T.PointLight('#afc6cb',8,5,2);car.position.set(0,2.7,-4.5);scene.add(car);
+  // Faint emergency rim: primary illumination still reaches true zero.
+  const silhouetteLight=new T.SpotLight('#6b1711',0,4,Math.PI/3,.85,2);
+  silhouetteLight.position.set(.1,1.75,-2.85);silhouetteLight.target.position.set(-.15,1.0,-3.78);
+  scene.add(silhouetteLight,silhouetteLight.target);
 
   const authoredLights=[];authored?.traverse?.(o=>{if(o.isLight)authoredLights.push({light:o,base:o.intensity});});
   const setBlackout=value=>{
@@ -63,6 +67,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     car.intensity=lastBlackout?0:8;
     for(const fill of fills)fill.intensity=lastBlackout?0:15;
     for(const item of authoredLights)item.light.intensity=lastBlackout?0:item.base;
+    silhouetteLight.intensity=lastBlackout?2.2:0;
   };
 
   function descendBounds(){
@@ -82,7 +87,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     scene,camera,hitTestDescend,
     inspect:()=>{
       const characterBounds=rearCharacter?new T.Box3().setFromObject(rearCharacter):null;
-      return{asset:authored?.userData.roomAsset??null,doorPositions:[left.position.x,right.position.x],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},panel:{position:panel.position.toArray(),rotationY:panel.rotation.y},character:rearCharacter?{position:rearCharacter.position.toArray(),bounds:{min:characterBounds.min.toArray(),max:characterBounds.max.toArray()}}:null,descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor,blackout:lastBlackout,lights:{hemi:hemi.intensity,key:key.intensity,car:car.intensity,fills:fills.map(l=>l.intensity),authored:authoredLights.map(x=>x.light.intensity)}};},
+      return{asset:authored?.userData.roomAsset??null,doorPositions:[left.position.x,right.position.x],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},panel:{position:panel.position.toArray(),rotationY:panel.rotation.y},character:rearCharacter?{position:rearCharacter.position.toArray(),bounds:{min:characterBounds.min.toArray(),max:characterBounds.max.toArray()}}:null,descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor,blackout:lastBlackout,lights:{hemi:hemi.intensity,key:key.intensity,car:car.intensity,fills:fills.map(l=>l.intensity),authored:authoredLights.map(x=>x.light.intensity),silhouette:silhouetteLight.intensity}};},
     resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?104:56;camera.updateProjectionMatrix();},
     update(s,settings={},dt=0){if(disposed)return;if(forcedVisualTime===null)visualTime+=Math.max(0,dt);else visualTime=forcedVisualTime;authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));left.position.x=leftClosed-openness*1.4;right.position.x=rightClosed+openness*1.4;lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.position.z=s.descendPressed?.075:.11;currentFloor=s.displayFloor??30;display.userData.setText(currentFloor);
       const phase=visualTime%4.6;

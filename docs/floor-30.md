@@ -68,4 +68,4 @@ The opening passes when:
 
 ## Rapid composition pass
 
-The Floor 30 control panel is mounted deep against the elevator's interior right wall rather than at the threshold. A full-body Unburied character occupies the rear of the cabin as a restrained silhouette. Strong fluorescent interruptions now drive all principal Floor 30 lights to zero for brief blackout beats; Reduced light changes suppresses those hard blackouts.
+The Floor 30 control panel is mounted deep against the elevator's interior right wall rather than at the threshold. A full-body Unburied character occupies the rear of the cabin as a restrained silhouette. Strong fluorescent interruptions now drive all principal Floor 30 lights to zero for brief blackout beats. A faint emergency-red rim remains only to outline the rear character; Reduced light changes suppresses the hard blackout entirely.
