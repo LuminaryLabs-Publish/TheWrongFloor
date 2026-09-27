@@ -69,3 +69,8 @@ The opening passes when:
 ## Rapid composition pass
 
 The Floor 30 control panel is mounted deep against the elevator's interior right wall rather than at the threshold. A full-body Unburied character occupies the rear of the cabin as a restrained silhouette. Strong fluorescent interruptions now drive all principal Floor 30 lights to zero for brief blackout beats. A faint emergency-red rim remains only to outline the rear character; Reduced light changes suppresses the hard blackout entirely.
+
+
+## Canonical animated elevator
+
+Floor 30 and the scored descent now share `assets/elevator/wrong-floor-elevator.glb`. The left and right doors are nodes inside that GLB and are driven by the authored `DoorsOpen` / `DoorsClose` LINEAR translation clips. The game no longer positions the two doors directly.

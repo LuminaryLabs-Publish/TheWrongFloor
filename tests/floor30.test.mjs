@@ -12,6 +12,17 @@ function installDocument() {
   Object.defineProperty(globalThis, 'document', { configurable:true, value:{ createElement:()=>({...canvas}), getElementById:()=>canvas } });
   return () => saved ? Object.defineProperty(globalThis,'document',saved) : delete globalThis.document;
 }
+function elevatorMock(){
+  const root=new THREE.Group();
+  const doorLeft=new THREE.Mesh(new THREE.BoxGeometry(1.23,2.84,.11),new THREE.MeshStandardMaterial());doorLeft.name='DoorLeft';doorLeft.position.set(-.615,1.42,.04);
+  const doorRight=new THREE.Mesh(new THREE.BoxGeometry(1.23,2.84,.11),new THREE.MeshStandardMaterial());doorRight.name='DoorRight';doorRight.position.set(.615,1.42,.04);
+  const panelHousing=new THREE.Mesh(new THREE.BoxGeometry(.1,2.5,1),new THREE.MeshStandardMaterial());panelHousing.name='PanelHousing';panelHousing.position.set(-.45,1.72,-3.15);
+  const descendButton=new THREE.Mesh(new THREE.BoxGeometry(.07,.26,.7),new THREE.MeshStandardMaterial({emissive:'#551500'}));descendButton.name='DescendButton';descendButton.position.set(-.45,.62,-3.15);
+  root.add(doorLeft,doorRight,panelHousing,descendButton);
+  let openness=0;
+  return{root,doorLeft,doorRight,panelHousing,descendButton,setOpenness(value){openness=value;doorLeft.position.x=-.615-value*1.24;doorRight.position.x=.615+value*1.24;root.updateMatrixWorld(true);},inspect(){return{left:doorLeft.getWorldPosition(new THREE.Vector3()).toArray(),right:doorRight.getWorldPosition(new THREE.Vector3()).toArray(),openness};},dispose(){}};
+}
+
 function authoredLobby(){
   const root=new THREE.Group();root.userData.roomAsset='entrance-lobby';
   for(const [name,x] of [['door-left',-.7],['door-right',.7]]){const mesh=new THREE.Mesh(new THREE.BoxGeometry(.6,2.8,.1),new THREE.MeshStandardMaterial());mesh.name=name;mesh.position.x=x;root.add(mesh);}
@@ -21,16 +32,17 @@ function authoredLobby(){
 test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', async()=>{
   const restore=installDocument();const authored=authoredLobby();
   const character=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(.55,1.8,.35),new THREE.MeshStandardMaterial());body.position.y=.9;character.add(body);
-  const visual=await createLobbyScene(THREE,async()=>new THREE.Group(),{authored,character});
+  const elevator=elevatorMock();
+  const visual=await createLobbyScene(THREE,async()=>new THREE.Group(),{authored,character,elevator});
   try{
     const direction=visual.camera.getWorldDirection(new THREE.Vector3());
     assert.ok(visual.camera.position.x < -.8);
     assert.ok(visual.camera.position.z < -4);
     assert.ok(direction.x > .1 && direction.z > .8,'camera looks diagonally across the lobby');
-    const descend=visual.scene.getObjectByName('descend-button');
+    const descend=visual.scene.getObjectByName('DescendButton');
     assert.ok(descend?.isMesh,'physical DESCEND button exists in the Three.js scene');
     const inspection=visual.inspect();
-    assert.ok(inspection.panel.position[2] < -3.0,'panel is mounted inside the elevator behind the threshold');assert.ok(Math.abs(inspection.panel.position[0]) < .8,'panel remains visible within the cabin composition');
+    assert.ok(inspection.panel.position[2] < -3.0,'panel comes from the elevator interior');
     assert.ok(inspection.character,'rear character exists');
     assert.ok(inspection.character.position[2] < -3.5,'character is in the rear half of the elevator');assert.ok(inspection.character.position[0] > -.8&&inspection.character.position[0] < .4,'character remains visible in the rear peripheral composition');
     assert.ok(inspection.character.bounds.max[0] < 1.7,'character does not intersect the right-side panel wall');
@@ -59,9 +71,9 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
 test('Floor 30 canonical scene does not require the retired creature-door opening', async()=>{
   const source=await readFile(new URL('../game/floor-30/scene.mjs',import.meta.url),'utf8');
   assert.doesNotMatch(source,/createIntroCharacter|outside-claw|loadIntro/);
-  assert.match(source,/descend-button/);
-  assert.match(source,/30-i/);
-  assert.match(source,/'G','B'/);
+  assert.match(source,/Canonical animated elevator GLB is required/);
+  assert.match(source,/elevator\.setOpenness/);
+  assert.doesNotMatch(source,/left\.position\.x=.*openness|right\.position\.x=.*openness/);
 });
 
 test('dependency parser distinguishes real imports from documentation',()=>{

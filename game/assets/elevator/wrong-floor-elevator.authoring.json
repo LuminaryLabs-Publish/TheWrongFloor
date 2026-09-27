@@ -1,0 +1,165 @@
+{
+  "schema": "nexusengine.authoring-project-fragment/1",
+  "assetId": "wrong-floor-elevator",
+  "assembly": {
+    "id": "wrong-floor-elevator:assembly",
+    "kind": "assembly",
+    "nodes": [
+      {
+        "id": "ElevatorRoot",
+        "parent": null,
+        "included": true
+      },
+      {
+        "id": "Cabin",
+        "parent": "ElevatorRoot",
+        "included": true
+      },
+      {
+        "id": "DoorLeft",
+        "parent": "Cabin",
+        "included": true,
+        "role": "elevator-door-left"
+      },
+      {
+        "id": "DoorRight",
+        "parent": "Cabin",
+        "included": true,
+        "role": "elevator-door-right"
+      },
+      {
+        "id": "ControlPanel",
+        "parent": "Cabin",
+        "included": true
+      }
+    ]
+  },
+  "animation": {
+    "id": "wrong-floor-elevator:animation",
+    "kind": "animation",
+    "rigId": null,
+    "shapeId": "wrong-floor-elevator:object-transforms",
+    "clips": [
+      {
+        "id": "doors-open",
+        "name": "DoorsOpen",
+        "duration": 0.8,
+        "tracks": [
+          {
+            "id": "doors-open:left",
+            "target": "DoorLeft",
+            "property": "translation",
+            "interpolation": "LINEAR",
+            "keys": [
+              {
+                "time": 0,
+                "value": [
+                  -0.615,
+                  1.42,
+                  0.04
+                ]
+              },
+              {
+                "time": 0.8,
+                "value": [
+                  -1.855,
+                  1.42,
+                  0.04
+                ]
+              }
+            ]
+          },
+          {
+            "id": "doors-open:right",
+            "target": "DoorRight",
+            "property": "translation",
+            "interpolation": "LINEAR",
+            "keys": [
+              {
+                "time": 0,
+                "value": [
+                  0.615,
+                  1.42,
+                  0.04
+                ]
+              },
+              {
+                "time": 0.8,
+                "value": [
+                  1.855,
+                  1.42,
+                  0.04
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "doors-close",
+        "name": "DoorsClose",
+        "duration": 1.2,
+        "tracks": [
+          {
+            "id": "doors-close:left",
+            "target": "DoorLeft",
+            "property": "translation",
+            "interpolation": "LINEAR",
+            "keys": [
+              {
+                "time": 0,
+                "value": [
+                  -1.855,
+                  1.42,
+                  0.04
+                ]
+              },
+              {
+                "time": 1.2,
+                "value": [
+                  -0.615,
+                  1.42,
+                  0.04
+                ]
+              }
+            ]
+          },
+          {
+            "id": "doors-close:right",
+            "target": "DoorRight",
+            "property": "translation",
+            "interpolation": "LINEAR",
+            "keys": [
+              {
+                "time": 0,
+                "value": [
+                  1.855,
+                  1.42,
+                  0.04
+                ]
+              },
+              {
+                "time": 1.2,
+                "value": [
+                  0.615,
+                  1.42,
+                  0.04
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "publishing": {
+    "format": "glTF 2.0 binary",
+    "output": "wrong-floor-elevator.glb",
+    "validation": [
+      "DoorLeft and DoorRight animate symmetrically from center",
+      "DoorsOpen duration 0.8s",
+      "DoorsClose duration 1.2s",
+      "Control panel and cabin hierarchy remain inside ElevatorRoot"
+    ]
+  }
+}

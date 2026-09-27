@@ -1,6 +1,7 @@
 import {createFloorDetail} from './floors/scene-kit.mjs';
 import {createCharacterModels} from './character-models.mjs';
 import {createRoomModels} from './room-models.mjs';
+import {loadElevatorInstance} from './elevator-model.mjs';
 import {floorProfile} from './floors/catalog.mjs';
 import * as THREE from '../vendor/three/three.module.js';
 import { kit as liminalKit } from '../vendor/factory-kits/src/domains/factory/object/structure/kits/liminal-kit/index.js';
@@ -27,7 +28,7 @@ export function createScene(canvas) {
   scene.add(cabin,hall,actors);
   const textures = [], permanentMaterials = [];
   const characterModels=createCharacterModels(),roomModels=createRoomModels();
-  let roomModel=null,cabinModel=null;
+  let roomModel=null,elevatorModel=null;
   function texture(kind,seed=1) {
     const c=document.createElement('canvas');c.width=c.height=512;
     const x=c.getContext('2d');let s=seed>>>0;
@@ -78,8 +79,12 @@ export function createScene(canvas) {
   for(const o of [...cabin.children])if(![leftDoor,rightDoor,...indicators].includes(o)&&!o.userData.setText)cabinStatic.add(o);
   cabin.add(cabinStatic);batchRigid(cabinStatic);
   async function prepareCabin(){
-    if(cabinModel)return;
-    if(await roomModels.prepare('elevator-interior')&&!cabinModel){cabinModel=roomModels.instantiate('elevator-interior');if(cabinModel){cabinStatic.visible=false;cabin.add(cabinModel);}}
+    if(elevatorModel)return;
+    elevatorModel=await loadElevatorInstance();
+    cabinStatic.visible=false;
+    leftDoor.visible=false;
+    rightDoor.visible=false;
+    cabin.add(elevatorModel.root);
   }
   const prepared=new Map(),pending=new Map();let worker=null,requestId=0;
   async function prepare(round,settings={}){await characterModels.prepare(round.danger?round.entity:'looming');const k=String(round.seed)+':'+floorProfile(round.profile).id;if(prepared.has(k))return;
@@ -154,13 +159,13 @@ export function createScene(canvas) {
     pitch=THREE.MathUtils.clamp(pitch+(input.lookY??0)*dt*(settings.sensitivity??1)*.8,-.27,.35);
     camera.rotation.set(pitch,yaw,0,'YXZ');
     camera.position.y=1.64+(settings.reducedMotion?0:Math.sin(visualTime*.7)*.004);
-    if(snapshot.mode==='won')escapeTime+=Math.max(0,dt);const openness=snapshot.mode==='won'?Math.min(1,escapeTime/1.1):snapshot.door?.openness??1;leftDoor.position.x=-.615-openness*1.24;rightDoor.position.x=.615+openness*1.24;
+    if(snapshot.mode==='won')escapeTime+=Math.max(0,dt);const openness=snapshot.mode==='won'?Math.min(1,escapeTime/1.1):snapshot.door?.openness??1;if(!elevatorModel)throw new Error('Canonical elevator was not prepared');elevatorModel.setOpenness(openness);
     display.userData.setText(snapshot.mode==='won'?'L  ↓':`${String(Math.min(snapshot.totalRounds??30,Math.max(0,(snapshot.totalRounds??30)-(snapshot.roundIndex??0)))).padStart(2,'0')}  ↓`);
     indicators.forEach((m,i)=>{const on=i<3-(snapshot.mistakes??0);m.material.color.set(on?'#8dd1b1':'#cb4935');m.material.emissive.set(on?'#356e48':'#561308');});
     const clue=!!snapshot.clueVisible,progress=Math.max(0,Math.min(1,snapshot.threatProgress??0)),clueAge=clue?Math.max(0,animationTime-(round.clueAt??0)):0;
     floorDetail?.userData.update(snapshot);
     roomModel?.userData.updateRoom(visualTime,settings);
-    cabinModel?.userData.updateRoom(visualTime,{...settings,reducedFlashes:true});
+
     const entityName=({tall:'tall-one',ceiling:'ceiling-walker'})[round.entity]??round.entity??'',variant=Number(round.variant??0);
     for(const actor of actors.children)actor.userData.animate?.(animationTime,actor===entity&&clue&&progress>.14,round.danger&&(!clue||actor!==entity));
     if(entity){const approach=Math.max(0,(progress-.14)/.86)**2;entity.position.set(0,0,-8+approach*7.4);entity.rotation.set(0,0,0);entity.scale.set(1,1,1);entity.visible=true;
@@ -185,6 +190,6 @@ export function createScene(canvas) {
     if(shadowSignature!==lastShadowSignature){renderer.shadowMap.needsUpdate=true;lastShadowSignature=shadowSignature;}
     renderer.render(scene,camera);
   }
-  function dispose(){resizeObserver.disconnect();worker?.terminate();for(const item of pending.values())item.reject(new Error('Scene disposed'));pending.clear();prepared.clear();disposeGroup(actors);disposeGroup(hall);disposeGroup(cabin);for(const t of textures)t.dispose();for(const m of permanentMaterials){m.map?.dispose();m.dispose();}characterModels.dispose();roomModels.dispose();renderer.dispose();}
-  return {render,prepare,async prepareLobby(){await roomModels.prepare('entrance-lobby');return roomModels.instantiate('entrance-lobby');},drawExternal(world,camera){renderer.shadowMap.needsUpdate=true;renderer.render(world,camera);},clearPrepared(){prepared.clear();roomModels.clearFailures();},recenter(){yaw=pitch=0;},dispose,inspect(){return {renderer:{...renderer.info.render,quality,driver,pixelRatio:appliedPixelRatio,shadowResolution,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},characters:characterModels.inspect(),rooms:{...roomModels.inspect(),active:roomModel?.userData.roomAsset??null,cabin:cabinModel?.userData.roomAsset??null},actors:actors.children.map(a=>({model:a.userData.characterModel,position:a.position.toArray(),visible:a.visible})),environment:lastEnvironment,profile:floorDetail?.userData.profile,bones:entity?.userData.boneCount??0,artifactHash:lastArtifact?.deterministicHash,meshes:lastArtifact?.meshes.length,triangles:lastArtifact?.statistics?.triangleCount,roundKey,prepared:prepared.size};},capture(){return canvas.toDataURL('image/png');}};
+  function dispose(){resizeObserver.disconnect();worker?.terminate();for(const item of pending.values())item.reject(new Error('Scene disposed'));pending.clear();prepared.clear();elevatorModel?.dispose();disposeGroup(actors);disposeGroup(hall);disposeGroup(cabin);for(const t of textures)t.dispose();for(const m of permanentMaterials){m.map?.dispose();m.dispose();}characterModels.dispose();roomModels.dispose();renderer.dispose();}
+  return {render,prepare,async prepareLobby(){await roomModels.prepare('entrance-lobby');return roomModels.instantiate('entrance-lobby');},drawExternal(world,camera){renderer.shadowMap.needsUpdate=true;renderer.render(world,camera);},clearPrepared(){prepared.clear();roomModels.clearFailures();},recenter(){yaw=pitch=0;},dispose,inspect(){return {renderer:{...renderer.info.render,quality,driver,pixelRatio:appliedPixelRatio,shadowResolution,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},characters:characterModels.inspect(),rooms:{...roomModels.inspect(),active:roomModel?.userData.roomAsset??null,cabin:elevatorModel?'wrong-floor-elevator':null},elevator:elevatorModel?.inspect()??null,actors:actors.children.map(a=>({model:a.userData.characterModel,position:a.position.toArray(),visible:a.visible})),environment:lastEnvironment,profile:floorDetail?.userData.profile,bones:entity?.userData.boneCount??0,artifactHash:lastArtifact?.deterministicHash,meshes:lastArtifact?.meshes.length,triangles:lastArtifact?.statistics?.triangleCount,roundKey,prepared:prepared.size};},capture(){return canvas.toDataURL('image/png');}};
 }

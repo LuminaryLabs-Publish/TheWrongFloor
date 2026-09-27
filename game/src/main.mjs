@@ -8,6 +8,7 @@ import { createAudio } from './audio.mjs';
 import * as THREE from '../vendor/three/three.module.js';
 import {GLTFLoader} from '../vendor/three/addons/loaders/GLTFLoader.js';
 import {createLobbyScene} from '../floor-30/scene.mjs';
+import {loadElevatorInstance} from './elevator-model.mjs';
 
 const params=new URLSearchParams(location.search),review=params.get('review')==='1';
 const desktop=params.has('standalone');
@@ -115,8 +116,12 @@ try{
   if(desktop)for(const b of document.querySelectorAll('[data-action="exit"]'))b.textContent='Quit game';
   const loader=new GLTFLoader();
   const loadLobbyAsset=async name=>(await loader.loadAsync(new URL(`../floor-30/assets/${name}.glb`,import.meta.url).href)).scene;
-  const rearCharacter=(await loader.loadAsync(new URL('../assets/characters/unburied.glb',import.meta.url).href)).scene;
-  lobby=await createLobbyScene(THREE,loadLobbyAsset,{authored:await scene.prepareLobby(),character:rearCharacter});
+  const [rearCharacterGltf,lobbyElevator,authoredLobby]=await Promise.all([
+    loader.loadAsync(new URL('../assets/characters/unburied.glb',import.meta.url).href),
+    loadElevatorInstance({position:[0,0,-2.96],rotationY:Math.PI}),
+    scene.prepareLobby(),
+  ]);
+  lobby=await createLobbyScene(THREE,loadLobbyAsset,{authored:authoredLobby,character:rearCharacterGltf.scene,elevator:lobbyElevator});
   lobby.update(introState,save.settings);lobby.resize(innerWidth,innerHeight);scene.drawExternal(lobby.scene,lobby.camera);prepareIntro().catch(()=>{});
   window.addEventListener('focus',onFocus);window.addEventListener('pagehide',dispose);frame=requestAnimationFrame(tick);
   if(review)window.__wrongFloor={

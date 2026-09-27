@@ -141,7 +141,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     const blackout=await run('__wrongFloor.inspect().lobby');
     assert.equal(blackout.blackout,true,'strong Floor 30 flicker reaches full blackout');
     assert.equal(blackout.lights.key,0);assert.equal(blackout.lights.hemi,0);assert.ok(blackout.lights.fills.every(v=>v===0));assert.ok(blackout.lights.silhouette>0&&blackout.lights.silhouette<3,'blackout keeps only faint silhouette rim');
-    assert.ok(blackout.panel.position[2] < -3.0&&Math.abs(blackout.panel.position[0]) < .8,'panel remains inside and visible');
+    assert.ok(blackout.panel.position[2] < -3.8&&blackout.panel.position[0] < -1.5,'GLB panel remains on the left interior wall after Floor 30 transform');
     assert.ok(blackout.character?.position?.[2] < -3.5&&blackout.character.position[0] > -.8&&blackout.character.position[0] < .4,'character remains in rear peripheral composition');
     await screenshot('00-floor-30-blackout.png');
     await run('__wrongFloor.setFloor30VisualTime(0)');
@@ -243,7 +243,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
       return {rounds,final:__wrongFloor.snapshot(),inspection:__wrongFloor.inspect()};
     })()`);
     assert.equal(complete.rounds.length, 30, 'browser exercised all 30 stops');
-    assert.equal(complete.inspection.rooms.active,'exit-lobby');assert.equal(complete.inspection.rooms.cabin,'elevator-interior');assert.deepEqual(complete.inspection.rooms.failures,{});
+    assert.equal(complete.inspection.rooms.active,'exit-lobby');assert.equal(complete.inspection.rooms.cabin,'wrong-floor-elevator');assert.deepEqual(complete.inspection.rooms.failures,{});
     assert.equal(complete.final.mode, 'won'); assert.equal(complete.final.elapsed, 270);
     assert.equal(complete.final.correct, 30); assert.equal(complete.final.mistakes, 0);
     assert.equal(new Set(complete.rounds.filter(r => r.round.danger).map(r => `${r.round.entity}:${r.round.variant}`)).size, 18);
@@ -282,7 +282,7 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
         await screenshot(`entity-${specification.entity}-${variant}.png`);
       }
     }
-    for(const profile of FLOOR_PROFILES){await run(`__wrongFloor.preview(${JSON.stringify({entity:'warden',profile:profile.id,seed:'room-'+profile.id,roundTime:2.5})})`);const info=await run('__wrongFloor.inspect()');assert.equal(info.profile,profile.id);assert.equal(info.rooms.active,profile.id);assert.equal(info.rooms.cabin,'elevator-interior');await screenshot('floor-'+profile.id+'.png');}
+    for(const profile of FLOOR_PROFILES){await run(`__wrongFloor.preview(${JSON.stringify({entity:'warden',profile:profile.id,seed:'room-'+profile.id,roundTime:2.5})})`);const info=await run('__wrongFloor.inspect()');assert.equal(info.profile,profile.id);assert.equal(info.rooms.active,profile.id);assert.equal(info.rooms.cabin,'wrong-floor-elevator');await screenshot('floor-'+profile.id+'.png');}
     await run('__wrongFloor.stopPreview()');
     if (reviewDir) await writeFile(path.join(reviewDir, 'preflight-evidence.json'), `${JSON.stringify({ provenance, webgl, performancePreflight, complete, failures, variants, screenshots, findings }, null, 2)}\n`);
     if (!performancePreflight.passed) clip.skipReason = 'Real-time full session skipped because the default-profile performance preflight failed.';

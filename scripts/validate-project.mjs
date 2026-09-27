@@ -34,6 +34,13 @@ assert.equal(prototypeSource.source.repository, 'LuminaryLabs-Dev/NexusArcade-Pr
 assert.equal(prototypeSource.source.commit, '1d772700edb77eb294f5f7b3f786ad790276fabd');
 await access(path.join(root, 'compare', 'index.html'));
 
+await access(path.join(game,'assets','elevator','wrong-floor-elevator.glb'));
+await access(path.join(game,'assets','elevator','wrong-floor-elevator.authoring.json'));
+const elevatorSource = await readFile(path.join(game,'src','elevator-model.mjs'),'utf8');
+assert.match(elevatorSource,/DoorsOpen/);assert.match(elevatorSource,/DoorsClose/);
+const sceneSource = await readFile(path.join(game,'src','scene.mjs'),'utf8');
+assert.doesNotMatch(sceneSource,/leftDoor\.position\.x\s*=|rightDoor\.position\.x\s*=/);
+
 const gameHtml = await readFile(path.join(game, 'index.html'), 'utf8');
 assert.doesNotMatch(gameHtml, /id="play-button"|id="seed-input"|data-action="practice"/);
 assert.match(gameHtml, /id="descend-accessible"/);
@@ -63,4 +70,4 @@ async function scan(directory) {
   }
 }
 await scan(game);
-console.log(`[validate] current main: untimed Floor 30, Floor 29→G, 30×9s=270s; ${required.length} required current files, ${encounters.length} encounters`);
+console.log(`[validate] current main: canonical animated elevator GLB, untimed Floor 30, Floor 29→G, 30×9s=270s; ${required.length} required current files, ${encounters.length} encounters`);

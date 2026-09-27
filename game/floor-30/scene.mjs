@@ -1,6 +1,6 @@
 import {batchRigid} from './batch.mjs';
 
-export async function createLobbyScene(T,loadAsset,{authored=null,character=null}={}){
+export async function createLobbyScene(T,loadAsset,{authored=null,character=null,elevator=null}={}){
   const scene=new T.Scene();scene.background=new T.Color('#0b1014');scene.fog=new T.FogExp2('#101216',.018);
   const camera=new T.PerspectiveCamera(56,16/9,.05,70);
   const cameraTarget=new T.Vector3(.55,1.42,1.65);
@@ -11,8 +11,11 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   let left,right;
   if(authored){scene.add(authored);left=authored.getObjectByName('door-left');right=authored.getObjectByName('door-right');}
   else{await place('architecture');await place('fixtures');left=await place('door-left',[-.7,0,-2.96]);right=await place('door-right',[.7,0,-2.96]);await place('seating',[-3.3,0,4.6],Math.PI);await place('seating',[3.3,0,4.6],Math.PI);await place('reception',[-4.5,0,2.3],.15);}
-  if(!left||!right)throw new Error('Floor 30 elevator doors are missing');
-  const leftClosed=left.position.x,rightClosed=right.position.x;
+  if(!left||!right)throw new Error('Floor 30 lobby door pivots are missing');
+  if(!elevator)throw new Error('Canonical animated elevator GLB is required');
+  left.visible=false;right.visible=false;
+  scene.add(elevator.root);
+  left=elevator.doorLeft;right=elevator.doorRight;
 
   function textPlane(text,w,h,font=48,bg='#171b19',fg='#ded7bf'){
     const canvas=document.createElement('canvas');canvas.width=512;canvas.height=160;const ctx=canvas.getContext('2d');
@@ -23,17 +26,12 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     return mesh;
   }
 
-  // Mount the panel against the cabin's right wall, well behind the threshold.
-  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(.45,1.72,-3.15);panel.rotation.y=-Math.PI/2;scene.add(panel);
-  const boardMat=new T.MeshStandardMaterial({color:'#20231f',roughness:.72,metalness:.48});
-  const trimMat=new T.MeshStandardMaterial({color:'#90764d',roughness:.42,metalness:.8});
-  const board=new T.Mesh(new T.BoxGeometry(1.28,2.72,.12),boardMat);panel.add(board);
-  const display=textPlane('30',.78,.22,82,'#0d1110','#f0a46e');display.position.set(0,1.03,.071);panel.add(display);
-  const floors=[...Array.from({length:30},(_,i)=>30-i),'G','B'];
-  floors.forEach((floor,index)=>{const cols=5,row=Math.floor(index/cols),col=index%cols;const x=-.46+col*.23,y=.73-row*.22;const m=new T.Mesh(new T.BoxGeometry(.17,.13,.055),index<30?boardMat:trimMat);m.position.set(x,y,.075);panel.add(m);const label=textPlane(floor,.13,.085,42,'#181b18',index<30?'#a9aa9e':'#e0c28b');label.position.set(x,y,.106);panel.add(label);});
-  const descendMaterial=new T.MeshStandardMaterial({color:'#332d25',emissive:'#5d2b16',emissiveIntensity:.08,roughness:.38,metalness:.55});
-  const descendButton=new T.Mesh(new T.BoxGeometry(.9,.28,.12),descendMaterial);descendButton.position.set(0,-.96,.11);descendButton.name='descend-button';panel.add(descendButton);
-  const descendLabel=textPlane('DESCEND',.72,.12,54,'#2a211c','#e9d7bd');descendLabel.position.set(0,-.96,.176);panel.add(descendLabel);
+  // Cabin, panel and both sliding doors are authored in one GLB.
+  const panel=elevator.panelHousing;
+  const descendButton=elevator.descendButton;
+  const descendMaterial=descendButton.material;
+  const descendBaseScale=descendButton.scale.clone();
+  if(!descendMaterial?.emissive)throw new Error('DESCEND material must support emissive feedback');
 
   let rearCharacter=null;
   if(character){
@@ -87,14 +85,14 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     scene,camera,hitTestDescend,
     inspect:()=>{
       const characterBounds=rearCharacter?new T.Box3().setFromObject(rearCharacter):null;
-      return{asset:authored?.userData.roomAsset??null,doorPositions:[left.position.x,right.position.x],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},panel:{position:panel.position.toArray(),rotationY:panel.rotation.y},character:rearCharacter?{position:rearCharacter.position.toArray(),bounds:{min:characterBounds.min.toArray(),max:characterBounds.max.toArray()}}:null,descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor,blackout:lastBlackout,lights:{hemi:hemi.intensity,key:key.intensity,car:car.intensity,fills:fills.map(l=>l.intensity),authored:authoredLights.map(x=>x.light.intensity),silhouette:silhouetteLight.intensity}};},
+      return{asset:authored?.userData.roomAsset??null,doorPositions:[...elevator.inspect().left,...elevator.inspect().right],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},panel:{position:panel.getWorldPosition(new T.Vector3()).toArray(),rotationY:panel.getWorldQuaternion(new T.Quaternion()).toArray()},character:rearCharacter?{position:rearCharacter.position.toArray(),bounds:{min:characterBounds.min.toArray(),max:characterBounds.max.toArray()}}:null,descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor,blackout:lastBlackout,lights:{hemi:hemi.intensity,key:key.intensity,car:car.intensity,fills:fills.map(l=>l.intensity),authored:authoredLights.map(x=>x.light.intensity),silhouette:silhouetteLight.intensity}};},
     resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?104:56;camera.updateProjectionMatrix();},
-    update(s,settings={},dt=0){if(disposed)return;if(forcedVisualTime===null)visualTime+=Math.max(0,dt);else visualTime=forcedVisualTime;authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));left.position.x=leftClosed-openness*1.4;right.position.x=rightClosed+openness*1.4;lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.position.z=s.descendPressed?.075:.11;currentFloor=s.displayFloor??30;display.userData.setText(currentFloor);
+    update(s,settings={},dt=0){if(disposed)return;if(forcedVisualTime===null)visualTime+=Math.max(0,dt);else visualTime=forcedVisualTime;authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));elevator.setOpenness(openness);lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.scale.set(descendBaseScale.x*(s.descendPressed?.82:1),descendBaseScale.y,descendBaseScale.z);currentFloor=s.displayFloor??30;
       const phase=visualTime%4.6;
       const blackout=!settings.reducedFlashes&&((phase>=2.88&&phase<3.00)||(phase>=3.10&&phase<3.22));
       setBlackout(blackout);
     },
     setVisualTime(value){if(value===null){forcedVisualTime=null;return;}forcedVisualTime=Math.max(0,Number(value)||0);visualTime=forcedVisualTime;},
-    dispose(){if(disposed)return;disposed=true;key.shadow.map?.dispose();rearCharacter?.removeFromParent();release();}
+    dispose(){if(disposed)return;disposed=true;key.shadow.map?.dispose();elevator.dispose();rearCharacter?.removeFromParent();release();}
   };
 }
