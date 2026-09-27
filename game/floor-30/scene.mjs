@@ -24,7 +24,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   }
 
   // Mount the panel against the cabin's right wall, well behind the threshold.
-  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(1.28,1.72,-3.52);panel.rotation.y=-Math.PI/2;scene.add(panel);
+  const panel=new T.Group();panel.name='floor30-control-panel';panel.position.set(-1.55,1.72,-3.45);panel.rotation.y=Math.PI/2;scene.add(panel);
   const boardMat=new T.MeshStandardMaterial({color:'#20231f',roughness:.72,metalness:.48});
   const trimMat=new T.MeshStandardMaterial({color:'#90764d',roughness:.42,metalness:.8});
   const board=new T.Mesh(new T.BoxGeometry(1.28,2.72,.12),boardMat);panel.add(board);
@@ -42,7 +42,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     const bounds=new T.Box3().setFromObject(rearCharacter),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3());
     const scale=size.y>0?1.82/size.y:1;
     rearCharacter.scale.setScalar(scale);
-    rearCharacter.position.set(1.00,-bounds.min.y*scale,-4.12);
+    rearCharacter.position.set(-.25,-bounds.min.y*scale,-4.00);
     rearCharacter.position.x-=center.x*scale;
     rearCharacter.position.z-=center.z*scale;
     rearCharacter.rotation.y=Math.PI;
