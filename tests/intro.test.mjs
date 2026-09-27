@@ -43,5 +43,6 @@ test('shared hand geometry releases once and failed partial load releases head',
 test('canonical Floor 30 no longer depends on the preserved intro character',async()=>{
  const source=await readFile(new URL('../game/floor-30/scene.mjs',import.meta.url),'utf8');
  assert.doesNotMatch(source,/createIntroCharacter|loadIntro|outside-claw/);
- assert.match(source,/descend-button/);
+ assert.match(source,/elevator\.descendButton/);
+ assert.match(source,/elevator\.setOpenness/);
 });
