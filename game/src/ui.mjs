@@ -1,4 +1,5 @@
 import { DEFAULT_SETTINGS } from './storage.mjs';
+import { settingsDomainForField, validateSettingsDomainForm } from './settings-domains.mjs';
 
 const keyLabel = code => code === 'Space' ? 'SPACE' : code.replace(/^Key|^Digit/, '').toUpperCase();
 const safeNumber = value => Number.isFinite(value) ? value : 0;
@@ -9,6 +10,7 @@ export function createUI(actions = {}) {
   const byId = id => document.getElementById(id);
   const screens = Object.fromEntries(['title', 'settings', 'pause', 'results'].map(name => [name, byId(`${name}-screen`)]));
   const form = byId('settings-form');
+  validateSettingsDomainForm(form);
   let settings = { ...DEFAULT_SETTINGS, bindings: { ...DEFAULT_SETTINGS.bindings } };
   let screen = 'title';
   let settingsReturn = 'title';
@@ -80,7 +82,7 @@ export function createUI(actions = {}) {
     settings[input.name] = input.type === 'checkbox' ? input.checked : input.tagName === 'SELECT' ? input.value : Number(input.value);
     synchronize();
     if (!settings.captions) caption('');
-    actions.settingsChanged?.(getSettings());
+    actions.settingsChanged?.(getSettings(), settingsDomainForField(input.name));
   });
   listen(byId('bind-close'), 'click', () => { binding = true; synchronize(); });
   // Capture before gameplay input so key binding cannot close a door or dismiss this screen.
@@ -96,7 +98,7 @@ export function createUI(actions = {}) {
     settings.bindings.close = event.code;
     binding = false;
     synchronize();
-    actions.settingsChanged?.(getSettings());
+    actions.settingsChanged?.(getSettings(), 'input');
   }, { capture: true, signal: controller.signal });
 
   function update(snapshot = {}) {

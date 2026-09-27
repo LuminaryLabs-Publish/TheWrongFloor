@@ -5,8 +5,8 @@
 .opening-title h1{margin:0;display:flex;gap:.18em;font-family:'Metal Mania',Georgia,serif;font-size:clamp(44px,6.5vw,94px);font-weight:400;letter-spacing:.035em;line-height:.95;color:#ddd8c6;text-shadow:0 3px 18px #000,0 0 38px #000;opacity:.82}
 .opening-title h1 span:first-child{transform:rotate(-2deg)}
 .opening-title h1 span:last-child{transform:rotate(1deg)}
-.opening-settings{position:absolute;right:24px;top:22px;padding:9px 12px;border:1px solid #abb6a42e;background:#080d0aa8;color:#c8cbbf;font:10px "Courier New",monospace;letter-spacing:.12em;text-transform:uppercase;transition:opacity .25s ease}
-.opening-settings:hover,.opening-settings:focus-visible{color:#fff;border-color:#d48a674f;background:#111812cf}
+.opening-settings{position:absolute;right:22px;top:20px;width:58px;height:58px;padding:0;border:0;background:transparent;display:grid;place-items:center;transition:opacity .25s ease,transform .18s ease;filter:drop-shadow(0 3px 7px #000b)}
+.opening-settings img{display:block;width:54px;height:54px;object-fit:contain}.opening-settings:hover,.opening-settings:focus-visible{transform:scale(1.06);filter:drop-shadow(0 0 9px #d48a6766) drop-shadow(0 3px 7px #000b)}
 body.intro-transition .opening-title,body.intro-transition .opening-settings{opacity:0;pointer-events:none}
-@media(max-width:650px){.opening-title{transform:translateY(-38vh)}.opening-title h1{display:block;font-size:clamp(46px,12vw,74px);line-height:.88}.opening-settings{right:16px;top:14px}}
+@media(max-width:650px){.opening-title{transform:translateY(-38vh)}.opening-title h1{display:block;font-size:clamp(46px,12vw,74px);line-height:.88}.opening-settings{right:14px;top:12px;width:52px;height:52px}.opening-settings img{width:48px;height:48px}}
 @media(prefers-reduced-motion:reduce){.opening-title,.opening-settings{transition:none}}

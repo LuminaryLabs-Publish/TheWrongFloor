@@ -14,6 +14,8 @@ const required = [
   'game/src/main.mjs',
   'game/vendor/three/three.module.js',
   'game/assets/elevator/wrong-floor-elevator.glb',
+  'game/assets/ui/settings-gear.png',
+  'game/src/settings-domains.mjs',
 ];
 
 for (const relative of required) await access(path.join(root, relative));
@@ -25,6 +27,14 @@ assert.equal(typeof pkg.scripts?.build, 'string');
 const metadata = JSON.parse(await readFile(path.join(game, 'game.json'), 'utf8'));
 assert.equal(metadata.id, 'NXA-000010');
 assert.equal(metadata.slug, 'wrong-floor');
+
+const gameHtml = await readFile(path.join(game, 'index.html'), 'utf8');
+assert.match(gameHtml, /assets\/ui\/settings-gear\.png/);
+assert.match(gameHtml, /data-settings-domain="audio"/);
+assert.match(gameHtml, /data-settings-domain="input"/);
+assert.match(gameHtml, /data-settings-domain="accessibility"/);
+assert.match(gameHtml, /data-settings-domain="rendering"/);
+assert.match(gameHtml, /data-settings-domain="gameplay"/);
 
 const landing = await readFile(path.join(root, 'index.html'), 'utf8');
 assert.match(landing, /location\.replace\('\.\/game\/'\)/);

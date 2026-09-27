@@ -498,6 +498,11 @@
       "sha256": "941aee5d45ab3f022c7202271791a761af45743a0baac3752886facd648ebf8b"
     },
     {
+      "path": "game/assets/ui/settings-gear.png",
+      "bytes": 3680,
+      "sha256": "1a5218f132c82bfa4e7bf1285a983b08744bcfcdc931ac5d747ece0b0ce400d4"
+    },
+    {
       "path": "game/content/difficulty.json",
       "bytes": 525,
       "sha256": "ba1d7dc52d4f42e75ffd69e84ca6e25d4989af0e072708cf44553396d1bbee88"
@@ -594,8 +599,8 @@
     },
     {
       "path": "game/floor-30/menu.css",
-      "bytes": 1588,
-      "sha256": "78ab3a485f308f2ee989711fb939e1d5d5f041f36ace0bbd277efa597c2b0cbd"
+      "bytes": 1762,
+      "sha256": "0dab144c65c05cf356a0f924e3cde8e11f172593030d80d7c6960461511c7637"
     },
     {
       "path": "game/floor-30/scene.mjs",
@@ -609,8 +614,8 @@
     },
     {
       "path": "game/index.html",
-      "bytes": 6183,
-      "sha256": "ca0979bc9aefd2a591809dbb087af9255d58e1d3dd0bc9f0bfd6736e393dc358"
+      "bytes": 6611,
+      "sha256": "c362adbdd2066535ea5cf604bfdc4057ae328680c4c91ea4c69274d0f9c3f2cc"
     },
     {
       "path": "game/shaders/thirtieth-floor.frag",
@@ -724,8 +729,8 @@
     },
     {
       "path": "game/src/main.mjs",
-      "bytes": 12040,
-      "sha256": "14912056218a082ba6ae1652d0255ab6917ed8382e49996f3fa543abb4999317"
+      "bytes": 12069,
+      "sha256": "2ad8a5db66fe2d5c3e32ca329a3bf0e6e6430b295f6d39e060214d99202d44ff"
     },
     {
       "path": "game/src/procedural-audio.mjs",
@@ -753,14 +758,19 @@
       "sha256": "bb3304f5e657f54b2f274c7afbe024f2c558d5721a76fe3d8eb27d02f6ec871b"
     },
     {
+      "path": "game/src/settings-domains.mjs",
+      "bytes": 1250,
+      "sha256": "4dae9fdcef81b87101381c17c9cd2244048629e598435222bd2d922d1da68a65"
+    },
+    {
       "path": "game/src/storage.mjs",
       "bytes": 2828,
       "sha256": "c562e665f68c059a6bc6823079430954726f8f79bb816ee9a3c7d374faf50961"
     },
     {
       "path": "game/src/ui.mjs",
-      "bytes": 8741,
-      "sha256": "e3f9b31297a46558d65e2563a9fcff5a5ad6157db6dd327b5399f59441a2ec40"
+      "bytes": 8915,
+      "sha256": "54df5b35a0b91d33ce1c73f03609fe3e7357f1be82e8c1865ae3ffee3c784e9a"
     },
     {
       "path": "game/styles.css",
@@ -889,8 +899,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1463,
-      "sha256": "6c7249c139b89ec1b4e1119723463e197bd995c0fe55a62479bfa490bcd5c20a"
+      "bytes": 1495,
+      "sha256": "0dac272d19d00b58f7cc82539ddefb99e191a216a879e5d1788e018b1cfc42d6"
     },
     {
       "path": "README.md",
@@ -954,8 +964,8 @@
     },
     {
       "path": "scripts/validate-deploy.mjs",
-      "bytes": 2096,
-      "sha256": "0bdbbe3a1fea8ca37a94368070813914627af0392aa95125bc20415c17ca8b98"
+      "bytes": 2595,
+      "sha256": "184027f2ec5c5374e020dfd06b40a7a4b3a514d9c2a793c660a2594cf94bda75"
     },
     {
       "path": "scripts/validate-project.mjs",
@@ -1046,6 +1056,11 @@
       "path": "tests/rooms.test.mjs",
       "bytes": 4988,
       "sha256": "d785c07ea6b8856d51eb904f8adefb6024b33fcc38689ef09e6c1878b2b86c06"
+    },
+    {
+      "path": "tests/settings-domains.test.mjs",
+      "bytes": 720,
+      "sha256": "c5bc9aef652c9ca7e81dee4c055ee90e6b55eba2bcccbcf69dbba881e6b0e469"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",

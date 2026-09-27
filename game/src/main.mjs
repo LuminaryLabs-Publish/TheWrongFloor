@@ -110,7 +110,7 @@ function onFocus(){if(!game)audio?.resume();}
 function dispose(){window.removeEventListener('focus',onFocus);if(disposed)return;disposed=true;startToken++;introToken++;cancelAnimationFrame(frame);lobby?.dispose();input?.dispose();ui?.dispose();audio?.dispose();scene?.dispose();window.removeEventListener('pagehide',dispose);}
 try{
   scene=createScene(document.getElementById('scene'));audio=createAudio();
-  ui=createUI({descend,resume,pause,title,retry:title,recenter:()=>scene.recenter(),exit:()=>{if(desktop)window.close();else title();},screenChanged:setInputMode,settingsChanged:settings=>{save.settings=settings;writeSave(save);audio.setSettings(settings);}});
+  ui=createUI({descend,resume,pause,title,retry:title,recenter:()=>scene.recenter(),exit:()=>{if(desktop)window.close();else title();},screenChanged:setInputMode,settingsChanged:(settings,domain)=>{save.settings=settings;writeSave(save);if(domain==='audio')audio.setSettings(settings);}});
   input=createInput(document.getElementById('scene'),{onPause:pause,onBlur:()=>{audio.pause();if(game?.snapshot().mode==='running')pause();},onRecenter:()=>scene.recenter(),onDescend:descend,onIntroPointer:(x,y)=>lobby?.hitTestDescend(x,y)&&descend(),onConfirm:()=>ui.confirm(),onMenuMove:delta=>ui.menuMove(delta)});
   ui.updateSettings(save.settings);audio.setSettings(save.settings);audio.unlock();ui.show('title');ui.setReady(false);
   if(desktop)for(const b of document.querySelectorAll('[data-action="exit"]'))b.textContent='Quit game';
