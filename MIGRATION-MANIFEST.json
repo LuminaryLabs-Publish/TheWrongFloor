@@ -34,8 +34,8 @@
     },
     {
       "path": ".github/workflows/publish-pages.yml",
-      "bytes": 1234,
-      "sha256": "b4f2beb32be33aa6660d90f225bd24a77966a4cb1cdcdf745fdec2f57d19f3f7"
+      "bytes": 885,
+      "sha256": "2f484427f66412121aa3c9ae8ca8c501107d4858c8afb1820ebb3810a24809bb"
     },
     {
       "path": ".gitignore",
@@ -889,8 +889,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 1404,
-      "sha256": "2f076bedeaaece1933f3dfb96c73d98a13a3e245ea98b552574b929938dcdf54"
+      "bytes": 1463,
+      "sha256": "6c7249c139b89ec1b4e1119723463e197bd995c0fe55a62479bfa490bcd5c20a"
     },
     {
       "path": "README.md",
@@ -951,6 +951,11 @@
       "path": "scripts/serve.mjs",
       "bytes": 1274,
       "sha256": "a9bacf3d95c4d70f7a0df2bd322912a870c5128bbf5b227c40763f504d1f408b"
+    },
+    {
+      "path": "scripts/validate-deploy.mjs",
+      "bytes": 2038,
+      "sha256": "938baa60651e2170c982c7278718ad946db13d8382712fbcdc50b7c443efc55f"
     },
     {
       "path": "scripts/validate-project.mjs",

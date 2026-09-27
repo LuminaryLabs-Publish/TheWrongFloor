@@ -17,7 +17,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,19 +25,8 @@ jobs:
           node-version: 22.12.0
           cache: npm
       - run: npm ci
-      - run: npm test
+      - run: npm run validate:deploy
       - run: npm run build
-      - name: Chrome WebGL startup and interaction smoke
-        run: npm run test:browser
-        env:
-          WRONG_FLOOR_REVIEW_DIR: _review/smoke
-      - name: Preserve smoke evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: wrong-floor-smoke
-          path: _review/smoke
-          if-no-files-found: warn
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

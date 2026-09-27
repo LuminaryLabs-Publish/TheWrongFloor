@@ -15,7 +15,8 @@
     "package:web": "node scripts/build-site.mjs && node scripts/archive-release.mjs web",
     "package:windows": "npm --prefix desktop run package:windows",
     "package:linux": "npm --prefix desktop run package:linux",
-    "package:mac": "npm --prefix desktop run package:mac"
+    "package:mac": "npm --prefix desktop run package:mac",
+    "validate:deploy": "node scripts/validate-deploy.mjs"
   },
   "engines": {
     "node": ">=22.12.0"
