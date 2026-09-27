@@ -27,7 +27,8 @@ assert.equal(metadata.id, 'NXA-000010');
 assert.equal(metadata.slug, 'wrong-floor');
 
 const landing = await readFile(path.join(root, 'index.html'), 'utf8');
-assert.match(landing, /href="\.\/game\/"/);
+assert.match(landing, /location\.replace\('\.\/game\/'\)/);
+assert.doesNotMatch(landing, /<iframe/i);
 
 async function scan(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {

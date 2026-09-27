@@ -869,8 +869,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 1922,
-      "sha256": "d4d111dceb7b22b277606eb0973df6d4f8d85fe83aaba617c1163198ee4a3534"
+      "bytes": 393,
+      "sha256": "fc0f8d91d30e428ae14f1e01fe7faf89e6e648abccf9b39fa753d256f6f14987"
     },
     {
       "path": "marketing/prototype-cover/PROVENANCE.md",
@@ -914,8 +914,8 @@
     },
     {
       "path": "scripts/build-site.mjs",
-      "bytes": 1670,
-      "sha256": "ff2737c26c6bce0abe2ea9f92ebc549407e7c391e7264e9108b7c576f13b2e1c"
+      "bytes": 1639,
+      "sha256": "c8efe2bc41380480d1b8e2960848c7b31a23e678826fe5ca455adb736a81d19b"
     },
     {
       "path": "scripts/migration-manifest.mjs",
@@ -954,8 +954,8 @@
     },
     {
       "path": "scripts/validate-deploy.mjs",
-      "bytes": 2038,
-      "sha256": "938baa60651e2170c982c7278718ad946db13d8382712fbcdc50b7c443efc55f"
+      "bytes": 2096,
+      "sha256": "0bdbbe3a1fea8ca37a94368070813914627af0392aa95125bc20415c17ca8b98"
     },
     {
       "path": "scripts/validate-project.mjs",

@@ -7,7 +7,7 @@ const reference = path.join(root, '.agent', 'references', 'prototype-v0.2.0', 'g
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 
-for (const file of ['index.html', 'site.css']) await cp(path.join(root, file), path.join(output, file));
+await cp(path.join(root, 'index.html'), path.join(output, 'index.html'));
 await cp(path.join(root, 'game'), path.join(output, 'game'), { recursive: true, dereference: false });
 await cp(reference, path.join(output, 'prototype'), { recursive: true, dereference: false });
 await cp(path.join(root, 'compare'), path.join(output, 'compare'), { recursive: true, dereference: false });
