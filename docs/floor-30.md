@@ -64,3 +64,8 @@ The opening passes when:
 - doors close, display changes 30 → 29, then doors open
 - Floor 29 starts at elapsed 0 with `opened=true` and door openness 1
 - scored simulation does not begin before the Floor 29 handoff
+
+
+## Rapid composition pass
+
+The Floor 30 control panel is mounted deep against the elevator's interior right wall rather than at the threshold. A full-body Unburied character occupies the rear of the cabin as a restrained silhouette. Strong fluorescent interruptions now drive all principal Floor 30 lights to zero for brief blackout beats; Reduced light changes suppresses those hard blackouts.

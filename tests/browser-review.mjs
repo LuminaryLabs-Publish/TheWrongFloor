@@ -131,6 +131,21 @@ export async function runWrongFloorBrowserChecks({ call, event, evaluate, waitFo
     assert.ok(introState.lobby.camera.position[0] < -.8,'Floor 30 camera is in the back/side corner');
     assert.equal(introState.lobby.asset,'entrance-lobby');
     await screenshot('00-floor-30-ready.png');
+    await run('__wrongFloor.setFloor30VisualTime(0)');
+    await run('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    const normalLight=await run('__wrongFloor.inspect().lobby');
+    assert.equal(normalLight.blackout,false);
+    await screenshot('00-floor-30-normal-light.png');
+    await run('__wrongFloor.setFloor30VisualTime(2.90)');
+    await run('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    const blackout=await run('__wrongFloor.inspect().lobby');
+    assert.equal(blackout.blackout,true,'strong Floor 30 flicker reaches full blackout');
+    assert.equal(blackout.lights.key,0);assert.equal(blackout.lights.hemi,0);assert.ok(blackout.lights.fills.every(v=>v===0));
+    assert.ok(blackout.panel.position[2] < -3.3,'panel remains deep inside elevator');
+    assert.ok(blackout.character?.position?.[2] < -4.6,'character remains at rear of elevator');
+    await screenshot('00-floor-30-blackout.png');
+    await run('__wrongFloor.setFloor30VisualTime(0)');
+
     for(const [width,height] of [[1280,540],[3440,1440],[390,844]]){
       await call('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false},sessionId);
       await delay(150);

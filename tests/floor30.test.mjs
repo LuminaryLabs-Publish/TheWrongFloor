@@ -20,7 +20,8 @@ function authoredLobby(){
 
 test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', async()=>{
   const restore=installDocument();const authored=authoredLobby();
-  const visual=await createLobbyScene(THREE,async()=>new THREE.Group(),{authored});
+  const character=new THREE.Group();const body=new THREE.Mesh(new THREE.BoxGeometry(.55,1.8,.35),new THREE.MeshStandardMaterial());body.position.y=.9;character.add(body);
+  const visual=await createLobbyScene(THREE,async()=>new THREE.Group(),{authored,character});
   try{
     const direction=visual.camera.getWorldDirection(new THREE.Vector3());
     assert.ok(visual.camera.position.x < -.8);
@@ -28,6 +29,11 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
     assert.ok(direction.x > .1 && direction.z > .8,'camera looks diagonally across the lobby');
     const descend=visual.scene.getObjectByName('descend-button');
     assert.ok(descend?.isMesh,'physical DESCEND button exists in the Three.js scene');
+    const inspection=visual.inspect();
+    assert.ok(inspection.panel.position[2] < -3.3,'panel is mounted deep inside the elevator');
+    assert.ok(inspection.character,'rear character exists');
+    assert.ok(inspection.character.position[2] < -4.6,'character is at the rear of the elevator');
+    assert.ok(inspection.character.bounds.max[0] < 1.7,'character does not intersect the right-side panel wall');
     visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:true},0);
     assert.equal(visual.inspect().descendReady,true);
     assert.equal(visual.inspect().displayFloor,30);
@@ -36,6 +42,14 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
     const point=visual.inspect().descendScreen;
     assert.equal(visual.hitTestDescend(point.x,point.y),true,'projected center hits the physical DESCEND mesh bounds');
     assert.equal(visual.hitTestDescend(point.x+500,point.y+500),false,'distant screen point does not hit DESCEND');
+    visual.setVisualTime(2.90);
+    visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:false},0);
+    const dark=visual.inspect();
+    assert.equal(dark.blackout,true);
+    assert.equal(dark.lights.hemi,0);assert.equal(dark.lights.key,0);assert.equal(dark.lights.car,0);assert.ok(dark.lights.fills.every(v=>v===0));
+    visual.setVisualTime(2.90);
+    visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:true},0);
+    assert.equal(visual.inspect().blackout,false,'reduced-flash mode suppresses hard blackouts');
     visual.update({door:{openness:0},descendReady:false,descendPressed:true,introPhase:'travel',displayFloor:29},{reducedFlashes:true},.5);
     assert.equal(visual.inspect().displayFloor,29);
     assert.equal(visual.inspect().descendReady,false);

@@ -115,13 +115,14 @@ try{
   if(desktop)for(const b of document.querySelectorAll('[data-action="exit"]'))b.textContent='Quit game';
   const loader=new GLTFLoader();
   const loadLobbyAsset=async name=>(await loader.loadAsync(new URL(`../floor-30/assets/${name}.glb`,import.meta.url).href)).scene;
-  lobby=await createLobbyScene(THREE,loadLobbyAsset,{authored:await scene.prepareLobby()});
+  const rearCharacter=(await loader.loadAsync(new URL('../assets/characters/unburied.glb',import.meta.url).href)).scene;
+  lobby=await createLobbyScene(THREE,loadLobbyAsset,{authored:await scene.prepareLobby(),character:rearCharacter});
   lobby.update(introState,save.settings);lobby.resize(innerWidth,innerHeight);scene.drawExternal(lobby.scene,lobby.camera);prepareIntro().catch(()=>{});
   window.addEventListener('focus',onFocus);window.addEventListener('pagehide',dispose);frame=requestAnimationFrame(tick);
   if(review)window.__wrongFloor={
     start,descend,snapshot:()=>preview??game?.snapshot()??introState,inspect:()=>({...scene.inspect(),lobby:lobby?.inspect(),audio:audio.inspect()}),
     advance(dt,controls={}){if(!game)throw new Error('Start a review run first');manual=true;game.update(dt,controls);processEvents();const s=game.snapshot();scene.render(s,dt,{},ui.getSettings());ui.update(s);audio.update(s);if(s.mode==='won'||s.mode==='lost')finish();return s;},
     async preview(options={}){const round={seed:'review-'+(options.entity??'guest')+'-'+(options.variant??0),danger:true,environment:'office',entity:'guest',variant:0,clueAt:1.8,arrivalAt:4.8,...options};await scene.prepare(round,ui.getSettings());const t=options.roundTime??2.8;ui.caption('');preview={mode:'running',roundIndex:options.roundIndex??10,totalRounds:30,round,roundTime:t,elapsed:90+t,door:{openness:1},clueVisible:t>=round.clueAt,threatProgress:Math.max(0,Math.min(1,(t-round.clueAt)/(round.arrivalAt-round.clueAt))),mistakes:0};ui.show('playing');scene.recenter();scene.render(preview,0,{},ui.getSettings());return scene.inspect();},
-    stopPreview(){preview=null;title();},pause,resume,dispose,
+    setFloor30VisualTime(seconds){lobby?.setVisualTime(seconds);},stopPreview(){preview=null;title();},pause,resume,dispose,
   };
 }catch(error){fatal(error);}
