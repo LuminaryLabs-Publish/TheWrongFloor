@@ -2,10 +2,10 @@ import {batchRigid} from './batch.mjs';
 
 export async function createLobbyScene(T,loadAsset,{authored=null,character=null,elevator=null}={}){
   const scene=new T.Scene();scene.background=new T.Color('#0b1014');scene.fog=new T.FogExp2('#101216',.018);
-  const camera=new T.PerspectiveCamera(56,16/9,.05,70);
-  const cameraTarget=new T.Vector3(-.10,1.42,1.65);
+  const camera=new T.PerspectiveCamera(62,16/9,.05,70);
+  const cameraTarget=new T.Vector3(.35,1.42,1.65);
   // Stay in front of the authored lobby rear wall while retaining the corner view.
-  camera.position.set(-1.25,1.48,-5.25);camera.lookAt(cameraTarget);
+  camera.position.set(-1.20,1.48,-5.25);camera.lookAt(cameraTarget);
   const templates=new Map();let disposed=false,visualTime=0,forcedVisualTime=null,lastDescendReady=false,currentFloor=30,lastBlackout=false;
   function release(){authored?.userData.release?.();const gs=new Set(),ms=new Set(),ts=new Set();const visit=o=>{if(o.userData.sharedRoomResource)return;if(o.geometry)gs.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){ms.add(m);for(const t of Object.values(m))if(t?.isTexture)ts.add(t);}};scene.traverse(visit);for(const root of templates.values())root.traverse(visit);gs.forEach(g=>g.dispose());ts.forEach(t=>t.dispose());ms.forEach(m=>m.dispose());templates.clear();scene.clear();}
   async function place(name,p=[0,0,0],r=0){if(!templates.has(name)){const template=await loadAsset(name);template.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=!/wall|wing|ceiling/.test(o.name);}});templates.set(name,batchRigid(T,template));}const root=templates.get(name).clone(true);root.position.set(...p);root.rotation.y=r;scene.add(root);return root;}
@@ -87,10 +87,12 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
     inspect:()=>{
       const characterBounds=rearCharacter?new T.Box3().setFromObject(rearCharacter):null;
       return{asset:authored?.userData.roomAsset??null,doorPositions:[...elevator.inspect().left,...elevator.inspect().right],camera:{position:camera.position.toArray(),target:cameraTarget.toArray()},panel:{position:panel.getWorldPosition(new T.Vector3()).toArray(),rotationY:panel.getWorldQuaternion(new T.Quaternion()).toArray()},character:rearCharacter?{position:rearCharacter.position.toArray(),bounds:{min:characterBounds.min.toArray(),max:characterBounds.max.toArray()}}:null,descendReady:lastDescendReady,descendScreen:descendScreen(),displayFloor:currentFloor,blackout:lastBlackout,lights:{hemi:hemi.intensity,key:key.intensity,car:car.intensity,fills:fills.map(l=>l.intensity),authored:authoredLights.map(x=>x.light.intensity),silhouette:silhouetteLight.intensity}};},
-    resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?104:56;camera.updateProjectionMatrix();},
+    resize(w,h){if(w<=0||h<=0||!Number.isFinite(w/h))return;camera.aspect=w/h;camera.fov=w/h<1.2?104:62;camera.updateProjectionMatrix();},
     update(s,settings={},dt=0){if(disposed)return;if(forcedVisualTime===null)visualTime+=Math.max(0,dt);else visualTime=forcedVisualTime;authored?.userData.updateRoom?.(visualTime,settings);const openness=Math.max(0,Math.min(1,s.door?.openness??1));elevator.setOpenness(openness);lastDescendReady=!!s.descendReady&&s.introPhase==='open';descendMaterial.color.set(lastDescendReady?'#bc7148':'#332d25');descendMaterial.emissive.set(lastDescendReady?'#d05f2b':'#5d2b16');descendMaterial.emissiveIntensity=lastDescendReady?1.75:.08;descendButton.scale.set(descendBaseScale.x*(s.descendPressed?.82:1),descendBaseScale.y,descendBaseScale.z);currentFloor=s.displayFloor??30;
-      const phase=visualTime%4.6;
-      const blackout=!settings.reducedFlashes&&((phase>=2.88&&phase<3.00)||(phase>=3.10&&phase<3.22));
+      // Give players time to recognize the elevator and its physical controls.
+      // Horror flicker remains, but is delayed and briefer than the opening reveal.
+      const phase=Math.max(0,visualTime-8)%6.8;
+      const blackout=!settings.reducedFlashes&&visualTime>=8&&((phase>=2.88&&phase<2.96)||(phase>=3.10&&phase<3.18));
       setBlackout(blackout);
     },
     setVisualTime(value){if(value===null){forcedVisualTime=null;return;}forcedVisualTime=Math.max(0,Number(value)||0);visualTime=forcedVisualTime;},

@@ -1,12 +1,13 @@
 @font-face{font-family:'Metal Mania';src:url('../assets/fonts/MetalMania-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 .title-screen{pointer-events:none;display:grid;place-items:center;padding:0;background:linear-gradient(180deg,#0305042c 0%,transparent 45%,#03050455 100%);overflow:hidden}
 .title-screen button{pointer-events:auto}
-.opening-title{pointer-events:none;text-align:center;transform:translateY(-35vh);transition:opacity .4s ease}
-.opening-title h1{margin:0;display:flex;gap:.18em;font-family:'Metal Mania',Georgia,serif;font-size:clamp(44px,6.5vw,94px);font-weight:400;letter-spacing:.035em;line-height:.95;color:#ddd8c6;text-shadow:0 3px 18px #000,0 0 38px #000;opacity:.82}
+.opening-title{pointer-events:none;position:absolute;left:clamp(20px,4vw,64px);top:clamp(18px,4vh,52px);text-align:left;transform:none;transition:opacity .4s ease;animation:wfl-title-beat 6s ease-out both}
+.opening-title h1{margin:0;display:flex;gap:.18em;font-family:'Metal Mania',Georgia,serif;font-size:clamp(30px,3.1vw,52px);font-weight:400;letter-spacing:.045em;line-height:.95;color:#e9dfc9;text-shadow:0 3px 16px #000,0 0 25px #000;opacity:.9}
 .opening-title h1 span:first-child{transform:rotate(-2deg)}
 .opening-title h1 span:last-child{transform:rotate(1deg)}
 .opening-settings{position:absolute;right:22px;top:20px;width:58px;height:58px;padding:0;border:0;background:transparent;display:grid;place-items:center;transition:opacity .25s ease,transform .18s ease;filter:drop-shadow(0 3px 7px #000b)}
 .opening-settings img{display:block;width:54px;height:54px;object-fit:contain}.opening-settings:hover,.opening-settings:focus-visible{transform:scale(1.06);filter:drop-shadow(0 0 9px #d48a6766) drop-shadow(0 3px 7px #000b)}
-body.intro-transition .opening-title,body.intro-transition .opening-settings{opacity:0;pointer-events:none}
-@media(max-width:650px){.opening-title{transform:translateY(-38vh)}.opening-title h1{display:block;font-size:clamp(46px,12vw,74px);line-height:.88}.opening-settings{right:14px;top:12px;width:52px;height:52px}.opening-settings img{width:48px;height:48px}}
-@media(prefers-reduced-motion:reduce){.opening-title,.opening-settings{transition:none}}
+body.intro-transition .opening-title{animation:none;opacity:0;pointer-events:none}body.intro-transition .opening-settings{opacity:0;pointer-events:none}
+@keyframes wfl-title-beat{0%,38%{opacity:1}100%{opacity:.22}}
+@media(max-width:650px){.opening-title{left:18px;top:24px;transform:none}.opening-title h1{display:block;font-size:clamp(30px,7.4vw,44px);line-height:.9}.opening-settings{right:14px;top:12px;width:52px;height:52px}.opening-settings img{width:48px;height:48px}}
+@media(prefers-reduced-motion:reduce){.opening-title,.opening-settings{transition:none;animation:none}}

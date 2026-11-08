@@ -58,10 +58,13 @@ test('Floor 30 scene uses a nervous corner camera and physical DESCEND panel', a
     assert.equal(visual.hitTestDescend(point.x+500,point.y+500),false,'distant screen point does not hit DESCEND');
     visual.setVisualTime(2.90);
     visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:false},0);
+    assert.equal(visual.inspect().blackout,false,'first eight seconds remain legible');
+    visual.setVisualTime(10.90);
+    visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:false},0);
     const dark=visual.inspect();
     assert.equal(dark.blackout,true);
     assert.equal(dark.lights.hemi,0);assert.equal(dark.lights.key,0);assert.equal(dark.lights.car,0);assert.ok(dark.lights.fills.every(v=>v===0));assert.ok(dark.lights.silhouette>0&&dark.lights.silhouette<3,'only faint silhouette rim remains');
-    visual.setVisualTime(2.90);
+    visual.setVisualTime(10.90);
     visual.update({door:{openness:1},descendReady:true,descendPressed:false,introPhase:'open',displayFloor:30},{reducedFlashes:true},0);
     assert.equal(visual.inspect().blackout,false,'reduced-flash mode suppresses hard blackouts');
     visual.update({door:{openness:0},descendReady:false,descendPressed:true,introPhase:'travel',displayFloor:29},{reducedFlashes:true},.5);
