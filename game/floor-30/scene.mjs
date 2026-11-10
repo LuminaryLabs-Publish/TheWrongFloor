@@ -12,23 +12,20 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   let left,right;
   if(authored){
     scene.add(authored);left=authored.getObjectByName('door-left');right=authored.getObjectByName('door-right');
-    const existingSeats=['left seating','right seating'].map(name=>authored.getObjectByName(name));
-    if(existingSeats.every(Boolean)){
-      const replacements=[];
-      try{
-        for(const seat of existingSeats){
-          seat.updateWorldMatrix(true,false);
-          const replacement=await place('hospital-bench');
-          seat.getWorldPosition(replacement.position);
-          seat.getWorldQuaternion(replacement.quaternion);
-          seat.getWorldScale(replacement.scale);
-          replacements.push(replacement);
+    try{
+      const environment=await place('ward-30');
+      environment.name='ward-30-environment';
+      authored.traverse(object=>{
+        if(!object.isMesh || object.name.startsWith('flicker-emitter-'))return;
+        let parent=object;
+        while(parent && parent!==authored){
+          if(parent.name==='door-left' || parent.name==='door-right')return;
+          parent=parent.parent;
         }
-        existingSeats.forEach(seat=>{seat.visible=false;});
-      }catch(error){
-        console.warn('Hospital bench unavailable, retaining original seating',error);
-        replacements.forEach(replacement=>scene.remove(replacement));
-      }
+        object.visible=false;
+      });
+    }catch(error){
+      console.warn('Ward environment unavailable, retaining original lobby',error);
     }
   }
   else{await place('architecture');await place('fixtures');left=await place('door-left',[-.7,0,-2.96]);right=await place('door-right',[.7,0,-2.96]);await place('seating',[-3.3,0,4.6],Math.PI);await place('seating',[3.3,0,4.6],Math.PI);await place('reception',[-4.5,0,2.3],.15);}
