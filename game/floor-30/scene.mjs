@@ -10,7 +10,27 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   function release(){authored?.userData.release?.();const gs=new Set(),ms=new Set(),ts=new Set();const visit=o=>{if(o.userData.sharedRoomResource)return;if(o.geometry)gs.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){ms.add(m);for(const t of Object.values(m))if(t?.isTexture)ts.add(t);}};scene.traverse(visit);for(const root of templates.values())root.traverse(visit);gs.forEach(g=>g.dispose());ts.forEach(t=>t.dispose());ms.forEach(m=>m.dispose());templates.clear();scene.clear();}
   async function place(name,p=[0,0,0],r=0){if(!templates.has(name)){const template=await loadAsset(name);template.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=!/wall|wing|ceiling/.test(o.name);}});templates.set(name,batchRigid(T,template));}const root=templates.get(name).clone(true);root.position.set(...p);root.rotation.y=r;scene.add(root);return root;}
   let left,right;
-  if(authored){scene.add(authored);left=authored.getObjectByName('door-left');right=authored.getObjectByName('door-right');}
+  if(authored){
+    scene.add(authored);left=authored.getObjectByName('door-left');right=authored.getObjectByName('door-right');
+    const existingSeats=['left seating','right seating'].map(name=>authored.getObjectByName(name));
+    if(existingSeats.every(Boolean)){
+      const replacements=[];
+      try{
+        for(const seat of existingSeats){
+          seat.updateWorldMatrix(true,false);
+          const replacement=await place('hospital-bench');
+          seat.getWorldPosition(replacement.position);
+          seat.getWorldQuaternion(replacement.quaternion);
+          seat.getWorldScale(replacement.scale);
+          replacements.push(replacement);
+        }
+        existingSeats.forEach(seat=>{seat.visible=false;});
+      }catch(error){
+        console.warn('Hospital bench unavailable, retaining original seating',error);
+        replacements.forEach(replacement=>scene.remove(replacement));
+      }
+    }
+  }
   else{await place('architecture');await place('fixtures');left=await place('door-left',[-.7,0,-2.96]);right=await place('door-right',[.7,0,-2.96]);await place('seating',[-3.3,0,4.6],Math.PI);await place('seating',[3.3,0,4.6],Math.PI);await place('reception',[-4.5,0,2.3],.15);}
   if(!left||!right)throw new Error('Floor 30 lobby door pivots are missing');
   if(!elevator)throw new Error('Canonical animated elevator GLB is required');
