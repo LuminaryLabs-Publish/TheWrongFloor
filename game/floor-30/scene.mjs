@@ -5,7 +5,7 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   const camera=new T.PerspectiveCamera(62,16/9,.05,70);
   const cameraTarget=new T.Vector3(.35,1.42,1.65);
   // Stay in front of the authored lobby rear wall while retaining the corner view.
-  camera.position.set(-1.20,1.48,-5.25);camera.lookAt(cameraTarget);
+  camera.position.set(-1.45,1.48,-5.25);camera.lookAt(cameraTarget);
   const templates=new Map();let disposed=false,visualTime=0,forcedVisualTime=null,lastDescendReady=false,currentFloor=30,lastBlackout=false;
   function release(){authored?.userData.release?.();const gs=new Set(),ms=new Set(),ts=new Set();const visit=o=>{if(o.userData.sharedRoomResource)return;if(o.geometry)gs.add(o.geometry);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[]){ms.add(m);for(const t of Object.values(m))if(t?.isTexture)ts.add(t);}};scene.traverse(visit);for(const root of templates.values())root.traverse(visit);gs.forEach(g=>g.dispose());ts.forEach(t=>t.dispose());ms.forEach(m=>m.dispose());templates.clear();scene.clear();}
   async function place(name,p=[0,0,0],r=0){if(!templates.has(name)){const template=await loadAsset(name);template.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=!/wall|wing|ceiling/.test(o.name);}});templates.set(name,batchRigid(T,template));}const root=templates.get(name).clone(true);root.position.set(...p);root.rotation.y=r;scene.add(root);return root;}
@@ -52,6 +52,24 @@ export async function createLobbyScene(T,loadAsset,{authored=null,character=null
   const descendButton=elevator.descendButton;
   const descendMaterial=descendButton.material;
   const descendBaseScale=descendButton.scale.clone();
+  // The cabin is rotated toward the lobby, so mirror the panel in its local
+  // coordinates to place it on the viewer's right-hand wall.
+  const floorButtons=[];
+  elevator.root.traverse(object=>{
+    if(object===panel || object===descendButton || /^FloorButton_\d+$/.test(object.name)){
+      object.position.x=-Math.abs(object.position.x);
+      if(/^FloorButton_\d+$/.test(object.name))floorButtons.push(object);
+    }
+  });
+  for(const button of floorButtons){
+    const index=Number(button.name.slice(-2));
+    const label=index<30?String(30-index):index===30?'G':'B';
+    const text=textPlane(label,.105,.085,70,'#343a34','#e0d9bd');
+    text.name=`floor-label-${label}`;
+    text.position.set(button.position.x+.021,button.position.y,button.position.z);
+    text.rotation.y=Math.PI/2;
+    elevator.root.add(text);
+  }
   if(!descendMaterial?.emissive)throw new Error('DESCEND material must support emissive feedback');
 
   let rearCharacter=null;
